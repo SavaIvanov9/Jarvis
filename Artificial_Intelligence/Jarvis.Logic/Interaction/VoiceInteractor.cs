@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Speech.Recognition;
 using System.Speech.Synthesis;
+using Jarvis.Commons.Logger;
 using Jarvis.Logic.CommandControl;
 using Jarvis.Logic.Interaction.Interfaces;
 
@@ -11,13 +13,24 @@ namespace Jarvis.Logic.Interaction
 {
     public class VoiceInteractor : IInteractor
     {
-        //private readonly IInteractor _interactor;
-        private SpeechSynthesizer Synth = new SpeechSynthesizer();
-        private PromptBuilder PBuilder = new PromptBuilder();
-        private SpeechRecognitionEngine Engine = new SpeechRecognitionEngine();
-        private string currentInput = "";
+        private readonly SpeechSynthesizer _synth = new SpeechSynthesizer();
+        private readonly PromptBuilder _pBuilder = new PromptBuilder();
+        private readonly SpeechRecognitionEngine _engine = new SpeechRecognitionEngine();
+        private readonly ILogger _logger;
+        private string _currentInput = "";
 
-        private List<string> sList = new List<string>()
+
+        public VoiceInteractor(ILogger logger)
+        {
+            if (logger == null)
+            {
+                throw new InvalidEnumArgumentException($"Logger cannot be 0!");
+            }
+
+            this._logger = logger;
+        }
+
+        private readonly List<string> _sList = new List<string>()
         {
             "run encryptor",
             "stop encryptor",
@@ -34,7 +47,7 @@ namespace Jarvis.Logic.Interaction
 
         public string RecieveInput()
         {
-            return currentInput;
+            return _currentInput;
         }
 
         public Tuple<IList<string>, IList<string>> ParseInput(string inputLine)
@@ -61,26 +74,21 @@ namespace Jarvis.Logic.Interaction
 
         public void SendOutput(string output)
         {
-            PBuilder.ClearContent();
-            PBuilder.AppendText(output);
-            Synth.Speak(PBuilder);
+            _pBuilder.ClearContent();
+            _pBuilder.AppendText(output);
+            _synth.Speak(_pBuilder);
         }
 
         public void Start()
         {
-            StartListening();
-        }
-
-        public void StartListening()
-        {
-            Grammar Gram = new Grammar(new GrammarBuilder(new Choices(sList.ToArray())));
+            Grammar Gram = new Grammar(new GrammarBuilder(new Choices(_sList.ToArray())));
             try
             {
-                Engine.RequestRecognizerUpdate();
-                Engine.LoadGrammar(Gram);
-                Engine.SpeechRecognized += SetCurrentInput;
-                Engine.SetInputToDefaultAudioDevice();
-                Engine.RecognizeAsync(RecognizeMode.Multiple);
+                _engine.RequestRecognizerUpdate();
+                _engine.LoadGrammar(Gram);
+                _engine.SpeechRecognized += SetCurrentInput;
+                _engine.SetInputToDefaultAudioDevice();
+                _engine.RecognizeAsync(RecognizeMode.Multiple);
             }
             catch
             {
@@ -90,7 +98,7 @@ namespace Jarvis.Logic.Interaction
 
         public void StopListening()
         {
-            Engine.RecognizeAsyncStop();
+            _engine.RecognizeAsyncStop();
         }
 
         [DllImport("User32.dll")]
@@ -111,19 +119,19 @@ namespace Jarvis.Logic.Interaction
             //    SetForegroundWindow(h);
             //}
 
-            currentInput = e.Result.Text;
+            _currentInput = e.Result.Text;
             //JarvisEngine.Instance(new ConsoleInteractor(), new DecisionTaker()).commandLine = e.Result.Text;
             //Console.WriteLine(e.Result.Text.ToString());
             SendOutput(e.Result.Text);
             
-            var shits = ParseInput(currentInput);
+            var shits = ParseInput(_currentInput);
             //CommandProcessor.Instance.ProcessCommand(shits.Item1, shits.Item2, _interactor);
 
-            for (int c = 0; c < sList.Count; c++)
+            for (int c = 0; c < _sList.Count; c++)
             {
-                if (currentInput == sList[c])
+                if (_currentInput == _sList[c])
                 {
-                    CommandContainer.Instance.AddCommand(currentInput);
+                    CommandContainer.Instance.AddCommand(_logger, _currentInput);
                     
                     //CommandProcessor.Instance.ProcessCommand(shits.Item1, shits.Item2, _interactor);
                     //SendKeys.SendWait(currentInput);

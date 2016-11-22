@@ -1,23 +1,19 @@
-﻿using System.Collections.Generic;
-using Jarvis.Logic.Interaction.Interfaces;
-
-namespace Jarvis.Logic
+﻿namespace Jarvis.Logic
 {
     using Core;
-    using Core.Providers.Decisions;
-    using Jarvis.Logic.Interaction;
+    using Interaction;
+    using Commons.Logger;
 
     class Launcher
     {
         static void Main()
         {
+            var logger = new ConsoleLogger();
             var manager = new InteractorManager();
-            manager.AddInteractor(new ConsoleInteractor());
-            manager.AddInteractor(new VoiceInteractor());
+            manager.AddInteractor(new ConsoleInteractor(logger));
+            manager.AddInteractor(new VoiceInteractor(logger));
             
-            manager.SendOutput("hi");
-
-            JarvisEngine.Instance(manager)
+            JarvisEngine.Instance(manager, logger)
                 .Start();
         }
     }

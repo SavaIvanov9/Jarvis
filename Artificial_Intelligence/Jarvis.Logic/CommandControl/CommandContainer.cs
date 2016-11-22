@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Jarvis.Commons.Logger;
 
 namespace Jarvis.Logic.CommandControl
 {
@@ -11,10 +12,6 @@ namespace Jarvis.Logic.CommandControl
 
         private static readonly Lazy<CommandContainer> Lazy =
             new Lazy<CommandContainer>(() => new CommandContainer());
-
-        private CommandContainer()
-        {
-        }
 
         public static CommandContainer Instance => Lazy.Value;
 
@@ -28,9 +25,10 @@ namespace Jarvis.Logic.CommandControl
 
         private IList<string> CommandList = new List<string>();
 
-        public void AddCommand(string command)
+        public void AddCommand(ILogger logger, string command)
         {
             CommandList.Add(command);
+            logger.Log(command);
             OnAdd(command);
         }
     }

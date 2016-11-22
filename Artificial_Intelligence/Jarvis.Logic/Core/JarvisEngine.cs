@@ -1,7 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows.Forms;
+using Jarvis.Commons.Logger;
+using Jarvis.Commons.Utilities;
 using Jarvis.Logic.CommandControl;
 using Jarvis.Logic.Core.Interfaces.Decisions;
 using Jarvis.Logic.Interaction;
@@ -11,87 +15,71 @@ namespace Jarvis.Logic.Core
 {
     public class JarvisEngine
     {
-
-        private readonly IInteractor _interactor = new ConsoleInteractor();
-        private readonly IDecisionTaker _decisionTaker;
         private readonly InteractorManager _interactorManager;
-        //private readonly IDataBase data;
-        private readonly VoiceInteractor _voiceController;
-        public string commandLine = "";
-        private bool _isAlive = true;
-        
+        private readonly ILogger _logger;
 
-        private JarvisEngine(InteractorManager manager)
+        private JarvisEngine(InteractorManager manager, ILogger logger)
         {
             this._interactorManager = manager;
-            //this._interactor = interactor;
-            //this._decisionTaker = decisionTaker;
-            this._voiceController = new VoiceInteractor();
+            this._logger = logger;
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static JarvisEngine Instance(InteractorManager manager)
+        public static JarvisEngine Instance(InteractorManager manager, ILogger logger)
         {
             if (manager.Interactors.Count == 0)
             {
                 throw new InvalidEnumArgumentException($"Interactors cannot be 0!");
             }
 
-            return new JarvisEngine(manager);
+            if (logger == null)
+            {
+                throw new InvalidEnumArgumentException($"Logger cannot be 0!");
+            }
+
+            return new JarvisEngine(manager, logger);
         }
 
         public void Start()
         {
+            CommandProcessor.Instance.Start(_interactorManager);
 
+            LiveMyEvilCreation();
+        }
+
+        private void LiveMyEvilCreation()
+        {
             try
             {
-                //Console.Title = "Jarvis";
+                //_interactorManager.Interactors[1].Start();
+                StartInteractors(_interactorManager);
 
-                //_interactor.SendOutput(" >Jarvis: Hi, I am Jarvis");
-                //_voiceController.Speak("Hi, I am Jarvis");
-
-                CommandProcessor.Instance.Start(_interactor);
-                StartInteractors();
-
-                StayAlive(_interactor);
-                //while (_isAlive)
-                //{
-                //    //_voiceController.StopListening();
-                //    try
-                //    {
-                //        //var commandSegments = _interactor.ParseInput(commandLine);
-                //        CommandProcessor.Instance.Start(commandLine, _interactor);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        _interactor.SendOutput(ex.ToString());
-                //    }
-                //    finally
-                //    {
-                //        //_voiceController.StartListening();
-                //        commandLine = _interactor.RecieveInput();
-                //    }
-                //}
+                StayAlive();
             }
             catch (Exception ex)
             {
-                _interactor.SendOutput(ex.ToString());
+                _interactorManager.SendOutput(ex.ToString());
+                //_interactorManager.Interactors[0].SendOutput(ex.ToString());
             }
-        }
-
-        private void StartInteractors()
-        {
-            foreach (var interactor in _interactorManager.Interactors)
+            finally
             {
-                interactor.Start();
+                LiveMyEvilCreation();
             }
         }
 
-        private void StayAlive(IInteractor interactor)
+        private void StartInteractors(InteractorManager interactorManager)
+        {
+            for (int i = 0; i < interactorManager.Interactors.Count; i++)
+            {
+                new Thread(interactorManager.Interactors[i].Start).Start();
+            }
+        }
+
+        private void StayAlive()
         {
             while (true)
             {
-                interactor.RecieveInput();
+                _interactorManager.Interactors[0].Start();
             }
         }
     }

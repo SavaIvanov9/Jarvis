@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using Jarvis.Commons.Logger;
 using Jarvis.Logic.CommandControl;
 using Jarvis.Logic.Interaction.Interfaces;
 
@@ -8,21 +10,21 @@ namespace Jarvis.Logic.Interaction
 {
     public class ConsoleInteractor : IInteractor
     {
-        //public ConsoleInteractor(CoomandContainer coomandContainer)
-        //{
-            
-        //}
-        public string RecieveInput()
-        {
-            var command = Console.ReadLine();
-            CommandContainer.Instance.AddCommand(command);
-            return command;
-        }
+        private ILogger _logger;
 
-        //public Task<string> RecieveInput()
-        //{
-        //    return Task.Run(() => Console.ReadLine());
-        //}
+        public ConsoleInteractor(ILogger logger)
+        {
+            if (logger == null)
+            {
+                throw new InvalidEnumArgumentException($"Logger cannot be 0!");
+            }
+
+            this._logger = logger;
+
+            Console.Title = "Jarvis";
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.BackgroundColor = ConsoleColor.Black;
+        }
 
         public Tuple<IList<string>, IList<string>>  ParseInput(string inputLine)
         {
@@ -48,12 +50,13 @@ namespace Jarvis.Logic.Interaction
 
         public void SendOutput(string output)
         {
-            Console.WriteLine(output);
+            Console.WriteLine("  >Jarvis: " + output);
         }
 
         public void Start()
         {
-            RecieveInput();
+            var command = Console.ReadLine();
+            CommandContainer.Instance.AddCommand(_logger, command);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Jarvis.Commons.Utilities;
 using Jarvis.Data;
 using Jarvis.Logic.Interaction;
-using Jarvis.Logic.Interaction.Interfaces;
 using Jarvis.RegistryEditor;
 using Jarvis.SecureDesktop;
 using Jarvis.Web;
@@ -16,7 +16,7 @@ namespace Jarvis.Logic.CommandControl
         private static readonly Lazy<CommandProcessor> Lazy =
             new Lazy<CommandProcessor>(() => new CommandProcessor());
 
-        private IInteractor _interactor = new ConsoleInteractor();
+        private InteractorManager _interactorManager;
         private const string CommandNotFoundMsg = "Command not found.";
         private const string InvalidParametersMsg = "Invalid Parameters.";
 
@@ -27,56 +27,78 @@ namespace Jarvis.Logic.CommandControl
 
         public static CommandProcessor Instance => Lazy.Value;
 
-        public void Start(IInteractor interactor)
+        public void Start(InteractorManager interactorManager)
         {
-            this._interactor = interactor;
+            this._interactorManager = interactorManager;
             ProcessCommand(CommandConstants.Initialize);
         }
 
         public void ProcessCommand(string command)
         {
-            var commandSegments = _interactor.ParseInput(command);
-            IList<string> commandParts = commandSegments.Item1;
-            IList<string> commandParams = commandSegments.Item2;
-
-            switch (commandParts[0])
+            if (!string.IsNullOrEmpty(command))
             {
-                case CommandConstants.Initialize:
-                    _interactor.SendOutput(" >Jarvis: Hi, I am Jarvis");
-                    break;
-                case CommandConstants.AddToStartup:
-                    AddToStartup(commandParts, commandParams, _interactor);
-                    break;
-                    //return true;
-                case CommandConstants.Tell:
-                    TellMe(commandParts, commandParams, _interactor);
-                    break;
-                    //return true;
-                case CommandConstants.StartModule:
-                    StartModule(commandParts, commandParams, _interactor);
-                    break;
-                    //return true;
-                case CommandConstants.Open:
-                    Open(commandParts, commandParams, _interactor);
-                    break;
-                    //return true;
-                case CommandConstants.Search:
-                    Search(commandParts, commandParams, _interactor);
-                    break;
-                    //return true;
-                case CommandConstants.Exit:
-                    _interactor.SendOutput(" >Jarvis: See ya ;)");
-                    Environment.Exit(0);
-                    break;
-                    //return false;
-                default:
-                    _interactor.SendOutput(CommandNotFoundMsg);
-                    break;
-                    //return true;
+                var commandSegments = ParseInput(command);
+                IList<string> commandParts = commandSegments.Item1;
+                IList<string> commandParams = commandSegments.Item2;
+
+                switch (commandParts[0])
+                {
+                    case CommandConstants.Initialize:
+                        _interactorManager.SendOutput("Hi, I am Jarvis.");
+                        break;
+                    case CommandConstants.AddToStartup:
+                        AddToStartup(commandParts, commandParams, _interactorManager);
+                        break;
+                    case CommandConstants.Tell:
+                        TellMe(commandParts, commandParams, _interactorManager);
+                        break;
+                    case CommandConstants.StartModule:
+                        StartModule(commandParts, commandParams, _interactorManager);
+                        break;
+                    case CommandConstants.Open:
+                        Open(commandParts, commandParams, _interactorManager);
+                        break;
+                    case CommandConstants.Search:
+                        Search(commandParts, commandParams, _interactorManager);
+                        break;
+                    case CommandConstants.Exit:
+                        _interactorManager.SendOutput("See you.");
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        _interactorManager.SendOutput(CommandNotFoundMsg);
+                        break;
+                }
+            }
+            else
+            {
+                _interactorManager.SendOutput("Command cannot be empty!");
             }
         }
 
-        public void Search(IList<string> commandParts, IList<string> commandParams, IInteractor interactor)
+        public Tuple<IList<string>, IList<string>> ParseInput(string inputLine)
+        {
+            IList<string> commandSegments = inputLine
+                .Split(new[] { ": " }, StringSplitOptions.None)
+                .ToList();
+
+            IList<string> commandParts = commandSegments[0]
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
+
+            if (commandSegments.Count > 1)
+            {
+                IList<string> commandParams = commandSegments[1]
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
+
+                return new Tuple<IList<string>, IList<string>>(commandParts, commandParams);
+            }
+
+            return new Tuple<IList<string>, IList<string>>(commandParts, new List<string>());
+        }
+
+        public void Search(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -93,7 +115,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        public void Open(IList<string> commandParts, IList<string> commandParams, IInteractor interactor)
+        public void Open(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -110,7 +132,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        public void StartModule(IList<string> commandParts, IList<string> commandParams, IInteractor interactor)
+        public void StartModule(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -122,7 +144,7 @@ namespace Jarvis.Logic.CommandControl
                     break;
                 case ModuleName.Encryptor:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    
+
                     Process secondProc = new Process();
                     secondProc.StartInfo.FileName = GlobalConstants.EncryptorPath;
                     secondProc.Start();
@@ -139,7 +161,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        private void TellMe(IList<string> commandParts, IList<string> commandParams, IInteractor interactor)
+        private void TellMe(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(
                 commandParts.Count, 2, CommandNotFoundMsg);
@@ -168,7 +190,7 @@ namespace Jarvis.Logic.CommandControl
                                 2, InvalidParametersMsg);
                             interactor.SendOutput(
                             Utility.Instance.RandomString(
-                                int.Parse(commandParams[0]), 
+                                int.Parse(commandParams[0]),
                                 int.Parse(commandParams[1])));
                             break;
                         case "date":
@@ -201,7 +223,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        private void AddToStartup(IList<string> commandParts, IList<string> commandParams, IInteractor interactor)
+        private void AddToStartup(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 1, CommandNotFoundMsg);
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParams.Count, 1, InvalidParametersMsg);
@@ -218,6 +240,6 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        
+
     }
 }
