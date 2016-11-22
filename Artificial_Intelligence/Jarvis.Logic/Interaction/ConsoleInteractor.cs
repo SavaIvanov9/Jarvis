@@ -1,16 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Jarvis.Commons.Interaction.Interfaces;
+using Jarvis.Logic.CommandControl;
+using Jarvis.Logic.Interaction.Interfaces;
 
-namespace Jarvis.Commons.Interaction
+namespace Jarvis.Logic.Interaction
 {
     public class ConsoleInteractor : IInteractor
     {
-        public string RecieveInput()
+        //public ConsoleInteractor(CoomandContainer coomandContainer)
+        //{
+            
+        //}
+        public string RecieveInput(CoomandContainer coomandContainer)
         {
-            return Console.ReadLine();
+            var command = Console.ReadLine();
+            coomandContainer.CommandList.Add(command);
+            return command;
         }
+
+        //public Task<string> RecieveInput()
+        //{
+        //    return Task.Run(() => Console.ReadLine());
+        //}
 
         public Tuple<IList<string>, IList<string>>  ParseInput(string inputLine)
         {

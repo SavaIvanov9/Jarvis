@@ -1,9 +1,8 @@
-﻿using Jarvis.Logic.Interaction;
-
-namespace Jarvis.Client
+﻿namespace Jarvis.Logic
 {
-    using Logic.Core;
-    using Logic.Core.Providers.Decisions;
+    using Core;
+    using Core.Providers.Decisions;
+    using Jarvis.Logic.Interaction;
 
     class Launcher
     {

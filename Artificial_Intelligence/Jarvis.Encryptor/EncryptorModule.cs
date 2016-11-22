@@ -1,17 +1,18 @@
 ﻿using System.Runtime.CompilerServices;
-using Jarvis.Commons.Interaction.Interfaces;
 
 namespace Jarvis.Encryptor
 {
     using System;
     using System.IO;
-
     using Commands;
 
     public sealed class EncryptorModule
     {
         private static  Lazy<EncryptorModule> Lazy =
             new Lazy<EncryptorModule>(() => new EncryptorModule());
+
+        private readonly TextWriter _writer = Console.Out;
+        private readonly TextReader _reader = Console.In;
 
         private EncryptorModule()
         {
@@ -25,10 +26,10 @@ namespace Jarvis.Encryptor
             }
         } 
 
-        public void Start(IInteractor interactor)
+        public void Start(TextWriter writer, TextReader reader)
         {
-            interactor.SendOutput("Encryptor started. Enter command:");
-            var command = interactor.RecieveInput();
+            writer.WriteLine("Encryptor started. Enter command:");
+            var command = reader.ReadLine();
 
             while (command != "stop encryptor")
             {
@@ -36,27 +37,27 @@ namespace Jarvis.Encryptor
                 {
                     try
                     {
-                        CommandProcessor.Instance(interactor).ProcessCommand(command);
+                        CommandProcessor.Instance(writer, reader).ProcessCommand(command);
                     }
                     catch (FileNotFoundException)
                     {
-                        interactor.SendOutput("File not found.");
+                        writer.WriteLine("File not found.");
                     }
                     catch (Exception ex)
                     {
-                        interactor.SendOutput(ex.ToString());
+                        writer.WriteLine(ex.ToString());
                     }
                 }
                 else
                 {
-                    interactor.SendOutput(@"Unknown command. Type ""help"" for a list of commands.");
+                    writer.WriteLine(@"Unknown command. Type ""help"" for a list of commands.");
                 }
 
-                interactor.SendOutput("Enter command:");
-                command = interactor.RecieveInput();
+                writer.WriteLine("Enter command:");
+                command = reader.ReadLine();
             }
 
-            interactor.SendOutput("Encryptor stoped.");
+            writer.WriteLine("Encryptor stoped.");
         }
     }
 }

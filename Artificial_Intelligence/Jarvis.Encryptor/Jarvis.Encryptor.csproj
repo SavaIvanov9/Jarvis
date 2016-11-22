@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{FFA12886-D62E-4E4E-B43B-23997302793D}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Jarvis.Encryptor</RootNamespace>
     <AssemblyName>Jarvis.Encryptor</AssemblyName>
@@ -51,6 +51,7 @@
     <Compile Include="Commands\CommandsProcessor.cs" />
     <Compile Include="Commands\Constants.cs" />
     <Compile Include="EncryptorModule.cs" />
+    <Compile Include="Launcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

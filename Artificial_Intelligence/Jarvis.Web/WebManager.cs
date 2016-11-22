@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Jarvis.Commons.Interaction.Interfaces;
 
 namespace Jarvis.Web
 {
@@ -16,7 +15,7 @@ namespace Jarvis.Web
 
         public static WebManager Instance => Lazy.Value;
 
-        public void OpenSite(IList<string> commandParams, IInteractor interactor)
+        public void OpenSite(IList<string> commandParams)
         {
             string site = commandParams[0];
 
@@ -29,11 +28,11 @@ namespace Jarvis.Web
                             WindowStyle = ProcessWindowStyle.Maximized
                         }
             };
+
             browser.Start();
-            interactor.SendOutput($"{site} opened with Firefox.");
         }
 
-        public void WebSearch(IList<string> commandParams, IInteractor interactor)
+        public void WebSearch(IList<string> commandParams)
         {
             string qwery = string.Join("+", commandParams);
             string site = @"http://" + @"www.google.com/#hl=en&q=" + qwery;
@@ -48,15 +47,15 @@ namespace Jarvis.Web
                 }
             };
             browser.Start();
-            interactor.SendOutput($@"Seraching in web for ""{string.Join(" ", commandParams)}""");
+            
         }
 
-        public void ConnectToLocalServer(IList<string> commandParams, IInteractor interactor)
+        public void ConnectToLocalServer(IList<string> commandParams)
         {
             
         }
 
-        public void OpenLocalServer(IList<string> commandParams, IInteractor interactor)
+        public void OpenLocalServer(IList<string> commandParams)
         {
             
         }

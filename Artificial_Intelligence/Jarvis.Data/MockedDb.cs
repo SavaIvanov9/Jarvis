@@ -15,7 +15,9 @@ namespace Jarvis.Data
         {
             "Shortest love story ever:" + Environment.NewLine +
             @"He: You are the "";"" of my code!" + Environment.NewLine +
-            "She: Sorry, I have python :D"
+            "She: Sorry, I have python :D",
+
+            "My Grandpa once said, \"Your generation relies too much on technology!\"\r\nI replied, \"No, your generation relies too much on technology!\"\r\nThen I unplugged his life support."
         };
 
         private MockedDb()

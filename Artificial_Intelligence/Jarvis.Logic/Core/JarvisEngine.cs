@@ -1,27 +1,29 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using Jarvis.Commons.Interaction;
-using Jarvis.Commons.Interaction.Interfaces;
-using Jarvis.Logic.Core.CommandControl;
+using System.Windows.Forms;
+using Jarvis.Logic.CommandControl;
 using Jarvis.Logic.Core.Interfaces.Decisions;
-using Jarvis.Logic.Core.Providers.Commands;
-using Jarvis.Logic.Core.VoiceControl;
+using Jarvis.Logic.Interaction;
+using Jarvis.Logic.Interaction.Interfaces;
 
 namespace Jarvis.Logic.Core
 {
     public class JarvisEngine
     {
-        public string commandLine = "";
+        
         private readonly IInteractor _interactor;
         private readonly IDecisionTaker _decisionTaker;
         //private readonly IDataBase data;
         private readonly VoiceController _voiceController;
+        private CoomandContainer _coomandContainer = new CoomandContainer();
+        public string commandLine = "";
+        private bool _isAlive = true;
 
         private JarvisEngine(IInteractor interactor, IDecisionTaker decisionTaker)
         {
             this._interactor = interactor;
             this._decisionTaker = decisionTaker;
-            this._voiceController = new VoiceController(interactor);
+            this._voiceController = new VoiceController(interactor, _coomandContainer);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -44,20 +46,21 @@ namespace Jarvis.Logic.Core
         {
             //Console.Title = "Jarvis";
 
-            _interactor.SendOutput("Hi, I am Jarvis.");
-            //_voiceController.Speak("Hi, I am Jarvis.");
+            _interactor.SendOutput(" >Jarvis: Hi, I am Jarvis");
+            _voiceController.Speak("Hi, I am Jarvis");
             
             _voiceController.StartListening();
+            //StayAlive();
             
-            commandLine = _interactor.RecieveInput();
+            commandLine = _interactor.RecieveInput(_coomandContainer);
             
-            while (commandLine != "bye")
+            while (_isAlive)
             {
                 //_voiceController.StopListening();
                 try
                 {
                     var commandSegments = _interactor.ParseInput(commandLine);
-                    CommandProcessor.Instance.ProcessCommand(commandSegments.Item1, commandSegments.Item2, _interactor);
+                    _isAlive = CommandProcessor.Instance.ProcessCommand(commandSegments.Item1, commandSegments.Item2, _interactor);
                 }
                 catch (Exception ex)
                 {
@@ -66,11 +69,20 @@ namespace Jarvis.Logic.Core
                 finally
                 {
                     //_voiceController.StartListening();
-                    commandLine = _interactor.RecieveInput();
+                    commandLine = _interactor.RecieveInput(_coomandContainer);
                 }
             }
 
+            
             _interactor.SendOutput("See ya ;)");
+        }
+
+        private void StayAlive()
+        {
+            while (true)
+            {
+                
+            }
         }
     }
 }

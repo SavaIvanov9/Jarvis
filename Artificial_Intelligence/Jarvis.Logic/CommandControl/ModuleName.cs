@@ -1,4 +1,4 @@
-﻿namespace Jarvis.Logic.Core.CommandControl
+﻿namespace Jarvis.Logic.CommandControl
 {
     internal class ModuleName
     {

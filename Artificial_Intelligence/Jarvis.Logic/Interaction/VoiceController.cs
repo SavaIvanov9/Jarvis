@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Speech.Recognition;
 using System.Speech.Synthesis;
-using System.Windows.Forms;
-using Jarvis.Commons.Interaction;
-using Jarvis.Commons.Interaction.Interfaces;
-using Jarvis.Logic.Core.CommandControl;
-using Jarvis.Logic.Core.Providers.Decisions;
+using Jarvis.Logic.CommandControl;
+using Jarvis.Logic.Interaction.Interfaces;
 
-namespace Jarvis.Logic.Core.VoiceControl
+namespace Jarvis.Logic.Interaction
 {
     public class VoiceController
     {
+        private CoomandContainer _coomandContainer;
         private readonly IInteractor _interactor;
         private SpeechSynthesizer Synth = new SpeechSynthesizer();
         private PromptBuilder PBuilder = new PromptBuilder();
@@ -25,6 +21,7 @@ namespace Jarvis.Logic.Core.VoiceControl
         {
             "run encryptor",
             "stop encryptor",
+            "exit"
             //"exit",
             //"how are you",
             //"go to internet",
@@ -35,9 +32,10 @@ namespace Jarvis.Logic.Core.VoiceControl
             //"close"
         };
 
-        public VoiceController(IInteractor interactor)
+        public VoiceController(IInteractor interactor, CoomandContainer coomandContainer)
         {
             this._interactor = interactor;
+            this._coomandContainer = coomandContainer;
         }
 
         public string RecieveInput()
@@ -95,12 +93,12 @@ namespace Jarvis.Logic.Core.VoiceControl
             //IntPtr pointer = p.Handle;
             //SetForegroundWindow(pointer);
 
-            Process p = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).FirstOrDefault();
-            if (p != null)
-            {
-                IntPtr h = p.MainWindowHandle;
-                SetForegroundWindow(h);
-            }
+            //Process p = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).FirstOrDefault();
+            //if (p != null)
+            //{
+            //    IntPtr h = p.MainWindowHandle;
+            //    SetForegroundWindow(h);
+            //}
 
             currentInput = e.Result.Text;
             //JarvisEngine.Instance(new ConsoleInteractor(), new DecisionTaker()).commandLine = e.Result.Text;
@@ -114,9 +112,10 @@ namespace Jarvis.Logic.Core.VoiceControl
             {
                 if (currentInput == sList[c])
                 {
-                    //CommandProcessor.Instance.ProcessCommand(shits.Item1, shits.Item2, _interactor);
-                    SendKeys.SendWait(currentInput);
-                    SendKeys.SendWait(Environment.NewLine);
+                    //_coomandContainer.CommandList.Add(currentInput);
+                    CommandProcessor.Instance.ProcessCommand(shits.Item1, shits.Item2, _interactor);
+                    //SendKeys.SendWait(currentInput);
+                    //SendKeys.SendWait(Environment.NewLine);
                 }
             }
 

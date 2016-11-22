@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{CD50BEBA-7E95-480A-8867-3EA8E638C818}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Jarvis.Logic</RootNamespace>
     <AssemblyName>Jarvis.Logic</AssemblyName>
@@ -29,6 +29,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Google.Apis, Version=1.19.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -67,14 +70,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandControl\CommandConstants.cs" />
+    <Compile Include="CommandControl\CommandProcessor.cs" />
+    <Compile Include="CommandControl\CoomandContainer.cs" />
+    <Compile Include="CommandControl\ModuleName.cs" />
     <Compile Include="Core\DecisionControl\Interfaces\IDecidable.cs" />
     <Compile Include="Core\DecisionControl\Interfaces\IDecisionTaker.cs" />
     <Compile Include="Core\JarvisEngine.cs" />
-    <Compile Include="Core\CommandControl\CommandConstants.cs" />
-    <Compile Include="Core\CommandControl\CommandProcessor.cs" />
-    <Compile Include="Core\CommandControl\ModuleName.cs" />
     <Compile Include="Core\DecisionControl\DecisionTaker.cs" />
-    <Compile Include="Core\VoiceControl\VoiceController.cs" />
+    <Compile Include="Interaction\ConsoleInteractor.cs" />
+    <Compile Include="Interaction\InteractorManager.cs" />
+    <Compile Include="Interaction\Interfaces\IInputParseable.cs" />
+    <Compile Include="Interaction\Interfaces\IInputReceiveble.cs" />
+    <Compile Include="Interaction\Interfaces\IInteractor.cs" />
+    <Compile Include="Interaction\Interfaces\IOutputSendable.cs" />
+    <Compile Include="Interaction\VoiceController.cs" />
+    <Compile Include="Launcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿using Jarvis.Commons.Interaction.Interfaces;
+﻿using System.CodeDom.Compiler;
 
 namespace Jarvis.Encryptor.Commands
 {
@@ -10,20 +10,22 @@ namespace Jarvis.Encryptor.Commands
 
     public class CommandProcessor
     {
-        private readonly IInteractor _interactor;
+        private readonly TextWriter _writer;
+        private readonly TextReader _reader;
 
-        private CommandProcessor(IInteractor interactor)
+        private CommandProcessor(TextWriter writer, TextReader reader)
         {
-            this._interactor = interactor;
+            this._writer = writer;
+            this._reader = reader;
         }
 
-        public static CommandProcessor Instance(IInteractor interactor)
+        public static CommandProcessor Instance(TextWriter writer, TextReader reader)
         {
-            return new CommandProcessor(interactor);
+            return new CommandProcessor(writer, reader);
         }
 
         public void ProcessCommand(string command)
-        {
+        {                                          
             switch (command)
             {
                 case Constants.Help:
@@ -45,45 +47,45 @@ namespace Jarvis.Encryptor.Commands
                     this.ClearConsole();
                     break;
                 default:
-                    _interactor.SendOutput(@"Unknown command. Type ""help"" for a list of commands.");
+                    _writer.WriteLine(@"Unknown command. Type ""help"" for a list of commands.");
                     break;
             }
         }
 
         private void EncryptString()
         {
-            _interactor.SendOutput("Enter a password to use:");
-            string password = _interactor.RecieveInput();
-            _interactor.SendOutput("Enter a string to encrypt:");
-            string text = _interactor.RecieveInput();
-            _interactor.SendOutput(Environment.NewLine);
+            _writer.WriteLine("Enter a password to use:");
+            string password = _reader.ReadLine();
+            _writer.WriteLine("Enter a string to encrypt:");
+            string text = _reader.ReadLine();
+            _writer.WriteLine(Environment.NewLine);
 
-            _interactor.SendOutput("Your encrypted string is:");
+            _writer.WriteLine("Your encrypted string is:");
             string encryptedstring = Cipher.Encrypt(text, password);
-            _interactor.SendOutput(encryptedstring);
-            _interactor.SendOutput("");
+            _writer.WriteLine(encryptedstring);
+            _writer.WriteLine("");
         }
 
         private void DecryptString()
         {
-            _interactor.SendOutput("Enter a password to use:");
-            string password = _interactor.RecieveInput();
-            _interactor.SendOutput("Enter a string to decrypt:");
-            string text = _interactor.RecieveInput();
-            _interactor.SendOutput("");
+            _writer.WriteLine("Enter a password to use:");
+            string password = _reader.ReadLine();
+            _writer.WriteLine("Enter a string to decrypt:");
+            string text = _reader.ReadLine();
+            _writer.WriteLine("");
 
-            _interactor.SendOutput("Your decrypted string is:");
+            _writer.WriteLine("Your decrypted string is:");
             string decryptedstring = Cipher.Decrypt(text, password);
-            _interactor.SendOutput(decryptedstring);
-            _interactor.SendOutput("");
+            _writer.WriteLine(decryptedstring);
+            _writer.WriteLine("");
         }
 
         private void EncryptTxtFile()
         {
-            _interactor.SendOutput("Enter file path:");
-            string path = _interactor.RecieveInput();
-            _interactor.SendOutput("Enter password:");
-            string password = _interactor.RecieveInput();
+            _writer.WriteLine("Enter file path:");
+            string path = _reader.ReadLine();
+            _writer.WriteLine("Enter password:");
+            string password = _reader.ReadLine();
 
             List<List<string>> text = new List<List<string>>();
 
@@ -131,18 +133,18 @@ namespace Jarvis.Encryptor.Commands
                         file.WriteLine(string.Join(" ", text[i]));
                     }
 
-                    _interactor.SendOutput($"File {newFileName} encrypted in folder EncryptedFiles.");
+                    _writer.WriteLine($"File {newFileName} encrypted in folder EncryptedFiles.");
                 }
             }
             else
             {
-                _interactor.SendOutput("File alredy exists.");
+                _writer.WriteLine("File alredy exists.");
             }
 
-            //_interactor.SendOutput("Enter file path:");
-            //string path = _interactor.RecieveInput();
-            //_interactor.SendOutput("Enter password:");
-            //string password = _interactor.RecieveInput();
+            //_writer.WriteLine("Enter file path:");
+            //string path = _reader.ReadLine();
+            //_writer.WriteLine("Enter password:");
+            //string password = _reader.ReadLine();
 
             //List<string> text = new List<string>();
 
@@ -182,21 +184,21 @@ namespace Jarvis.Encryptor.Commands
             //            file.WriteLine(string.Join(" ", text[i]));
             //        }
 
-            //        _interactor.SendOutput($"File {newFileName} encrypted in folder EncryptedFiles.");
+            //        _writer.WriteLine($"File {newFileName} encrypted in folder EncryptedFiles.");
             //    }
             //}
             //else
             //{
-            //    _interactor.SendOutput("File alredy exists.");
+            //    _writer.WriteLine("File alredy exists.");
             //}
         }
 
         private void DecryptTxtFile()
         {
-            _interactor.SendOutput("Enter file path:");
-            string path = _interactor.RecieveInput();
-            _interactor.SendOutput("Enter password:");
-            string password = _interactor.RecieveInput();
+            _writer.WriteLine("Enter file path:");
+            string path = _reader.ReadLine();
+            _writer.WriteLine("Enter password:");
+            string password = _reader.ReadLine();
 
             List<List<string>> text = new List<List<string>>();
 
@@ -244,17 +246,17 @@ namespace Jarvis.Encryptor.Commands
                         file.WriteLine(string.Join(" ", text[i]));
                     }
 
-                    _interactor.SendOutput($"File {newFileName} decrypted in folder DecryptedFiles.");
+                    _writer.WriteLine($"File {newFileName} decrypted in folder DecryptedFiles.");
                 }
             }
             else
             {
-                _interactor.SendOutput("File alredy exists.");
+                _writer.WriteLine("File alredy exists.");
             }
-            //_interactor.SendOutput("Enter file path:");
-            //string path = _interactor.RecieveInput();
-            //_interactor.SendOutput("Enter password:");
-            //string password = _interactor.RecieveInput();
+            //_writer.WriteLine("Enter file path:");
+            //string path = _reader.ReadLine();
+            //_writer.WriteLine("Enter password:");
+            //string password = _reader.ReadLine();
 
             //List<string> text = new List<string>();
 
@@ -294,12 +296,12 @@ namespace Jarvis.Encryptor.Commands
             //            file.WriteLine(string.Join(" ", text[i]));
             //        }
 
-            //        _interactor.SendOutput($"File {newFileName} decrypted in folder DecryptedFiles.");
+            //        _writer.WriteLine($"File {newFileName} decrypted in folder DecryptedFiles.");
             //    }
             //}
             //else
             //{
-            //    _interactor.SendOutput("File alredy exists.");
+            //    _writer.WriteLine("File alredy exists.");
             //}
         }
 
@@ -316,7 +318,7 @@ namespace Jarvis.Encryptor.Commands
                                            "clear - Clears console" + Environment.NewLine +
                                            "stop-encryptor" + Environment.NewLine +
                                            "------------------------------------------");
-            _interactor.SendOutput(commandsDescription.ToString());
+            _writer.WriteLine(commandsDescription.ToString());
         }
 
         private void ClearConsole()

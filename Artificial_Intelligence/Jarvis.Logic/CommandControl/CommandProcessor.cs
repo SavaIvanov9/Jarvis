@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using Jarvis.Commons.Interaction.Interfaces;
 using Jarvis.Commons.Utilities;
 using Jarvis.Data;
-using Jarvis.Encryptor;
-using Jarvis.Logic.Core.Providers.Commands;
+using Jarvis.Logic.Interaction.Interfaces;
 using Jarvis.RegistryEditor;
 using Jarvis.SecureDesktop;
 using Jarvis.Web;
 
-namespace Jarvis.Logic.Core.CommandControl
+namespace Jarvis.Logic.CommandControl
 {
     public sealed class CommandProcessor
     {
@@ -27,28 +24,32 @@ namespace Jarvis.Logic.Core.CommandControl
 
         public static CommandProcessor Instance => Lazy.Value;
 
-        public void ProcessCommand(IList<string> commandParts, IList<string> commandParams, IInteractor interactor)
+        public bool ProcessCommand(IList<string> commandParts, IList<string> commandParams, IInteractor interactor)
         {
             switch (commandParts[0])
             {
                 case CommandConstants.AddToStartup:
                     AddToStartup(commandParts, commandParams, interactor);
-                    break;
+                    return true;
                 case CommandConstants.Tell:
                     TellMe(commandParts, commandParams, interactor);
-                    break;
+                    return true;
                 case CommandConstants.StartModule:
                     StartModule(commandParts, commandParams, interactor);
-                    break;
+                    return true;
                 case CommandConstants.Open:
                     Open(commandParts, commandParams, interactor);
-                    break;
+                    return true;
                 case CommandConstants.Search:
                     Search(commandParts, commandParams, interactor);
-                    break;
+                    return true;
+                case "exit":
+                    interactor.SendOutput(" >Jarvis: See ya ;)");
+                    Environment.Exit(0);
+                    return false;
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
-                    break;
+                    return true;
             }
         }
 
@@ -60,7 +61,8 @@ namespace Jarvis.Logic.Core.CommandControl
                 case "web":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                     Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParams.Count, 1, InvalidParametersMsg);
-                    WebManager.Instance.WebSearch(commandParams, interactor);
+                    WebManager.Instance.WebSearch(commandParams);
+                    interactor.SendOutput($@"Seraching in web for ""{string.Join(" ", commandParams)}""");
                     break;
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
@@ -76,7 +78,8 @@ namespace Jarvis.Logic.Core.CommandControl
                 case "site":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                     Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParams.Count, 1, InvalidParametersMsg);
-                    WebManager.Instance.OpenSite(commandParams, interactor);
+                    WebManager.Instance.OpenSite(commandParams);
+                    interactor.SendOutput($"{commandParams[0]} opened with Firefox.");
                     break;
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
@@ -96,7 +99,16 @@ namespace Jarvis.Logic.Core.CommandControl
                     break;
                 case ModuleName.Encryptor:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    EncryptorModule.Instance.Start(interactor);
+                    
+                    Process secondProc = new Process();
+                    secondProc.StartInfo.FileName = GlobalConstants.EncryptorPath;
+                    secondProc.Start();
+
+                    //foreach (var process in Process.GetProcessesByName("Jarvis.Encryptor"))
+                    //{
+                    //    process.Kill();
+                    //}
+
                     break;
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);

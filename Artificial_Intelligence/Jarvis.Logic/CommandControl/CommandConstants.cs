@@ -1,4 +1,4 @@
-﻿namespace Jarvis.Logic.Core.Providers.Commands
+﻿namespace Jarvis.Logic.CommandControl
 {
     internal class CommandConstants
     {
