@@ -4,7 +4,7 @@ namespace Jarvis.Logic.Interaction.Interfaces
 {
     public interface IInputReceiveble
     {
-        string RecieveInput(CoomandContainer coomandContainer);
+        string RecieveInput();
         //Task<string> RecieveInput();
     }
 }

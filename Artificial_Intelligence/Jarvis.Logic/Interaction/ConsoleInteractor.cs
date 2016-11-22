@@ -12,10 +12,10 @@ namespace Jarvis.Logic.Interaction
         //{
             
         //}
-        public string RecieveInput(CoomandContainer coomandContainer)
+        public string RecieveInput()
         {
             var command = Console.ReadLine();
-            coomandContainer.CommandList.Add(command);
+            CommandContainer.Instance.AddCommand(command);
             return command;
         }
 

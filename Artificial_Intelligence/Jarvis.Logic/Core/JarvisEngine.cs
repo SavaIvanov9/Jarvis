@@ -15,7 +15,6 @@ namespace Jarvis.Logic.Core
         private readonly IDecisionTaker _decisionTaker;
         //private readonly IDataBase data;
         private readonly VoiceController _voiceController;
-        private CoomandContainer _coomandContainer = new CoomandContainer();
         public string commandLine = "";
         private bool _isAlive = true;
 
@@ -23,7 +22,7 @@ namespace Jarvis.Logic.Core
         {
             this._interactor = interactor;
             this._decisionTaker = decisionTaker;
-            this._voiceController = new VoiceController(interactor, _coomandContainer);
+            this._voiceController = new VoiceController(interactor);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -46,32 +45,34 @@ namespace Jarvis.Logic.Core
         {
             //Console.Title = "Jarvis";
 
-            _interactor.SendOutput(" >Jarvis: Hi, I am Jarvis");
-            _voiceController.Speak("Hi, I am Jarvis");
+            //_interactor.SendOutput(" >Jarvis: Hi, I am Jarvis");
+            //_voiceController.Speak("Hi, I am Jarvis");
             
+            CommandProcessor.Instance.Start(_interactor);
             _voiceController.StartListening();
             //StayAlive();
             
-            commandLine = _interactor.RecieveInput(_coomandContainer);
+            commandLine = _interactor.RecieveInput();
             
-            while (_isAlive)
-            {
-                //_voiceController.StopListening();
-                try
-                {
-                    var commandSegments = _interactor.ParseInput(commandLine);
-                    _isAlive = CommandProcessor.Instance.ProcessCommand(commandSegments.Item1, commandSegments.Item2, _interactor);
-                }
-                catch (Exception ex)
-                {
-                    _interactor.SendOutput(ex.ToString());
-                }
-                finally
-                {
-                    //_voiceController.StartListening();
-                    commandLine = _interactor.RecieveInput(_coomandContainer);
-                }
-            }
+            StayAlive();
+            //while (_isAlive)
+            //{
+            //    //_voiceController.StopListening();
+            //    try
+            //    {
+            //        //var commandSegments = _interactor.ParseInput(commandLine);
+            //        CommandProcessor.Instance.Start(commandLine, _interactor);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        _interactor.SendOutput(ex.ToString());
+            //    }
+            //    finally
+            //    {
+            //        //_voiceController.StartListening();
+            //        commandLine = _interactor.RecieveInput();
+            //    }
+            //}
 
             
             _interactor.SendOutput("See ya ;)");

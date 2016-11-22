@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Jarvis.Commons.Utilities;
 using Jarvis.Data;
+using Jarvis.Logic.Interaction;
 using Jarvis.Logic.Interaction.Interfaces;
 using Jarvis.RegistryEditor;
 using Jarvis.SecureDesktop;
@@ -15,41 +16,63 @@ namespace Jarvis.Logic.CommandControl
         private static readonly Lazy<CommandProcessor> Lazy =
             new Lazy<CommandProcessor>(() => new CommandProcessor());
 
+        private IInteractor _interactor = new ConsoleInteractor();
         private const string CommandNotFoundMsg = "Command not found.";
         private const string InvalidParametersMsg = "Invalid Parameters.";
 
         private CommandProcessor()
         {
+            CommandContainer.Instance.OnNewCommand += ProcessCommand;
         }
 
         public static CommandProcessor Instance => Lazy.Value;
 
-        public bool ProcessCommand(IList<string> commandParts, IList<string> commandParams, IInteractor interactor)
+        public void Start(IInteractor interactor)
         {
+            this._interactor = interactor;
+            ProcessCommand(CommandConstants.Initialize);
+        }
+
+        public void ProcessCommand(string command)
+        {
+            var commandSegments = _interactor.ParseInput(command);
+            IList<string> commandParts = commandSegments.Item1;
+            IList<string> commandParams = commandSegments.Item2;
+
             switch (commandParts[0])
             {
+                case CommandConstants.Initialize:
+                    _interactor.SendOutput(" >Jarvis: Hi, I am Jarvis");
+                    break;
                 case CommandConstants.AddToStartup:
-                    AddToStartup(commandParts, commandParams, interactor);
-                    return true;
+                    AddToStartup(commandParts, commandParams, _interactor);
+                    break;
+                    //return true;
                 case CommandConstants.Tell:
-                    TellMe(commandParts, commandParams, interactor);
-                    return true;
+                    TellMe(commandParts, commandParams, _interactor);
+                    break;
+                    //return true;
                 case CommandConstants.StartModule:
-                    StartModule(commandParts, commandParams, interactor);
-                    return true;
+                    StartModule(commandParts, commandParams, _interactor);
+                    break;
+                    //return true;
                 case CommandConstants.Open:
-                    Open(commandParts, commandParams, interactor);
-                    return true;
+                    Open(commandParts, commandParams, _interactor);
+                    break;
+                    //return true;
                 case CommandConstants.Search:
-                    Search(commandParts, commandParams, interactor);
-                    return true;
-                case "exit":
-                    interactor.SendOutput(" >Jarvis: See ya ;)");
+                    Search(commandParts, commandParams, _interactor);
+                    break;
+                    //return true;
+                case CommandConstants.Exit:
+                    _interactor.SendOutput(" >Jarvis: See ya ;)");
                     Environment.Exit(0);
-                    return false;
+                    break;
+                    //return false;
                 default:
-                    interactor.SendOutput(CommandNotFoundMsg);
-                    return true;
+                    _interactor.SendOutput(CommandNotFoundMsg);
+                    break;
+                    //return true;
             }
         }
 

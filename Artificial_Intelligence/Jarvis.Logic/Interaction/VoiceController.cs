@@ -10,7 +10,6 @@ namespace Jarvis.Logic.Interaction
 {
     public class VoiceController
     {
-        private CoomandContainer _coomandContainer;
         private readonly IInteractor _interactor;
         private SpeechSynthesizer Synth = new SpeechSynthesizer();
         private PromptBuilder PBuilder = new PromptBuilder();
@@ -32,10 +31,9 @@ namespace Jarvis.Logic.Interaction
             //"close"
         };
 
-        public VoiceController(IInteractor interactor, CoomandContainer coomandContainer)
+        public VoiceController(IInteractor interactor)
         {
             this._interactor = interactor;
-            this._coomandContainer = coomandContainer;
         }
 
         public string RecieveInput()
@@ -112,8 +110,9 @@ namespace Jarvis.Logic.Interaction
             {
                 if (currentInput == sList[c])
                 {
-                    //_coomandContainer.CommandList.Add(currentInput);
-                    CommandProcessor.Instance.ProcessCommand(shits.Item1, shits.Item2, _interactor);
+                    CommandContainer.Instance.AddCommand(currentInput);
+                    
+                    //CommandProcessor.Instance.ProcessCommand(shits.Item1, shits.Item2, _interactor);
                     //SendKeys.SendWait(currentInput);
                     //SendKeys.SendWait(Environment.NewLine);
                 }
