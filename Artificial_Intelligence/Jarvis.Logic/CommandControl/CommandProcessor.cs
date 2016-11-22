@@ -191,9 +191,9 @@ namespace Jarvis.Logic.CommandControl
                     Validator.Instance.ValidateIsUnderOrEqualMax(
                         commandParts.Count, 2, CommandNotFoundMsg);
                     interactor.SendOutput(
-                        MockedDb.Instance.Jokes[
+                        FakeDb.Instance.Jokes[
                             Utility.Instance.RandomNumber(
-                                0, MockedDb.Instance.Jokes.Count - 1)]);
+                                0, FakeDb.Instance.Jokes.Count - 1)]);
                     break;
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);

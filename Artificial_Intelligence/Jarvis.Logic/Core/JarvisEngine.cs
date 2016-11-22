@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Jarvis.Logic.CommandControl;
@@ -10,79 +11,87 @@ namespace Jarvis.Logic.Core
 {
     public class JarvisEngine
     {
-        
-        private readonly IInteractor _interactor;
+
+        private readonly IInteractor _interactor = new ConsoleInteractor();
         private readonly IDecisionTaker _decisionTaker;
+        private readonly InteractorManager _interactorManager;
         //private readonly IDataBase data;
-        private readonly VoiceController _voiceController;
+        private readonly VoiceInteractor _voiceController;
         public string commandLine = "";
         private bool _isAlive = true;
+        
 
-        private JarvisEngine(IInteractor interactor, IDecisionTaker decisionTaker)
+        private JarvisEngine(InteractorManager manager)
         {
-            this._interactor = interactor;
-            this._decisionTaker = decisionTaker;
-            this._voiceController = new VoiceController(interactor);
+            this._interactorManager = manager;
+            //this._interactor = interactor;
+            //this._decisionTaker = decisionTaker;
+            this._voiceController = new VoiceInteractor();
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static JarvisEngine Instance(IInteractor interactor, IDecisionTaker decisionTaker)
+        public static JarvisEngine Instance(InteractorManager manager)
         {
-            if (interactor == null)
+            if (manager.Interactors.Count == 0)
             {
-                throw new ArgumentNullException($"Interactor module cannot be null.");
+                throw new InvalidEnumArgumentException($"Interactors cannot be 0!");
             }
 
-            if (decisionTaker == null)
-            {
-                throw new ArgumentNullException($"Decision Taker module cannot be null.");
-            }
-
-            return new JarvisEngine(interactor, decisionTaker);
+            return new JarvisEngine(manager);
         }
 
         public void Start()
         {
-            //Console.Title = "Jarvis";
 
-            //_interactor.SendOutput(" >Jarvis: Hi, I am Jarvis");
-            //_voiceController.Speak("Hi, I am Jarvis");
-            
-            CommandProcessor.Instance.Start(_interactor);
-            _voiceController.StartListening();
-            //StayAlive();
-            
-            commandLine = _interactor.RecieveInput();
-            
-            StayAlive();
-            //while (_isAlive)
-            //{
-            //    //_voiceController.StopListening();
-            //    try
-            //    {
-            //        //var commandSegments = _interactor.ParseInput(commandLine);
-            //        CommandProcessor.Instance.Start(commandLine, _interactor);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _interactor.SendOutput(ex.ToString());
-            //    }
-            //    finally
-            //    {
-            //        //_voiceController.StartListening();
-            //        commandLine = _interactor.RecieveInput();
-            //    }
-            //}
+            try
+            {
+                //Console.Title = "Jarvis";
 
-            
-            _interactor.SendOutput("See ya ;)");
+                //_interactor.SendOutput(" >Jarvis: Hi, I am Jarvis");
+                //_voiceController.Speak("Hi, I am Jarvis");
+
+                CommandProcessor.Instance.Start(_interactor);
+                StartInteractors();
+
+                StayAlive(_interactor);
+                //while (_isAlive)
+                //{
+                //    //_voiceController.StopListening();
+                //    try
+                //    {
+                //        //var commandSegments = _interactor.ParseInput(commandLine);
+                //        CommandProcessor.Instance.Start(commandLine, _interactor);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        _interactor.SendOutput(ex.ToString());
+                //    }
+                //    finally
+                //    {
+                //        //_voiceController.StartListening();
+                //        commandLine = _interactor.RecieveInput();
+                //    }
+                //}
+            }
+            catch (Exception ex)
+            {
+                _interactor.SendOutput(ex.ToString());
+            }
         }
 
-        private void StayAlive()
+        private void StartInteractors()
+        {
+            foreach (var interactor in _interactorManager.Interactors)
+            {
+                interactor.Start();
+            }
+        }
+
+        private void StayAlive(IInteractor interactor)
         {
             while (true)
             {
-                
+                interactor.RecieveInput();
             }
         }
     }

@@ -2,5 +2,6 @@
 {
     public interface IInteractor : IInputReceiveble, IInputParseable, IOutputSendable
     {
+        void Start();
     }
 }

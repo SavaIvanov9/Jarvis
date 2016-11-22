@@ -84,7 +84,7 @@
     <Compile Include="Interaction\Interfaces\IInputReceiveble.cs" />
     <Compile Include="Interaction\Interfaces\IInteractor.cs" />
     <Compile Include="Interaction\Interfaces\IOutputSendable.cs" />
-    <Compile Include="Interaction\VoiceController.cs" />
+    <Compile Include="Interaction\VoiceInteractor.cs" />
     <Compile Include="Launcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

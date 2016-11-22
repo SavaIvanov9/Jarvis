@@ -50,5 +50,10 @@ namespace Jarvis.Logic.Interaction
         {
             Console.WriteLine(output);
         }
+
+        public void Start()
+        {
+            RecieveInput();
+        }
     }
 }

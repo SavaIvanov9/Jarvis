@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Jarvis.Data
 {
-    public sealed class MockedDb
+    public sealed class FakeDb
     {
-        private static readonly Lazy<MockedDb> Lazy =
-            new Lazy<MockedDb>(() => new MockedDb());
+        private static readonly Lazy<FakeDb> Lazy =
+            new Lazy<FakeDb>(() => new FakeDb());
 
         private IList<string> _jokes = new List<string>
         {
@@ -20,11 +20,11 @@ namespace Jarvis.Data
             "My Grandpa once said, \"Your generation relies too much on technology!\"\r\nI replied, \"No, your generation relies too much on technology!\"\r\nThen I unplugged his life support."
         };
 
-        private MockedDb()
+        private FakeDb()
         {
         }
 
-        public static MockedDb Instance => Lazy.Value;
+        public static FakeDb Instance => Lazy.Value;
 
         public IList<string> Jokes
         {

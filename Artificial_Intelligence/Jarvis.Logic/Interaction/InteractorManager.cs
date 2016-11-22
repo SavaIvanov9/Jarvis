@@ -19,5 +19,10 @@ namespace Jarvis.Logic.Interaction
                 interactor.SendOutput(message);
             }
         }
+
+        public List<IInteractor> Interactors
+        {
+            get { return this._interactors; }
+        }
     }
 }

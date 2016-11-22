@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Speech.Recognition;
 using System.Speech.Synthesis;
@@ -8,9 +9,9 @@ using Jarvis.Logic.Interaction.Interfaces;
 
 namespace Jarvis.Logic.Interaction
 {
-    public class VoiceController
+    public class VoiceInteractor : IInteractor
     {
-        private readonly IInteractor _interactor;
+        //private readonly IInteractor _interactor;
         private SpeechSynthesizer Synth = new SpeechSynthesizer();
         private PromptBuilder PBuilder = new PromptBuilder();
         private SpeechRecognitionEngine Engine = new SpeechRecognitionEngine();
@@ -31,11 +32,6 @@ namespace Jarvis.Logic.Interaction
             //"close"
         };
 
-        public VoiceController(IInteractor interactor)
-        {
-            this._interactor = interactor;
-        }
-
         public string RecieveInput()
         {
             return currentInput;
@@ -43,19 +39,36 @@ namespace Jarvis.Logic.Interaction
 
         public Tuple<IList<string>, IList<string>> ParseInput(string inputLine)
         {
-            throw new NotImplementedException();
+            IList<string> commandSegments = inputLine
+                .Split(new[] { ": " }, StringSplitOptions.None)
+                .ToList();
+
+            IList<string> commandParts = commandSegments[0]
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
+
+            if (commandSegments.Count > 1)
+            {
+                IList<string> commandParams = commandSegments[1]
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
+
+                return new Tuple<IList<string>, IList<string>>(commandParts, commandParams);
+            }
+
+            return new Tuple<IList<string>, IList<string>>(commandParts, new List<string>());
         }
 
         public void SendOutput(string output)
         {
-            throw new NotImplementedException();
+            PBuilder.ClearContent();
+            PBuilder.AppendText(output);
+            Synth.Speak(PBuilder);
         }
 
-        public void Speak(string Message)
+        public void Start()
         {
-            PBuilder.ClearContent();
-            PBuilder.AppendText(Message);
-            Synth.Speak(PBuilder);
+            StartListening();
         }
 
         public void StartListening()
@@ -101,9 +114,9 @@ namespace Jarvis.Logic.Interaction
             currentInput = e.Result.Text;
             //JarvisEngine.Instance(new ConsoleInteractor(), new DecisionTaker()).commandLine = e.Result.Text;
             //Console.WriteLine(e.Result.Text.ToString());
-            Speak(e.Result.Text);
+            SendOutput(e.Result.Text);
             
-            var shits = _interactor.ParseInput(currentInput);
+            var shits = ParseInput(currentInput);
             //CommandProcessor.Instance.ProcessCommand(shits.Item1, shits.Item2, _interactor);
 
             for (int c = 0; c < sList.Count; c++)
