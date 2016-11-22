@@ -12,9 +12,9 @@ namespace Jarvis.Logic.CommandControl
 
         private static readonly Lazy<CommandContainer> Lazy =
             new Lazy<CommandContainer>(() => new CommandContainer());
-
+        private IList<string> CommandList = new List<string>();
         public static CommandContainer Instance => Lazy.Value;
-
+        
         private void OnAdd(string value)
         {
             if (OnNewCommand != null)
@@ -22,9 +22,7 @@ namespace Jarvis.Logic.CommandControl
                 OnNewCommand(value);
             }
         }
-
-        private IList<string> CommandList = new List<string>();
-
+        
         public void AddCommand(ILogger logger, string command)
         {
             CommandList.Add(command);

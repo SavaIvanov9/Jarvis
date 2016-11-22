@@ -5,6 +5,7 @@ using System.Linq;
 using Jarvis.Commons.Utilities;
 using Jarvis.Data;
 using Jarvis.Logic.Interaction;
+using Jarvis.Logic.Interaction.Interfaces;
 using Jarvis.RegistryEditor;
 using Jarvis.SecureDesktop;
 using Jarvis.Web;
@@ -16,7 +17,7 @@ namespace Jarvis.Logic.CommandControl
         private static readonly Lazy<CommandProcessor> Lazy =
             new Lazy<CommandProcessor>(() => new CommandProcessor());
 
-        private InteractorManager _interactorManager;
+        private IInteractorManager _interactorManager;
         private const string CommandNotFoundMsg = "Command not found.";
         private const string InvalidParametersMsg = "Invalid Parameters.";
 
@@ -27,7 +28,7 @@ namespace Jarvis.Logic.CommandControl
 
         public static CommandProcessor Instance => Lazy.Value;
 
-        public void Start(InteractorManager interactorManager)
+        public void Start(IInteractorManager interactorManager)
         {
             this._interactorManager = interactorManager;
             ProcessCommand(CommandConstants.Initialize);
@@ -101,7 +102,7 @@ namespace Jarvis.Logic.CommandControl
             return new Tuple<IList<string>, IList<string>>(commandParts, new List<string>());
         }
 
-        public void Search(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
+        public void Search(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -118,7 +119,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        public void Open(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
+        public void Open(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -135,7 +136,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        public void StartModule(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
+        public void StartModule(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -159,7 +160,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        private void StopProcess(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
+        private void StopProcess(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -174,7 +175,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        private void TellMe(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
+        private void TellMe(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(
                 commandParts.Count, 2, CommandNotFoundMsg);
@@ -236,7 +237,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        private void AddToStartup(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
+        private void AddToStartup(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 1, CommandNotFoundMsg);
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParams.Count, 1, InvalidParametersMsg);

@@ -15,17 +15,17 @@ namespace Jarvis.Logic.Core
 {
     public class JarvisEngine
     {
-        private readonly InteractorManager _interactorManager;
+        private readonly IInteractorManager _interactorManager;
         private readonly ILogger _logger;
 
-        private JarvisEngine(InteractorManager manager, ILogger logger)
+        private JarvisEngine(IInteractorManager manager, ILogger logger)
         {
             this._interactorManager = manager;
             this._logger = logger;
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static JarvisEngine Instance(InteractorManager manager, ILogger logger)
+        public static JarvisEngine Instance(IInteractorManager manager, ILogger logger)
         {
             if (manager.Interactors.Count == 0)
             {
@@ -51,27 +51,22 @@ namespace Jarvis.Logic.Core
         {
             try
             {
+                _interactorManager.StartInteractors();
                 //_interactorManager.Interactors[1].Start();
-                StartInteractors(_interactorManager);
-
+                //StartInteractors(_interactorManager);
+                
                 StayAlive();
             }
             catch (Exception ex)
             {
-                _interactorManager.SendOutput(ex.ToString());
+                _logger.Log(ex.ToString());
+                //_interactorManager.SendOutput(ex.Message);
+                //_interactorManager.SendOutput(ex.ToString());
                 //_interactorManager.Interactors[0].SendOutput(ex.ToString());
             }
             finally
             {
                 LiveMyEvilCreation();
-            }
-        }
-
-        private void StartInteractors(InteractorManager interactorManager)
-        {
-            for (int i = 0; i < interactorManager.Interactors.Count; i++)
-            {
-                new Thread(interactorManager.Interactors[i].Start).Start();
             }
         }
 

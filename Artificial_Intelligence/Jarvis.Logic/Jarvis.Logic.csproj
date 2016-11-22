@@ -83,6 +83,7 @@
     <Compile Include="Interaction\Interfaces\IInputParseable.cs" />
     <Compile Include="Interaction\Interfaces\IInputReceiveble.cs" />
     <Compile Include="Interaction\Interfaces\IInteractor.cs" />
+    <Compile Include="Interaction\Interfaces\IInteractorManager.cs" />
     <Compile Include="Interaction\Interfaces\IOutputSendable.cs" />
     <Compile Include="Interaction\VoiceInteractor.cs" />
     <Compile Include="Launcher.cs" />

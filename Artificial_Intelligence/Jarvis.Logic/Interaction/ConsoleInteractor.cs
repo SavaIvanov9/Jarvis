@@ -10,7 +10,7 @@ namespace Jarvis.Logic.Interaction
 {
     public class ConsoleInteractor : IInteractor
     {
-        private ILogger _logger;
+        private readonly ILogger _logger;
 
         public ConsoleInteractor(ILogger logger)
         {
