@@ -65,7 +65,7 @@ namespace Jarvis.Logic.CommandControl
                         Search(commandParts, commandParams, _interactorManager);
                         break;
                     case CommandConstants.Exit:
-                        _interactorManager.SendOutput("See you.");
+                        _interactorManager.SendOutput("See you mother fucker.");
                         Environment.Exit(0);
                         break;
                     default:

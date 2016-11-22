@@ -11,9 +11,6 @@ namespace Jarvis.Encryptor
         private static  Lazy<EncryptorModule> Lazy =
             new Lazy<EncryptorModule>(() => new EncryptorModule());
 
-        private readonly TextWriter _writer = Console.Out;
-        private readonly TextReader _reader = Console.In;
-
         private EncryptorModule()
         {
             Console.Title = "Jarvis Encryptor";

@@ -34,6 +34,7 @@ namespace Jarvis.Logic.Interaction
         {
             "run encryptor",
             "stop encryptor",
+            "tell joke",
             "exit"
             //"exit",
             //"how are you",
