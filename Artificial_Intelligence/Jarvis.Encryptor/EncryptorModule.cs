@@ -16,6 +16,9 @@ namespace Jarvis.Encryptor
 
         private EncryptorModule()
         {
+            Console.Title = "Jarvis Encryptor";
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.BackgroundColor = ConsoleColor.Black;
         }
 
         public static EncryptorModule Instance

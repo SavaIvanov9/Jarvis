@@ -55,6 +55,9 @@ namespace Jarvis.Logic.CommandControl
                     case CommandConstants.StartModule:
                         StartModule(commandParts, commandParams, _interactorManager);
                         break;
+                    case CommandConstants.Stop:
+                        StopProcess(commandParts, commandParams, _interactorManager);
+                        break;
                     case CommandConstants.Open:
                         Open(commandParts, commandParams, _interactorManager);
                         break;
@@ -148,15 +151,25 @@ namespace Jarvis.Logic.CommandControl
                     Process secondProc = new Process();
                     secondProc.StartInfo.FileName = GlobalConstants.EncryptorPath;
                     secondProc.Start();
-
-                    //foreach (var process in Process.GetProcessesByName("Jarvis.Encryptor"))
-                    //{
-                    //    process.Kill();
-                    //}
-
+                    
                     break;
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
+                    break;
+            }
+        }
+
+        private void StopProcess(IList<string> commandParts, IList<string> commandParams, InteractorManager interactor)
+        {
+            Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
+            switch (commandParts[1])
+            {
+                case ModuleName.Encryptor:
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    foreach (var process in Process.GetProcessesByName("Jarvis.Encryptor"))
+                    {
+                        process.Kill();
+                    }
                     break;
             }
         }
