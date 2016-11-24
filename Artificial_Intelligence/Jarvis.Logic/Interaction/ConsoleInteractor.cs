@@ -48,7 +48,7 @@ namespace Jarvis.Logic.Interaction
             return new Tuple<IList<string>, IList<string>>(commandParts, new List<string>());
         }
 
-        public void SendOutput(string output)
+        public void SendOutput(string output, bool isAsync)
         {
             Console.WriteLine("  >Jarvis: " + output);
         }

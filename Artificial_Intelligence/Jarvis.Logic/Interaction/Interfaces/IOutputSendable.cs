@@ -2,6 +2,6 @@
 {
     public interface IOutputSendable
     {
-        void SendOutput(string output);
+        void SendOutput(string output, bool isAsync = true);
     }
 }

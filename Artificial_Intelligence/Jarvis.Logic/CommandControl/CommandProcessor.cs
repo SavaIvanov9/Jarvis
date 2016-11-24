@@ -75,6 +75,7 @@ namespace Jarvis.Logic.CommandControl
                 case ModuleName.SecureDesktop:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                     StartProcess(GlobalConstants.SecureDesktopPath);
+                    //SecureDesktopModule.Instance.Start();
                     interactor.SendOutput("Securing password started.");
                     break;
                 case ModuleName.Encryptor:
@@ -204,8 +205,8 @@ namespace Jarvis.Logic.CommandControl
 
         public void Exit(IInteractorManager interactorManager)
         {
-            interactorManager.SendOutput("See you mother fucker.");
-            Thread.Sleep(1500);
+            interactorManager.SendOutput("See ya mother fucker!", false);
+            //Thread.Sleep(1500);
             Environment.Exit(0);
         }
     }

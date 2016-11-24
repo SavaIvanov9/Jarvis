@@ -76,12 +76,32 @@ namespace Jarvis.Logic.Interaction
             return new Tuple<IList<string>, IList<string>>(commandParts, new List<string>());
         }
 
-        public void SendOutput(string output)
+        public void SendOutput(string output, bool isAsync)
         {
-            _speechSynth.SpeakAsyncCancelAll();
-            _promptBuilder.ClearContent();
-            _promptBuilder.AppendText(output);
-            _speechSynth.SpeakAsync(_promptBuilder);
+            try
+            {
+                _speechSynth.SelectVoice("Microsoft David Desktop");
+                //_logger.Log("Voice set to Microsoft David Desktop");
+            }
+            catch 
+            {
+                _logger.Log("Voice set to default.");
+            }
+
+            if (isAsync)
+            {
+                _speechSynth.SpeakAsyncCancelAll();
+                _promptBuilder.ClearContent();
+                _promptBuilder.AppendText(output);
+                _speechSynth.SpeakAsync(_promptBuilder);
+            }
+            else
+            {
+                _promptBuilder.ClearContent();
+                _promptBuilder.AppendText(output);
+                _speechSynth.Speak(_promptBuilder);
+            }
+
         }
 
         public void Stop()
@@ -119,12 +139,24 @@ namespace Jarvis.Logic.Interaction
 
         private void SetCurrentInput(object sender, SpeechRecognizedEventArgs e)
         {
-            //_currentInput = e.Result.Text;
-            //var input = _currentInput;
-            //var input = e.Result.Text;
+            
             var input = e.Result.Text.Substring(7, e.Result.Text.Length - 7);
-            SendOutput("Ccommand " + input);
-            //SendOutput("Command " + input + " identified");
+            //SendOutput("Command " + input);
+
+            ////----------Uncoment for speaking comad log--------------------
+            //try
+            //{
+            //    _speechSynth.SelectVoice("Microsoft David Desktop");
+            //}
+            //catch
+            //{
+            //}
+            //_speechSynth.SpeakAsyncCancelAll();
+            //_promptBuilder.ClearContent();
+            //_promptBuilder.AppendText("Command " + input + " identified");
+            //_speechSynth.Speak(_promptBuilder);
+            ////------------------------------------------------------------
+            
             for (int c = 0; c < _sList.Count; c++)
             {
                 if (input == _sList[c])

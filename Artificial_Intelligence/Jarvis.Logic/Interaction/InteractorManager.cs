@@ -13,11 +13,11 @@ namespace Jarvis.Logic.Interaction
             _interactors.Add(interactor);
         }
 
-        public void SendOutput(string message)
+        public void SendOutput(string message, bool isAsync)
         {
             foreach (var interactor in _interactors)
             {
-                interactor.SendOutput(message);
+                interactor.SendOutput(message, isAsync);
             }
         }
 

@@ -59,7 +59,10 @@ namespace Jarvis.Logic.CommandControl
                     switch (commandParts[0])
                     {
                         case CommandConstants.Initialize:
-                            _interactorManager.SendOutput("Hi, I am Jarvis.");
+                            //_interactorManager.SendOutput("Hi, I am your virtual A.I. assistant." 
+                            //    + Environment.NewLine + "\t   My name is Jarvis."
+                            //    + Environment.NewLine + "\t   How can I help you?");
+                            _interactorManager.SendOutput("Hi, I am Jarvis, your virtual A.I. assistant. How can I help you?", false);
                             break;
                         case CommandConstants.AddToStartup:
                             CommandProcessor.Instance.AddToStartup(commandParts, commandParams, _interactorManager);
