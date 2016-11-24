@@ -27,6 +27,8 @@ namespace Jarvis.SecureDesktop
             var password = _passwordReceiver.ReceivePassword();
 
             _clipboardProvider.SetTextToClipboard(DataFormats.Text, password);
+            Console.WriteLine("Password saved to clipboard.");
+            Console.ReadKey();
         }
     }
 }

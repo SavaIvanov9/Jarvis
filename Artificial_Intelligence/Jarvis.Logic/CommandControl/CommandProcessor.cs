@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Jarvis.Commons.Utilities;
 using Jarvis.Data;
 using Jarvis.Logic.Interaction;
@@ -14,94 +18,21 @@ namespace Jarvis.Logic.CommandControl
 {
     public sealed class CommandProcessor
     {
-        private static readonly Lazy<CommandProcessor> Lazy =
+        private static readonly Lazy<CommandProcessor> Lazy = 
             new Lazy<CommandProcessor>(() => new CommandProcessor());
 
-        private IInteractorManager _interactorManager;
         private const string CommandNotFoundMsg = "Command not found.";
         private const string InvalidParametersMsg = "Invalid Parameters.";
 
-        private CommandProcessor()
+        public static CommandProcessor Instance
         {
-            CommandContainer.Instance.OnNewCommand += ProcessCommand;
-        }
-
-        public static CommandProcessor Instance => Lazy.Value;
-
-        public void Start(IInteractorManager interactorManager)
-        {
-            this._interactorManager = interactorManager;
-            ProcessCommand(CommandConstants.Initialize);
-        }
-
-        public void ProcessCommand(string command)
-        {
-            if (!string.IsNullOrEmpty(command))
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            get
             {
-                var commandSegments = ParseInput(command);
-                IList<string> commandParts = commandSegments.Item1;
-                IList<string> commandParams = commandSegments.Item2;
-
-                switch (commandParts[0])
-                {
-                    case CommandConstants.Initialize:
-                        _interactorManager.SendOutput("Hi, I am Jarvis.");
-                        break;
-                    case CommandConstants.AddToStartup:
-                        AddToStartup(commandParts, commandParams, _interactorManager);
-                        break;
-                    case CommandConstants.Tell:
-                        TellMe(commandParts, commandParams, _interactorManager);
-                        break;
-                    case CommandConstants.StartModule:
-                        StartModule(commandParts, commandParams, _interactorManager);
-                        break;
-                    case CommandConstants.Stop:
-                        StopProcess(commandParts, commandParams, _interactorManager);
-                        break;
-                    case CommandConstants.Open:
-                        Open(commandParts, commandParams, _interactorManager);
-                        break;
-                    case CommandConstants.Search:
-                        Search(commandParts, commandParams, _interactorManager);
-                        break;
-                    case CommandConstants.Exit:
-                        _interactorManager.SendOutput("See you mother fucker.");
-                        Environment.Exit(0);
-                        break;
-                    default:
-                        _interactorManager.SendOutput(CommandNotFoundMsg);
-                        break;
-                }
+                return Lazy.Value;
             }
-            else
-            {
-                _interactorManager.SendOutput("Command cannot be empty!");
-            }
-        }
-
-        public Tuple<IList<string>, IList<string>> ParseInput(string inputLine)
-        {
-            IList<string> commandSegments = inputLine
-                .Split(new[] { ": " }, StringSplitOptions.None)
-                .ToList();
-
-            IList<string> commandParts = commandSegments[0]
-                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                .ToList();
-
-            if (commandSegments.Count > 1)
-            {
-                IList<string> commandParams = commandSegments[1]
-                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                .ToList();
-
-                return new Tuple<IList<string>, IList<string>>(commandParts, commandParams);
-            }
-
-            return new Tuple<IList<string>, IList<string>>(commandParts, new List<string>());
-        }
-
+        } 
+        
         public void Search(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
@@ -143,16 +74,14 @@ namespace Jarvis.Logic.CommandControl
             {
                 case ModuleName.SecureDesktop:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    SecureDesktopModule.Instance.Start();
-                    interactor.SendOutput("Password saved to clipboard.");
+                    StartProcess(GlobalConstants.SecureDesktopPath);
+                    interactor.SendOutput("Securing password started.");
                     break;
                 case ModuleName.Encryptor:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
-                    Process secondProc = new Process();
-                    secondProc.StartInfo.FileName = GlobalConstants.EncryptorPath;
-                    secondProc.Start();
-                    
+                    StartProcess(GlobalConstants.EncryptorPath);
+                    interactor.SendOutput("Encryptor strarted.");
                     break;
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
@@ -160,7 +89,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        private void StopProcess(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
+        public void StopProcess(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -171,11 +100,12 @@ namespace Jarvis.Logic.CommandControl
                     {
                         process.Kill();
                     }
+                    interactor.SendOutput("Encryptor closed.");
                     break;
             }
         }
 
-        private void TellMe(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
+        public void TellMe(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(
                 commandParts.Count, 2, CommandNotFoundMsg);
@@ -237,7 +167,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        private void AddToStartup(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
+        public void AddToStartup(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 1, CommandNotFoundMsg);
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParams.Count, 1, InvalidParametersMsg);
@@ -254,6 +184,29 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
+        public void StartProcess(string path)
+        {
+            Process secondProc = new Process();
+            secondProc.StartInfo.FileName = path;
+            secondProc.Start();
+        }
 
+        public void Shutup(IInteractorManager interactorManager)
+        {
+            foreach (var interactor in interactorManager.Interactors)
+            {
+                if (interactor.GetType() == typeof(VoiceInteractor))
+                {
+                    interactor.Stop();
+                }
+            }
+        }
+
+        public void Exit(IInteractorManager interactorManager)
+        {
+            interactorManager.SendOutput("See you mother fucker.");
+            Thread.Sleep(1500);
+            Environment.Exit(0);
+        }
     }
 }

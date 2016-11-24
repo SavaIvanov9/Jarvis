@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B7730EE4-50F0-46D8-BC6F-1E165BD67CFE}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Jarvis.SecureDesktop</RootNamespace>
     <AssemblyName>Jarvis.SecureDesktop</AssemblyName>
@@ -52,6 +52,7 @@
     <Compile Include="Enums\DesktopAccess.cs" />
     <Compile Include="Interfaces\IClipboardProvider.cs" />
     <Compile Include="Interfaces\IPasswordReceiver.cs" />
+    <Compile Include="Launcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ClipBoardProvider\ClipBoardProvider.cs" />
     <Compile Include="Providers\ClipBoardProvider\StaHelper.cs" />

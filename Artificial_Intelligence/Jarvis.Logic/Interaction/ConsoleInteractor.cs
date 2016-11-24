@@ -58,5 +58,10 @@ namespace Jarvis.Logic.Interaction
             var command = Console.ReadLine();
             CommandContainer.Instance.AddCommand(_logger, command);
         }
+
+        public void Stop()
+        {
+            
+        }
     }
 }

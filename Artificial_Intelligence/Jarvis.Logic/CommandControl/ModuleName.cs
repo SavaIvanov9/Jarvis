@@ -3,6 +3,6 @@
     internal class ModuleName
     {
         public const string Encryptor = "encryptor";
-        public const string SecureDesktop = "securedesktop";
+        public const string SecureDesktop = "securedpass";
     }
 }

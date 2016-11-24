@@ -71,8 +71,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandControl\CommandConstants.cs" />
-    <Compile Include="CommandControl\CommandProcessor.cs" />
+    <Compile Include="CommandControl\CommandManager.cs" />
     <Compile Include="CommandControl\CommandContainer.cs" />
+    <Compile Include="CommandControl\CommandProcessor.cs" />
     <Compile Include="CommandControl\ModuleName.cs" />
     <Compile Include="Core\DecisionControl\Interfaces\IDecidable.cs" />
     <Compile Include="Core\DecisionControl\Interfaces\IDecisionTaker.cs" />

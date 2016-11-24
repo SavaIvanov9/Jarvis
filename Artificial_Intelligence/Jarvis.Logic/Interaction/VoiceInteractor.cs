@@ -13,9 +13,9 @@ namespace Jarvis.Logic.Interaction
 {
     public class VoiceInteractor : IInteractor
     {
-        private readonly SpeechSynthesizer _synth = new SpeechSynthesizer();
-        private readonly PromptBuilder _pBuilder = new PromptBuilder();
-        private readonly SpeechRecognitionEngine _engine = new SpeechRecognitionEngine();
+        private readonly SpeechSynthesizer _speechSynth = new SpeechSynthesizer();
+        private readonly PromptBuilder _promptBuilder = new PromptBuilder();
+        private readonly SpeechRecognitionEngine _speechRecognition = new SpeechRecognitionEngine();
         private readonly ILogger _logger;
         private string _currentInput = "";
 
@@ -32,8 +32,11 @@ namespace Jarvis.Logic.Interaction
 
         private readonly List<string> _sList = new List<string>()
         {
-            "run encryptor",
-            "stop encryptor",
+            "stop",
+            "shutup",
+            "start encryptor",
+            "close encryptor",
+            "start securedpass",
             "tell joke",
             "exit"
             //"exit",
@@ -75,21 +78,33 @@ namespace Jarvis.Logic.Interaction
 
         public void SendOutput(string output)
         {
-            _pBuilder.ClearContent();
-            _pBuilder.AppendText(output);
-            _synth.Speak(_pBuilder);
+            _speechSynth.SpeakAsyncCancelAll();
+            _promptBuilder.ClearContent();
+            _promptBuilder.AppendText(output);
+            _speechSynth.SpeakAsync(_promptBuilder);
+        }
+
+        public void Stop()
+        {
+            _speechSynth.SpeakAsyncCancelAll();
         }
 
         public void Start()
         {
-            Grammar Gram = new Grammar(new GrammarBuilder(new Choices(_sList.ToArray())));
+            GrammarBuilder findServices = new GrammarBuilder("Jarvis");
+            findServices.Append(new Choices(_sList.ToArray()));
+
+            // Create a Grammar object from the GrammarBuilder and load it to the recognizer.
+            Grammar servicesGrammar = new Grammar(findServices);
+            //Grammar Gram = new Grammar(servicesGrammar);
+            //Grammar Gram = new Grammar(new GrammarBuilder(new Choices(_sList.ToArray())));
             try
             {
-                _engine.RequestRecognizerUpdate();
-                _engine.LoadGrammar(Gram);
-                _engine.SpeechRecognized += SetCurrentInput;
-                _engine.SetInputToDefaultAudioDevice();
-                _engine.RecognizeAsync(RecognizeMode.Multiple);
+                _speechRecognition.RequestRecognizerUpdate();
+                _speechRecognition.LoadGrammar(servicesGrammar);
+                _speechRecognition.SpeechRecognized += SetCurrentInput;
+                _speechRecognition.SetInputToDefaultAudioDevice();
+                _speechRecognition.RecognizeAsync(RecognizeMode.Multiple);
             }
             catch
             {
@@ -99,85 +114,24 @@ namespace Jarvis.Logic.Interaction
 
         public void StopListening()
         {
-            _engine.RecognizeAsyncStop();
+            _speechRecognition.RecognizeAsyncStop();
         }
-
-        [DllImport("User32.dll")]
-        static extern int SetForegroundWindow(IntPtr point);
 
         private void SetCurrentInput(object sender, SpeechRecognizedEventArgs e)
         {
-
-            //Process p = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName)[0];
-            ////Console.WriteLine(p);
-            //IntPtr pointer = p.Handle;
-            //SetForegroundWindow(pointer);
-
-            //Process p = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).FirstOrDefault();
-            //if (p != null)
-            //{
-            //    IntPtr h = p.MainWindowHandle;
-            //    SetForegroundWindow(h);
-            //}
-
-            _currentInput = e.Result.Text;
-            //JarvisEngine.Instance(new ConsoleInteractor(), new DecisionTaker()).commandLine = e.Result.Text;
-            //Console.WriteLine(e.Result.Text.ToString());
-            SendOutput(e.Result.Text);
-            
-            var shits = ParseInput(_currentInput);
-            //CommandProcessor.Instance.ProcessCommand(shits.Item1, shits.Item2, _interactor);
-
+            //_currentInput = e.Result.Text;
+            //var input = _currentInput;
+            //var input = e.Result.Text;
+            var input = e.Result.Text.Substring(7, e.Result.Text.Length - 7);
+            SendOutput("Ccommand " + input);
+            //SendOutput("Command " + input + " identified");
             for (int c = 0; c < _sList.Count; c++)
             {
-                if (_currentInput == _sList[c])
+                if (input == _sList[c])
                 {
-                    CommandContainer.Instance.AddCommand(_logger, _currentInput);
-                    
-                    //CommandProcessor.Instance.ProcessCommand(shits.Item1, shits.Item2, _interactor);
-                    //SendKeys.SendWait(currentInput);
-                    //SendKeys.SendWait(Environment.NewLine);
+                    CommandContainer.Instance.AddCommand(_logger, input);
                 }
             }
-
-            //switch (e.Result.Text.ToString())
-            //{
-            //    case "exit":
-            //        currentInput = "exit";
-            //        break;
-            //    //case "close":
-            //    //    JarvisSpeak("Goodbye sir.");
-            //    //    //Application.Current.Shutdown();
-            //    //    break;
-            //    //case "hello":
-            //    //    JarvisSpeak("Good evening sir.");
-            //    //    break;
-            //    //case "how are you":
-            //    //    JarvisSpeak("Just fine sir.");
-            //    //    break;
-            //    //case "go to internet":
-            //    //    JarvisSpeak("Yes sir.");
-            //    //    Process.Start("http://www.google.bg");
-            //    //    break;
-            //    //case "jarvis i want to play some league":
-            //    //    JarvisSpeak("Ofcourse sir.");
-            //    //    //Process.Start("F:/Games/LoL/lol.launcher.exe");
-            //    //    break;
-            //    //case "whats your favorite movie":
-            //    //    JarvisSpeak("But ofcourse its, Iron Man");
-            //    //    break;
-            //    //case "play me some music":
-            //    //    JarvisSpeak("Yes sir.");
-            //    //    //MPlayer.Open(new Uri(@"../../Sounds/IRsound.mp3", UriKind.Relative));
-            //    //    //MPlayer.Play();
-            //    //    break;
-            //    //case "stop the music":
-            //    //    //MPlayer.Stop();
-            //    //    JarvisSpeak("Anything else sir?");
-            //    //    break;
-            //    default:
-            //        break;
-            //}
         }
     }
 }

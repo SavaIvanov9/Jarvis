@@ -3,5 +3,6 @@
     public interface IInteractor : IInputParseable, IOutputSendable
     {
         void Start();
+        void Stop();
     }
 }

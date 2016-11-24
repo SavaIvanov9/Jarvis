@@ -42,34 +42,11 @@ namespace Jarvis.Logic.Core
 
         public void Start()
         {
-            CommandProcessor.Instance.Start(_interactorManager);
-
-            LiveMyEvilCreation();
+            CommandManager.Instance.Start(_interactorManager, _logger);
+            _interactorManager.StartInteractors();
+            StayAlive();
         }
-
-        private void LiveMyEvilCreation()
-        {
-            try
-            {
-                _interactorManager.StartInteractors();
-                //_interactorManager.Interactors[1].Start();
-                //StartInteractors(_interactorManager);
-                
-                StayAlive();
-            }
-            catch (Exception ex)
-            {
-                _logger.Log(ex.ToString());
-                //_interactorManager.SendOutput(ex.Message);
-                //_interactorManager.SendOutput(ex.ToString());
-                //_interactorManager.Interactors[0].SendOutput(ex.ToString());
-            }
-            finally
-            {
-                LiveMyEvilCreation();
-            }
-        }
-
+        
         private void StayAlive()
         {
             while (true)

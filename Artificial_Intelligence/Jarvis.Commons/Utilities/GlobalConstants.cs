@@ -9,7 +9,9 @@ namespace Jarvis.Commons.Utilities
     public class GlobalConstants
     {
         //Paths
+        public const string SecureDesktopPath =
+            "..\\..\\..\\Jarvis.SecureDesktop\\bin\\Debug\\Jarvis.SecureDesktop.exe";
         public const string EncryptorPath =
-            "C:\\Users\\savat\\Desktop\\Projects\\Artificial_Intelligence\\Jarvis.Encryptor\\bin\\Debug\\Jarvis.Encryptor.exe";
+            "..\\..\\..\\Jarvis.Encryptor\\bin\\Debug\\Jarvis.Encryptor.exe";
     }
 }
