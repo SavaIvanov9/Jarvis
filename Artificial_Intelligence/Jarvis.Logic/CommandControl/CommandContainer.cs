@@ -13,6 +13,7 @@ namespace Jarvis.Logic.CommandControl
         private static readonly Lazy<CommandContainer> Lazy =
             new Lazy<CommandContainer>(() => new CommandContainer());
         private readonly IList<string> _commandList = new List<string>();
+
         public static CommandContainer Instance => Lazy.Value;
         
         private void OnAdd(string value)

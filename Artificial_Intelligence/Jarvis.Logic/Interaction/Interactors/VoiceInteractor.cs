@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Speech.Recognition;
 using System.Speech.Synthesis;
 using Jarvis.Commons.Logger;
 using Jarvis.Logic.CommandControl;
 using Jarvis.Logic.Interaction.Interfaces;
 
-namespace Jarvis.Logic.Interaction
+namespace Jarvis.Logic.Interaction.Interactors
 {
     public class VoiceInteractor : IInteractor
     {
@@ -29,58 +28,17 @@ namespace Jarvis.Logic.Interaction
 
             this._logger = logger;
         }
-
-        private readonly List<string> _sList = new List<string>()
-        {
-            "stop",
-            "shutup",
-            "start encryptor",
-            "close encryptor",
-            "start securedpass",
-            "tell joke",
-            "exit"
-            //"exit",
-            //"how are you",
-            //"go to internet",
-            //"jarvis i want to play some league",
-            //"whats your favorite movie",
-            //"play me some music",
-            //"stop the music",
-            //"close"
-        };
-
+        
         public string RecieveInput()
         {
             return _currentInput;
-        }
-
-        public Tuple<IList<string>, IList<string>> ParseInput(string inputLine)
-        {
-            IList<string> commandSegments = inputLine
-                .Split(new[] { ": " }, StringSplitOptions.None)
-                .ToList();
-
-            IList<string> commandParts = commandSegments[0]
-                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                .ToList();
-
-            if (commandSegments.Count > 1)
-            {
-                IList<string> commandParams = commandSegments[1]
-                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                .ToList();
-
-                return new Tuple<IList<string>, IList<string>>(commandParts, commandParams);
-            }
-
-            return new Tuple<IList<string>, IList<string>>(commandParts, new List<string>());
         }
 
         public void SendOutput(string output, bool isAsync)
         {
             try
             {
-                _speechSynth.SelectVoice("Microsoft David Desktop");
+                //_speechSynth.SelectVoice("Microsoft David Desktop");
                 //_logger.Log("Voice set to Microsoft David Desktop");
             }
             catch 
@@ -112,12 +70,9 @@ namespace Jarvis.Logic.Interaction
         public void Start()
         {
             GrammarBuilder findServices = new GrammarBuilder("Jarvis");
-            findServices.Append(new Choices(_sList.ToArray()));
-
-            // Create a Grammar object from the GrammarBuilder and load it to the recognizer.
+            findServices.Append(new Choices(CommandConstants.AllCommands));
             Grammar servicesGrammar = new Grammar(findServices);
-            //Grammar Gram = new Grammar(servicesGrammar);
-            //Grammar Gram = new Grammar(new GrammarBuilder(new Choices(_sList.ToArray())));
+
             try
             {
                 _speechRecognition.RequestRecognizerUpdate();
@@ -157,9 +112,9 @@ namespace Jarvis.Logic.Interaction
             //_speechSynth.Speak(_promptBuilder);
             ////------------------------------------------------------------
             
-            for (int c = 0; c < _sList.Count; c++)
+            for (int c = 0; c < CommandConstants.AllCommands.Length; c++)
             {
-                if (input == _sList[c])
+                if (input == CommandConstants.AllCommands[c])
                 {
                     CommandContainer.Instance.AddCommand(_logger, input);
                 }

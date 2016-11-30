@@ -1,4 +1,6 @@
-﻿namespace Jarvis.Client
+﻿using Jarvis.Logic.Interaction.Interactors;
+
+namespace Jarvis.Client
 {
     using Logic.Core;
     using Logic.Interaction;

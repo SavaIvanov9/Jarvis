@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Windows.Forms;
 using Jarvis.Commons.Logger;
 using Jarvis.Commons.Utilities;
 using Jarvis.Data;
@@ -62,7 +63,7 @@ namespace Jarvis.Logic.CommandControl
                             //_interactorManager.SendOutput("Hi, I am your virtual A.I. assistant." 
                             //    + Environment.NewLine + "\t   My name is Jarvis."
                             //    + Environment.NewLine + "\t   How can I help you?");
-                            _interactorManager.SendOutput("Hi, I am Jarvis, your virtual A.I. assistant. How can I help you?", false);
+                            _interactorManager.SendOutput("Hi, I am Jarvis, your virtual AI assistant.", false);
                             break;
                         case CommandConstants.AddToStartup:
                             CommandProcessor.Instance.AddToStartup(commandParts, commandParams, _interactorManager);
@@ -74,7 +75,7 @@ namespace Jarvis.Logic.CommandControl
                             CommandProcessor.Instance.StartModule(commandParts, commandParams, _interactorManager);
                             break;
                         case CommandConstants.Close:
-                            CommandProcessor.Instance.StopProcess(commandParts, commandParams, _interactorManager);
+                            CommandProcessor.Instance.Close(commandParts, commandParams, _interactorManager);
                             break;
                         case CommandConstants.Open:
                             CommandProcessor.Instance.Open(commandParts, commandParams, _interactorManager);
@@ -87,6 +88,23 @@ namespace Jarvis.Logic.CommandControl
                             break;
                         case CommandConstants.Exit:
                             CommandProcessor.Instance.Exit(_interactorManager);
+                            break;
+                        case CommandConstants.Show:
+                            Utility.Instance.Show();
+                            _interactorManager.SendOutput("Command window moved to front.");
+                            break;
+                        case CommandConstants.Hide:
+                            Utility.Instance.Hide();
+                            _interactorManager.SendOutput("Command window moved to background");
+                            break;
+
+                        case "nexttab":
+                            SendKeys.SendWait("^{TAB}");
+                            _interactorManager.SendOutput("Moved to next tab.");
+                            break;
+                        case "previoustab":
+                            SendKeys.SendWait("^+{TAB}");
+                            _interactorManager.SendOutput("Moved to previous tab.");
                             break;
                         default:
                             _interactorManager.SendOutput(CommandNotFoundMsg);

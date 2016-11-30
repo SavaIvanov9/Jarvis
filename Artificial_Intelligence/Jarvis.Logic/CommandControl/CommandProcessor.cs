@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Speech.Synthesis.TtsEngine;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Jarvis.Commons.Utilities;
 using Jarvis.Data;
 using Jarvis.Logic.Interaction;
+using Jarvis.Logic.Interaction.Interactors;
 using Jarvis.Logic.Interaction.Interfaces;
 using Jarvis.RegistryEditor;
 using Jarvis.SecureDesktop;
@@ -18,7 +21,7 @@ namespace Jarvis.Logic.CommandControl
 {
     public sealed class CommandProcessor
     {
-        private static readonly Lazy<CommandProcessor> Lazy = 
+        private static readonly Lazy<CommandProcessor> Lazy =
             new Lazy<CommandProcessor>(() => new CommandProcessor());
 
         private const string CommandNotFoundMsg = "Command not found.";
@@ -31,18 +34,27 @@ namespace Jarvis.Logic.CommandControl
             {
                 return Lazy.Value;
             }
-        } 
-        
+        }
+
         public void Search(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
             {
                 case "web":
-                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParams.Count, 1, InvalidParametersMsg);
-                    WebManager.Instance.WebSearch(commandParams);
-                    interactor.SendOutput($@"Seraching in web for ""{string.Join(" ", commandParams)}""");
+                    if (commandParams.Count > 0)
+                    {
+                        Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                        Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParams.Count, 1, InvalidParametersMsg);
+                        WebManager.Instance.WebSearch(commandParams);
+                        interactor.SendOutput($@"Searching in web for ""{string.Join(" ", commandParams)}""");
+                    }
+                    else
+                    {
+                        Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                        WebManager.Instance.OpenSite(new List<string>() { "google.com" });
+                        interactor.SendOutput($@"Searching in web.");
+                    }
                     break;
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
@@ -60,6 +72,28 @@ namespace Jarvis.Logic.CommandControl
                     Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParams.Count, 1, InvalidParametersMsg);
                     WebManager.Instance.OpenSite(commandParams);
                     interactor.SendOutput($"{commandParams[0]} opened with Firefox.");
+                    break;
+                case "google":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    Process.Start("firefox.exe", "http://www.google.com");
+                    interactor.SendOutput("Google opened.");
+                    //secondProc.StartInfo;
+                    //secondProc.Start();
+
+                    //WebManager.Instance.OpenSite(new List<string>() {"google.com"});
+                    //interactor.SendOutput($@"Google opened.");
+                    break;
+                case "youtube":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    Process.Start("firefox.exe", "http://www.youtube.com");
+                    interactor.SendOutput("Youtube opened.");
+                    //secondProc.StartInfo;
+                    //secondProc.Start();
+
+                    //WebManager.Instance.OpenSite(new List<string>() {"google.com"});
+                    //interactor.SendOutput($@"Google opened.");
                     break;
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
@@ -90,7 +124,20 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        public void StopProcess(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
+        //public void Close(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
+        //{
+        //    if(commandParts.Count > )
+        //    switch (commandParts[1])
+        //    {
+        //        case "google":
+        //            System.Windows.Forms.SendKeys("^w");
+        //            break;
+
+        //    }
+        //    //System.Windows.Forms.SendKeys("^w")
+        //}
+
+        public void Close(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -103,6 +150,12 @@ namespace Jarvis.Logic.CommandControl
                     }
                     interactor.SendOutput("Encryptor closed.");
                     break;
+                case "tab":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    SendKeys.SendWait("^w");
+                    interactor.SendOutput("Tab closed.");
+                    break;
+
             }
         }
 
@@ -205,6 +258,7 @@ namespace Jarvis.Logic.CommandControl
 
         public void Exit(IInteractorManager interactorManager)
         {
+            Shutup(interactorManager);
             interactorManager.SendOutput("See ya mother fucker!", false);
             //Thread.Sleep(1500);
             Environment.Exit(0);

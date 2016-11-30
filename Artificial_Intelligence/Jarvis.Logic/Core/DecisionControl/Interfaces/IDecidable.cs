@@ -1,4 +1,4 @@
-﻿namespace Jarvis.Logic.Core.Interfaces.Decisions
+﻿namespace Jarvis.Logic.Core.DecisionControl.Interfaces
 {
     public interface IDecidable
     {

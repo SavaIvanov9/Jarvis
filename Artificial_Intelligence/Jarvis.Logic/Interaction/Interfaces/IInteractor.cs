@@ -1,8 +1,9 @@
 ﻿namespace Jarvis.Logic.Interaction.Interfaces
 {
-    public interface IInteractor : IInputParseable, IOutputSendable
+    public interface IInteractor : IOutputSendable
     {
         void Start();
+
         void Stop();
     }
 }

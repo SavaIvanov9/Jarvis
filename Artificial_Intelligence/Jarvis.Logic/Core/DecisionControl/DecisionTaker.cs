@@ -1,5 +1,5 @@
 ﻿using System;
-using Jarvis.Logic.Core.Interfaces.Decisions;
+using Jarvis.Logic.Core.DecisionControl.Interfaces;
 
 namespace Jarvis.Logic.Core.Providers.Decisions
 {

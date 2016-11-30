@@ -1,4 +1,6 @@
-﻿namespace Jarvis.Logic
+﻿using Jarvis.Logic.Interaction.Interactors;
+
+namespace Jarvis.Logic
 {
     using Core;
     using Interaction;

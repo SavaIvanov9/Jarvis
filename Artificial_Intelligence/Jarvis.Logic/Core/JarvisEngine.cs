@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using Jarvis.Commons.Logger;
 using Jarvis.Commons.Utilities;
 using Jarvis.Logic.CommandControl;
-using Jarvis.Logic.Core.Interfaces.Decisions;
 using Jarvis.Logic.Interaction;
 using Jarvis.Logic.Interaction.Interfaces;
 
@@ -15,6 +14,7 @@ namespace Jarvis.Logic.Core
 {
     public class JarvisEngine
     {
+        private readonly ManualResetEvent _quitEvent = new ManualResetEvent(false);
         private readonly IInteractorManager _interactorManager;
         private readonly ILogger _logger;
 
@@ -46,13 +46,19 @@ namespace Jarvis.Logic.Core
             _interactorManager.StartInteractors();
             StayAlive();
         }
-        
+
         private void StayAlive()
         {
-            while (true)
+            Console.CancelKeyPress += (sender, eArgs) =>
             {
-                _interactorManager.Interactors[0].Start();
-            }
+                _quitEvent.Set();
+                eArgs.Cancel = true;
+            };
+
+            _quitEvent.WaitOne();
+
+            //Alternative effect
+            //Application.Run();
         }
     }
 }
