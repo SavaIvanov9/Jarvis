@@ -6,19 +6,24 @@ using System.Speech.Recognition;
 using System.Speech.Synthesis;
 using Jarvis.Commons.Logger;
 using Jarvis.Logic.CommandControl;
+using Jarvis.Logic.CommandControl.Constants;
 using Jarvis.Logic.Interaction.Interfaces;
 
 namespace Jarvis.Logic.Interaction.Interactors
 {
     public class VoiceInteractor : IInteractor
     {
-        private readonly SpeechSynthesizer _speechSynth = new SpeechSynthesizer();
+        private readonly SpeechSynthesizer _speaker = new SpeechSynthesizer();
         private readonly PromptBuilder _promptBuilder = new PromptBuilder();
-        private readonly SpeechRecognitionEngine _speechRecognition = new SpeechRecognitionEngine();
+        private readonly SpeechRecognitionEngine _listener =
+            new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
         private readonly ILogger _logger;
-        private string _currentInput = "";
 
-
+        //private readonly ILogger _logger;
+        //private readonly PromptBuilder _promptBuilder = new PromptBuilder();
+        //private SpeechSynthesizer _speaker;
+        //private SpeechRecognitionEngine _listener;
+        
         public VoiceInteractor(ILogger logger)
         {
             if (logger == null)
@@ -29,76 +34,80 @@ namespace Jarvis.Logic.Interaction.Interactors
             this._logger = logger;
         }
         
-        public string RecieveInput()
-        {
-            return _currentInput;
-        }
-
         public void SendOutput(string output, bool isAsync)
         {
-            try
-            {
-                //_speechSynth.SelectVoice("Microsoft David Desktop");
-                //_logger.Log("Voice set to Microsoft David Desktop");
-            }
-            catch 
-            {
-                _logger.Log("Voice set to default.");
-            }
+            //using (_speaker = new SpeechSynthesizer())
+            //{
+                try
+                {
+                    //_speaker.SelectVoice("Microsoft David Desktop");
+                    //_logger.Log("Voice set to Microsoft David Desktop");
+                }
+                catch
+                {
+                    _logger.Log("Voice set to default.");
+                }
 
-            if (isAsync)
-            {
-                _speechSynth.SpeakAsyncCancelAll();
-                _promptBuilder.ClearContent();
-                _promptBuilder.AppendText(output);
-                _speechSynth.SpeakAsync(_promptBuilder);
-            }
-            else
-            {
-                _promptBuilder.ClearContent();
-                _promptBuilder.AppendText(output);
-                _speechSynth.Speak(_promptBuilder);
-            }
+                if (isAsync)
+                {
+                    _speaker.SpeakAsyncCancelAll();
+                    _promptBuilder.ClearContent();
+                    _promptBuilder.AppendText(output);
+                    _speaker.SpeakAsync(_promptBuilder);
+                }
+                else
+                {
+                    _promptBuilder.ClearContent();
+                    _promptBuilder.AppendText(output);
+                    _speaker.Speak(_promptBuilder);
+                }
+            //}
+        }
 
+        public void Pause()
+        {
+            _speaker.SpeakAsyncCancelAll();
         }
 
         public void Stop()
         {
-            _speechSynth.SpeakAsyncCancelAll();
+            _listener.RecognizeAsyncStop();
+            _listener.UnloadAllGrammars();
+            _listener.Dispose();
+            _speaker.Dispose();
         }
 
         public void Start()
         {
-            GrammarBuilder findServices = new GrammarBuilder("Jarvis");
-            findServices.Append(new Choices(CommandConstants.AllCommands));
-            Grammar servicesGrammar = new Grammar(findServices);
+            //using (_listener = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US")))
+            //{
+                GrammarBuilder findServices = new GrammarBuilder("Jarvis");
+                findServices.Append(new Choices(CommandConstants.AllCommands));
+                Grammar servicesGrammar = new Grammar(findServices);
 
-            try
-            {
-                _speechRecognition.RequestRecognizerUpdate();
-                _speechRecognition.LoadGrammar(servicesGrammar);
-                _speechRecognition.SpeechRecognized += SetCurrentInput;
-                _speechRecognition.SetInputToDefaultAudioDevice();
-                _speechRecognition.RecognizeAsync(RecognizeMode.Multiple);
-            }
-            catch
-            {
-                return;
-            }
+                try
+                {
+                    _listener.RequestRecognizerUpdate();
+                    _listener.LoadGrammar(servicesGrammar);
+                    _listener.SpeechRecognized += SetCurrentInput;
+                    _listener.SetInputToDefaultAudioDevice();
+                    _listener.RecognizeAsync(RecognizeMode.Multiple);
+                }
+                catch
+                {
+                    return;
+                }
+            //}
         }
-
-        public void StopListening()
-        {
-            _speechRecognition.RecognizeAsyncStop();
-        }
-
+        
         private void SetCurrentInput(object sender, SpeechRecognizedEventArgs e)
         {
             
             var input = e.Result.Text.Substring(7, e.Result.Text.Length - 7);
             //SendOutput("Command " + input);
 
-            ////----------Uncoment for speaking comad log--------------------
+
+            ////----------Uncoment for speaking command log--------------------
             //try
             //{
             //    _speechSynth.SelectVoice("Microsoft David Desktop");
@@ -110,8 +119,9 @@ namespace Jarvis.Logic.Interaction.Interactors
             //_promptBuilder.ClearContent();
             //_promptBuilder.AppendText("Command " + input + " identified");
             //_speechSynth.Speak(_promptBuilder);
-            ////------------------------------------------------------------
+            ////---------------------------------------------------------------
             
+
             for (int c = 0; c < CommandConstants.AllCommands.Length; c++)
             {
                 if (input == CommandConstants.AllCommands[c])

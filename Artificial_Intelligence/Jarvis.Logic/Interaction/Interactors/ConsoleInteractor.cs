@@ -41,6 +41,11 @@ namespace Jarvis.Logic.Interaction.Interactors
             }
         }
 
+        public void Pause()
+        {
+            
+        }
+
         public void Stop()
         {
             _isAlive = false;

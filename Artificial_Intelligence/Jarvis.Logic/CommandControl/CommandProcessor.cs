@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Jarvis.Commons.Utilities;
 using Jarvis.Data;
+using Jarvis.Logic.CommandControl.Constants;
 using Jarvis.Logic.Interaction;
 using Jarvis.Logic.Interaction.Interactors;
 using Jarvis.Logic.Interaction.Interfaces;
@@ -103,20 +104,27 @@ namespace Jarvis.Logic.CommandControl
 
         public void StartModule(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
+            //string hui = CommandConstants.ModuleNames["SecureDesktop"];
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
             {
                 case ModuleName.SecureDesktop:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    StartProcess(GlobalConstants.SecureDesktopPath);
-                    //SecureDesktopModule.Instance.Start();
+
+                    Process.Start(CommandConstants.SecureDesktopPath);
                     interactor.SendOutput("Securing password started.");
                     break;
                 case ModuleName.Encryptor:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
-                    StartProcess(GlobalConstants.EncryptorPath);
+                    Process.Start(CommandConstants.EncryptorPath);
                     interactor.SendOutput("Encryptor strarted.");
+                    break;
+                case ModuleName.MovementDetection:
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    Process.Start(CommandConstants.MovementDetectionPath);
+                    interactor.SendOutput("Movement detection strarted.");
                     break;
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
@@ -144,11 +152,19 @@ namespace Jarvis.Logic.CommandControl
             {
                 case ModuleName.Encryptor:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    foreach (var process in Process.GetProcessesByName("Jarvis.Encryptor"))
+                    foreach (var process in Process.GetProcessesByName(CommandConstants.EncryptorFile))
                     {
                         process.Kill();
                     }
                     interactor.SendOutput("Encryptor closed.");
+                    break;
+                case ModuleName.MovementDetection:
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    foreach (var process in Process.GetProcessesByName(CommandConstants.MovementDetectionFile))
+                    {
+                        process.Kill();
+                    }
+                    interactor.SendOutput("Movement detection closed.");
                     break;
                 case "tab":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
@@ -251,7 +267,7 @@ namespace Jarvis.Logic.CommandControl
             {
                 if (interactor.GetType() == typeof(VoiceInteractor))
                 {
-                    interactor.Stop();
+                    interactor.Pause();
                 }
             }
         }
@@ -260,7 +276,7 @@ namespace Jarvis.Logic.CommandControl
         {
             Shutup(interactorManager);
             interactorManager.SendOutput("See ya mother fucker!", false);
-            //Thread.Sleep(1500);
+            interactorManager.StopInteractors();
             Environment.Exit(0);
         }
     }

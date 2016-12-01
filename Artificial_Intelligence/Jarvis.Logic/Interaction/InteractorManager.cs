@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Jarvis.Logic.Interaction.Interfaces;
 
@@ -7,6 +8,7 @@ namespace Jarvis.Logic.Interaction
     public class InteractorManager : IInteractorManager
     {
         private readonly List<IInteractor> _interactors = new List<IInteractor>();
+        private List<Thread> _activeInteractors = new List<Thread>();
 
         public void AddInteractor(IInteractor interactor)
         {
@@ -30,7 +32,24 @@ namespace Jarvis.Logic.Interaction
         {
             for (int i = 0; i < _interactors.Count; i++)
             {
-                new Thread(_interactors[i].Start).Start();
+                var thread = new Thread(_interactors[i].Start);
+                _activeInteractors.Add(thread);
+                thread.Start();
+                //new Thread(_interactors[i].Start).Start();
+            }
+        }
+
+        public void StopInteractors()
+        {
+            foreach (var interactor in _interactors)
+            {
+                interactor.Stop();
+            }
+
+            foreach (var thread in _activeInteractors)
+            {
+                thread.Abort();
+
             }
         }
     }

@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{67A0A6B7-014
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jarvis.Web", "Jarvis.Web\Jarvis.Web.csproj", "{AA1B4217-8974-40C0-81E4-658E962C20A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jarvis.MovementDetection", "Jarvis.MovementDetection\Jarvis.MovementDetection.csproj", "{47C10B44-5D6B-4B3C-8177-DECF17E0D523}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{AA1B4217-8974-40C0-81E4-658E962C20A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA1B4217-8974-40C0-81E4-658E962C20A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA1B4217-8974-40C0-81E4-658E962C20A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47C10B44-5D6B-4B3C-8177-DECF17E0D523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47C10B44-5D6B-4B3C-8177-DECF17E0D523}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47C10B44-5D6B-4B3C-8177-DECF17E0D523}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47C10B44-5D6B-4B3C-8177-DECF17E0D523}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,5 +96,6 @@ Global
 		{CD50BEBA-7E95-480A-8867-3EA8E638C818} = {736C3F68-F501-4751-9B0B-65BEB28E1386}
 		{67A0A6B7-014B-414A-BD65-B43F665AF8C2} = {B5EA80A6-D3BF-49A8-BF09-8F27575863CC}
 		{AA1B4217-8974-40C0-81E4-658E962C20A1} = {67A0A6B7-014B-414A-BD65-B43F665AF8C2}
+		{47C10B44-5D6B-4B3C-8177-DECF17E0D523} = {0C96D714-A869-46A7-98F1-B615C342F58B}
 	EndGlobalSection
 EndGlobal

@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Jarvis.Commons.Logger;
 using Jarvis.Commons.Utilities;
 using Jarvis.Data;
+using Jarvis.Logic.CommandControl.Constants;
 using Jarvis.Logic.Interaction;
 using Jarvis.Logic.Interaction.Interfaces;
 using Jarvis.RegistryEditor;
@@ -106,6 +107,9 @@ namespace Jarvis.Logic.CommandControl
                             SendKeys.SendWait("^+{TAB}");
                             _interactorManager.SendOutput("Moved to previous tab.");
                             break;
+                        //case "hi":
+                        //    _interactorManager.StopInteractors();
+                        //    break;
                         default:
                             _interactorManager.SendOutput(CommandNotFoundMsg);
                             break;

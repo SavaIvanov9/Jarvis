@@ -4,6 +4,8 @@
     {
         void Start();
 
+        void Pause();
+
         void Stop();
     }
 }
