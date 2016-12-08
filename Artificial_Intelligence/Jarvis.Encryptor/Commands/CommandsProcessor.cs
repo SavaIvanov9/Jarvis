@@ -12,9 +12,11 @@ namespace Jarvis.Encryptor.Commands
     {
         private readonly TextWriter _writer;
         private readonly TextReader _reader;
+        private static readonly object ConsoleWriterLock = new object();
 
         private CommandProcessor(TextWriter writer, TextReader reader)
         {
+            CommandContainer.Instance.OnNewCommand += ProcessCommand;
             this._writer = writer;
             this._reader = reader;
         }
@@ -25,30 +27,36 @@ namespace Jarvis.Encryptor.Commands
         }
 
         public void ProcessCommand(string command)
-        {                                          
-            switch (command)
+        {
+            lock (ConsoleWriterLock)
             {
-                case Constants.Help:
-                    this.DisplayCommands();
-                    break;
-                case Constants.EncryptString:
-                    this.EncryptString();
-                    break;
-                case Constants.DecryptStryng:
-                    this.DecryptString();
-                    break;
-                case Constants.EncryptTxtFile:
-                    this.EncryptTxtFile();
-                    break;
-                case Constants.DecryptTxtFile:
-                    this.DecryptTxtFile();
-                    break;
-                case Constants.ClearConsole:
-                    this.ClearConsole();
-                    break;
-                default:
-                    _writer.WriteLine(@"Unknown command. Type ""help"" for a list of commands.");
-                    break;
+                switch (command)
+                {
+                    case Constants.Help:
+                        this.DisplayCommands();
+                        break;
+                    case Constants.EncryptString:
+                        this.EncryptString();
+                        break;
+                    case Constants.DecryptStryng:
+                        this.DecryptString();
+                        break;
+                    case Constants.EncryptTxtFile:
+                        this.EncryptTxtFile();
+                        break;
+                    case Constants.DecryptTxtFile:
+                        this.DecryptTxtFile();
+                        break;
+                    case Constants.ClearConsole:
+                        this.ClearConsole();
+                        break;
+                    case Constants.Exit:
+                        this.Exit();
+                        break;
+                    default:
+                        _writer.WriteLine(@"Unknown command. Type ""help"" for a list of commands.");
+                        break;
+                }
             }
         }
 
@@ -318,7 +326,7 @@ namespace Jarvis.Encryptor.Commands
                                            "clear - Clears console" + Environment.NewLine +
                                            "stop-encryptor" + Environment.NewLine +
                                            "------------------------------------------");
-            _writer.WriteLine(commandsDescription.ToString());
+            _writer.Write(commandsDescription.ToString());
         }
 
         private void ClearConsole()
@@ -344,6 +352,12 @@ namespace Jarvis.Encryptor.Commands
             string[] fileNames = filePaths.Select(x => x.Substring(x.LastIndexOf(@"\", StringComparison.Ordinal) + 1)).ToArray();
 
             return fileNames.Contains(file);
+        }
+
+        private void Exit()
+        {
+            _writer.WriteLine("Encryptor stoped.");
+            Environment.Exit(0);
         }
     }
 }

@@ -39,6 +39,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,10 +49,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cipher.cs" />
+    <Compile Include="CommandReceiving\ExternalReceiver.cs" />
+    <Compile Include="CommandReceiving\StreamManager.cs" />
+    <Compile Include="Commands\CommandContainer.cs" />
     <Compile Include="Commands\CommandsProcessor.cs" />
     <Compile Include="Commands\Constants.cs" />
     <Compile Include="EncryptorModule.cs" />
     <Compile Include="Launcher.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

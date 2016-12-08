@@ -60,7 +60,7 @@ namespace Jarvis.MovementDetection
             Console.WriteLine("Alarm activation log:");
             for (int i = 0; i < voiceController.AlarmLog.Count; i++)
             {
-                Console.WriteLine($"{i} >> {voiceController.AlarmLog[i]}");
+                Console.WriteLine($"{i + 1} >> {voiceController.AlarmLog[i]}");
             }
             Console.ReadKey();
         }

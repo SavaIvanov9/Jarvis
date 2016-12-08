@@ -1,4 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Threading;
+using Jarvis.Encryptor.CommandReceiving;
+using System.Windows.Forms;
 
 namespace Jarvis.Encryptor
 {
@@ -8,7 +11,7 @@ namespace Jarvis.Encryptor
 
     public sealed class EncryptorModule
     {
-        private static  Lazy<EncryptorModule> Lazy =
+        private static Lazy<EncryptorModule> Lazy =
             new Lazy<EncryptorModule>(() => new EncryptorModule());
 
         private EncryptorModule()
@@ -24,40 +27,46 @@ namespace Jarvis.Encryptor
             {
                 return Lazy.Value;
             }
-        } 
+        }
 
         public void Start(TextWriter writer, TextReader reader)
         {
-            writer.WriteLine("Encryptor started. Enter command:");
-            var command = reader.ReadLine();
+            writer.WriteLine("Encryptor started.");
+            CommandProcessor.Instance(writer, reader).ProcessCommand("help");
 
-            while (command != "stop encryptor")
+            ExternalReceiver receiver = new ExternalReceiver(writer);
+            writer.WriteLine("Started listening for connection to server for external commands...\n");
+            new Thread(receiver.Start).Start();
+
+            writer.WriteLine("Enter command:");
+            //var command = reader.ReadLine();
+
+            new Thread((() =>
             {
-                if (!string.IsNullOrEmpty(command))
+                while (true)
                 {
-                    try
-                    {
-                        CommandProcessor.Instance(writer, reader).ProcessCommand(command);
-                    }
-                    catch (FileNotFoundException)
-                    {
-                        writer.WriteLine("File not found.");
-                    }
-                    catch (Exception ex)
-                    {
-                        writer.WriteLine(ex.ToString());
-                    }
+                    var command = reader.ReadLine();
+                    CommandContainer.Instance.AddCommand(command, writer);
                 }
-                else
-                {
-                    writer.WriteLine(@"Unknown command. Type ""help"" for a list of commands.");
-                }
+            })).Start();
+            //while (command != "close encryptor")
+            //{
+            //    try
+            //    {
+            //        //CommandProcessor.Instance(writer, reader).ProcessCommand(command);
+            //        CommandContainer.Instance.AddCommand(command, writer);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        writer.WriteLine(ex.ToString());
+            //    }
 
-                writer.WriteLine("Enter command:");
-                command = reader.ReadLine();
-            }
+            //    writer.WriteLine("Enter command:");
+            //    command = reader.ReadLine();
+            //}
+            Application.Run();
 
-            writer.WriteLine("Encryptor stoped.");
+            //writer.WriteLine("Encryptor stoped.");
         }
     }
 }
