@@ -49,8 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cipher.cs" />
-    <Compile Include="CommandReceiving\ExternalReceiver.cs" />
-    <Compile Include="CommandReceiving\StreamManager.cs" />
+    <Compile Include="ProcessCommunication\CommunicationClient.cs" />
+    <Compile Include="ProcessCommunication\StreamManager.cs" />
     <Compile Include="Commands\CommandContainer.cs" />
     <Compile Include="Commands\CommandsProcessor.cs" />
     <Compile Include="Commands\Constants.cs" />

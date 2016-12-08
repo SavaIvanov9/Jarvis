@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Jarvis.Encryptor.Commands;
 
-namespace Jarvis.Encryptor.CommandReceiving
+namespace Jarvis.Encryptor.ProcessCommunication
 {
     public class StreamManager
     {

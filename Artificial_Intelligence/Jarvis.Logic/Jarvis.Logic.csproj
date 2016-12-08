@@ -93,6 +93,9 @@
     <Compile Include="Interaction\Interactors\VoiceInteractor.cs" />
     <Compile Include="Interaction\Interfaces\IOutputSendable.cs" />
     <Compile Include="Launcher.cs" />
+    <Compile Include="ProcessCommunication\CommunicationServer.cs" />
+    <Compile Include="ProcessCommunication\ComunicationManager.cs" />
+    <Compile Include="ProcessCommunication\StreamManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

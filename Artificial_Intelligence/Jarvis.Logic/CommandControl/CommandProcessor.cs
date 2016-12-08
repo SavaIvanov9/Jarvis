@@ -14,6 +14,7 @@ using Jarvis.Logic.CommandControl.Constants;
 using Jarvis.Logic.Interaction;
 using Jarvis.Logic.Interaction.Interactors;
 using Jarvis.Logic.Interaction.Interfaces;
+using Jarvis.Logic.ProcessCommunication;
 using Jarvis.RegistryEditor;
 using Jarvis.SecureDesktop;
 using Jarvis.Web;
@@ -117,6 +118,20 @@ namespace Jarvis.Logic.CommandControl
                 case ModuleName.Encryptor:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
+                    //var serverThread = new Thread((() =>
+                    //{
+                    //    CommunicationServer server = new CommunicationServer("EncryptorPipe", "Some password");
+                    //    server.Start();
+                    //}));
+                    //serverThread.Start();
+
+                    //CommunicationServer server = new CommunicationServer("EncryptorPipe", "Some password");
+                    //server.Start();
+
+                    //int i = ComunicationManager.Instance.AddServer("EncryptorPipe", "Some password");
+                    ComunicationManager.Instance.StartServer(
+                        ComunicationManager.Instance.AddServer("EncryptorPipe", "Some password"));
+
                     Process.Start(CommandConstants.EncryptorPath);
                     interactor.SendOutput("Encryptor strarted.");
                     break;
@@ -154,6 +169,7 @@ namespace Jarvis.Logic.CommandControl
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                     foreach (var process in Process.GetProcessesByName(CommandConstants.EncryptorFile))
                     {
+                        ComunicationManager.Instance.StopServer(0);
                         process.Kill();
                     }
                     interactor.SendOutput("Encryptor closed.");

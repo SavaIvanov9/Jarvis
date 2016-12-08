@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.IO.Pipes;
-using System.Linq;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Jarvis.Encryptor.CommandReceiving
+namespace Jarvis.Encryptor.ProcessCommunication
 {
-    public class ExternalReceiver
+    public class CommunicationClient
     {
         private TextWriter _writer;
 
-        public ExternalReceiver(TextWriter writer)
+        public CommunicationClient(TextWriter writer)
         {
             this._writer = writer;
         }
@@ -33,7 +28,7 @@ namespace Jarvis.Encryptor.CommandReceiving
 
             StreamManager streamManager = new StreamManager(pipeClient, _writer);
 
-            if (streamManager.ReadString() == "Some password string.")
+            if (streamManager.ReadString() == "Some password")
             {
                 streamManager.StartListeningForNewCommand();
             }

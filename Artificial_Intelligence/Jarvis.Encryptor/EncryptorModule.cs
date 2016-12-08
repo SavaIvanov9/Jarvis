@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading;
-using Jarvis.Encryptor.CommandReceiving;
 using System.Windows.Forms;
+using Jarvis.Encryptor.ProcessCommunication;
 
 namespace Jarvis.Encryptor
 {
@@ -34,7 +34,7 @@ namespace Jarvis.Encryptor
             writer.WriteLine("Encryptor started.");
             CommandProcessor.Instance(writer, reader).ProcessCommand("help");
 
-            ExternalReceiver receiver = new ExternalReceiver(writer);
+            CommunicationClient receiver = new CommunicationClient(writer);
             writer.WriteLine("Started listening for connection to server for external commands...\n");
             new Thread(receiver.Start).Start();
 
