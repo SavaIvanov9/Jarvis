@@ -31,42 +31,50 @@ namespace Jarvis.Encryptor
 
         public void Start(TextWriter writer, TextReader reader)
         {
-            writer.WriteLine("Encryptor started.");
-            CommandProcessor.Instance(writer, reader).ProcessCommand("help");
-
-            CommunicationClient receiver = new CommunicationClient(writer);
-            writer.WriteLine("Started listening for connection to server for external commands...\n");
-            new Thread(receiver.Start).Start();
-
-            writer.WriteLine("Enter command:");
-            //var command = reader.ReadLine();
-
-            new Thread((() =>
+            try
             {
-                while (true)
+                writer.WriteLine("Encryptor started.");
+                CommandProcessor.Instance(writer, reader).ProcessCommand("help");
+
+                CommunicationClient receiver = new CommunicationClient(writer);
+                writer.WriteLine("Started listening for connection to server for external commands...\n");
+                new Thread(receiver.Start).Start();
+
+                writer.WriteLine("Enter command:");
+                //var command = reader.ReadLine();
+
+                new Thread((() =>
                 {
-                    var command = reader.ReadLine();
-                    CommandContainer.Instance.AddCommand(command, writer);
-                }
-            })).Start();
-            //while (command != "close encryptor")
-            //{
-            //    try
-            //    {
-            //        //CommandProcessor.Instance(writer, reader).ProcessCommand(command);
-            //        CommandContainer.Instance.AddCommand(command, writer);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        writer.WriteLine(ex.ToString());
-            //    }
+                    while (true)
+                    {
+                        var command = reader.ReadLine();
+                        CommandContainer.Instance.AddCommand(command, writer);
+                    }
+                })).Start();
+                //while (command != "close encryptor")
+                //{
+                //    try
+                //    {
+                //        //CommandProcessor.Instance(writer, reader).ProcessCommand(command);
+                //        CommandContainer.Instance.AddCommand(command, writer);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        writer.WriteLine(ex.ToString());
+                //    }
 
-            //    writer.WriteLine("Enter command:");
-            //    command = reader.ReadLine();
-            //}
-            Application.Run();
+                //    writer.WriteLine("Enter command:");
+                //    command = reader.ReadLine();
+                //}
 
-            //writer.WriteLine("Encryptor stoped.");
+                Application.Run();
+
+                //writer.WriteLine("Encryptor stoped.");
+            }
+            catch (Exception ex)
+            {
+                writer.WriteLine(ex);
+            }
         }
     }
 }

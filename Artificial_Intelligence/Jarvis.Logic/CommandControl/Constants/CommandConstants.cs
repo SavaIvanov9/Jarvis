@@ -13,6 +13,7 @@
         public const string Show = "gotofront";
         public const string Hide = "gotobackground";
         public const string Exit = "exit";
+        public const string Gom = "gom";
 
         public static readonly string[] AllCommands =
         {
@@ -34,7 +35,11 @@
             "gotobackground",
             "gotofront",
             "stop",
-            "exit"
+            "exit",
+
+            "gom pause",
+            "gom back",
+            "gom next"
         };
 
         public const string SecureDesktopPath =

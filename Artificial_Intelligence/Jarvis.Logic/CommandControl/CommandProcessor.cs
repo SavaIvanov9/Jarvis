@@ -170,6 +170,7 @@ namespace Jarvis.Logic.CommandControl
                     foreach (var process in Process.GetProcessesByName(CommandConstants.EncryptorFile))
                     {
                         ComunicationManager.Instance.StopServer(0);
+                        Thread.Sleep(1000);
                         process.Kill();
                     }
                     interactor.SendOutput("Encryptor closed.");
@@ -288,10 +289,34 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
+        public void Gom(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactorManager)
+        {
+            Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
+            switch (commandParts[1])
+            {
+                case "pause":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    SendKeys.SendWait(" ");
+                    //interactorManager.SendOutput("Gom paused");
+                    break;
+                case "back":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    SendKeys.SendWait("{LEFT}");
+                    //interactorManager.SendOutput("Gom back");
+                    break;
+                case "next":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    SendKeys.SendWait("{RIGHT}");
+                    //interactorManager.SendOutput("Gom next");
+                    break;
+            }
+        }
+
         public void Exit(IInteractorManager interactorManager)
         {
+            ComunicationManager.Instance.StopAllServers();
             Shutup(interactorManager);
-            interactorManager.SendOutput("See ya mother fucker!", false);
+            interactorManager.SendOutput("See ya soon!", false);
             interactorManager.StopInteractors();
             Environment.Exit(0);
         }

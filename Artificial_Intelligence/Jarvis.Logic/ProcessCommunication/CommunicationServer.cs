@@ -9,7 +9,8 @@ namespace Jarvis.Logic.ProcessCommunication
     {
         private readonly string _serverName;
         private readonly string _connectionPassword;
-        private NamedPipeServerStream pipeServer;
+        private NamedPipeServerStream _pipeServer;
+        private StreamManager ss;
 
         public CommunicationServer(string serverName, string connectionPassword, OnExit onExit)
         {
@@ -21,75 +22,30 @@ namespace Jarvis.Logic.ProcessCommunication
 
         private void ExitServer()
         {
-            Console.WriteLine("izlizai beeee");
-            pipeServer.Close();
+            //ss.WriteString("stop connection to server");
+            Console.WriteLine($"{_serverName} server closed.");
+            
+            _pipeServer.Dispose();
         }
 
         public void Start()
         {
-            Console.WriteLine("Server started. W8ing for clients...");
+            Console.WriteLine("Server started. Waiting for clients to connect...");
 
-            pipeServer = new NamedPipeServerStream(
+            _pipeServer = new NamedPipeServerStream(
                 _serverName, PipeDirection.InOut);
 
             int threadId = Thread.CurrentThread.ManagedThreadId;
 
-            // Wait for a client to connect
-            //new Thread((() =>
-            //{
-            pipeServer.WaitForConnection();
-
-            //})).Start();
-
-            //new Thread((() =>
-            //{
-            //    int len = 0;
-            //    len = pipeServer.ReadByte() * 256;
-            //    len += pipeServer.ReadByte();
-            //    byte[] inBuffer = new byte[len];
-                
-                
-            //    while (true)
-            //    {
-            //        try
-            //        {
-            //            pipeServer.BeginRead(inBuffer, 0, len, OnAsyncMessage, null);
-
-            //            //if (pipeServer.IsConnected)
-            //            //{
-
-            //            //}
-            //            //else
-            //            //{
-            //            //    throw new Exception("hui");
-            //            //}
-            //        }
-            //        catch (Exception)
-            //        {
-            //            Console.WriteLine("server closed maika ti da eba");
-            //            pipeServer.Close();
-            //            break;
-            //        }
-
-            //        //if (pipeServer.IsConnected)
-            //        //{
-
-            //        //}
-            //        //else
-            //        //{
-            //        //    pipeServer.Close();
-            //        //    Console.WriteLine("server closed");
-            //        //    break;
-            //        //}
-            //    }
-            //})).Start();
-
-            Console.WriteLine($"Client [{pipeServer.GetImpersonationUserName()}] connected on thread[{threadId}].");
+            _pipeServer.WaitForConnection();
+            
             try
             {
                 // Read the request from the client. Once the client has
                 // written to the pipe its security token will be available.
-                StreamManager ss = new StreamManager(pipeServer);
+                ss = new StreamManager(_pipeServer);
+
+                Console.WriteLine($"Client[{ss.ReadString()}] connected to server[{_serverName}] on thread[{threadId}].");
 
                 // Verify our identity to the connected client using a
                 // string that the client anticipates.
@@ -113,12 +69,12 @@ namespace Jarvis.Logic.ProcessCommunication
                 Console.WriteLine("ERROR: {0}", e.Message);
             }
             Console.WriteLine("closing ur ass");
-            pipeServer.Close();
+            _pipeServer.Close();
         }
 
         private void OnAsyncMessage(IAsyncResult result)
         {
-            Int32 bytesRead = pipeServer.EndRead(result);
+            Int32 bytesRead = _pipeServer.EndRead(result);
             if (bytesRead != 0)
             {
                 // good times -- process the message
@@ -126,7 +82,7 @@ namespace Jarvis.Logic.ProcessCommunication
             else
             {
                 // pipe disconnected, right?!? NOPE!
-                pipeServer.Close();
+                _pipeServer.Close();
                 throw new Exception();
             }
 

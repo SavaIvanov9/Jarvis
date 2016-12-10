@@ -99,6 +99,10 @@ namespace Jarvis.Logic.CommandControl
                             _interactorManager.SendOutput("Command window moved to background");
                             break;
 
+                        case CommandConstants.Gom:
+                            CommandProcessor.Instance.Gom(commandParts, commandParams, _interactorManager);
+                            break;
+
                         case "nexttab":
                             SendKeys.SendWait("^{TAB}");
                             _interactorManager.SendOutput("Moved to next tab.");

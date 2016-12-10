@@ -65,5 +65,13 @@ namespace Jarvis.Logic.ProcessCommunication
             //_servers[index].Item2.Abort();
             //_servers[index].Item2.Join();
         }
+
+        public void StopAllServers()
+        {
+            foreach (var server in _servers)
+            {
+                OnExit();
+            }
+        }
     }
 }
