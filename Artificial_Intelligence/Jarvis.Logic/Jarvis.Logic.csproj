@@ -95,6 +95,7 @@
     <Compile Include="Launcher.cs" />
     <Compile Include="ProcessCommunication\CommunicationServer.cs" />
     <Compile Include="ProcessCommunication\ComunicationManager.cs" />
+    <Compile Include="ProcessCommunication\KeySender.cs" />
     <Compile Include="ProcessCommunication\StreamManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

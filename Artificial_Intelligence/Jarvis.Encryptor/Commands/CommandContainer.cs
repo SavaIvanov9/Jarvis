@@ -31,7 +31,7 @@ namespace Jarvis.Encryptor.Commands
         public void AddCommand(string command, TextWriter writer)
         {
             _commandList.Add(command);
-            writer.WriteLine(command);
+            //writer.WriteLine(command);
             OnAdd(command);
         }
     }

@@ -11,6 +11,7 @@ using Jarvis.Data;
 using Jarvis.Logic.CommandControl.Constants;
 using Jarvis.Logic.Interaction;
 using Jarvis.Logic.Interaction.Interfaces;
+using Jarvis.Logic.ProcessCommunication;
 using Jarvis.RegistryEditor;
 using Jarvis.SecureDesktop;
 using Jarvis.Web;
@@ -54,6 +55,11 @@ namespace Jarvis.Logic.CommandControl
             {
                 if (!string.IsNullOrEmpty(command))
                 {
+                    //if (Encryptor.Commands.EncryptorConstants.ValidChoises.Contains(command))
+                    //{
+                    //    KeySender.Instance.Send(CommandConstants.EncryptorFile, new []{command}, _interactorManager);
+                    //}
+
                     var commandSegments = ParseInput(command);
                     IList<string> commandParts = commandSegments.Item1;
                     IList<string> commandParams = commandSegments.Item2;
@@ -111,9 +117,9 @@ namespace Jarvis.Logic.CommandControl
                             SendKeys.SendWait("^+{TAB}");
                             _interactorManager.SendOutput("Moved to previous tab.");
                             break;
-                        //case "hi":
-                        //    _interactorManager.StopInteractors();
-                        //    break;
+
+                        //case 
+
                         default:
                             _interactorManager.SendOutput(CommandNotFoundMsg);
                             break;

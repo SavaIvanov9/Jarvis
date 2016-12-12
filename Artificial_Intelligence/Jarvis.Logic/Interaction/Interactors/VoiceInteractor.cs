@@ -5,9 +5,10 @@ using System.Linq;
 using System.Speech.Recognition;
 using System.Speech.Synthesis;
 using Jarvis.Commons.Logger;
-using Jarvis.Logic.CommandControl;
+using Jarvis.Encryptor.Commands;
 using Jarvis.Logic.CommandControl.Constants;
 using Jarvis.Logic.Interaction.Interfaces;
+using CommandContainer = Jarvis.Logic.CommandControl.CommandContainer;
 
 namespace Jarvis.Logic.Interaction.Interactors
 {
@@ -83,6 +84,7 @@ namespace Jarvis.Logic.Interaction.Interactors
             //{
                 GrammarBuilder findServices = new GrammarBuilder("Jarvis");
                 findServices.Append(new Choices(CommandConstants.AllCommands));
+                //findServices..Append(new Choices(EncryptorConstants.ValidChoises));
                 Grammar servicesGrammar = new Grammar(findServices);
 
                 try

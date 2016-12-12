@@ -1,6 +1,6 @@
 ﻿namespace Jarvis.Encryptor.Commands
 {
-    internal class Constants
+    public class EncryptorConstants
     {
         public static string[] ValidChoises =
             {

@@ -53,7 +53,7 @@
     <Compile Include="ProcessCommunication\StreamManager.cs" />
     <Compile Include="Commands\CommandContainer.cs" />
     <Compile Include="Commands\CommandsProcessor.cs" />
-    <Compile Include="Commands\Constants.cs" />
+    <Compile Include="Commands\EncryptorConstants.cs" />
     <Compile Include="EncryptorModule.cs" />
     <Compile Include="Launcher.cs" />
     <Compile Include="Logger.cs" />

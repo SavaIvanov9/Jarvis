@@ -36,21 +36,21 @@ namespace Jarvis.Encryptor
                 writer.WriteLine("Encryptor started.");
                 CommandProcessor.Instance(writer, reader).ProcessCommand("help");
 
-                CommunicationClient receiver = new CommunicationClient(writer);
-                writer.WriteLine("Started listening for connection to server for external commands...\n");
-                new Thread(receiver.Start).Start();
+                //CommunicationClient receiver = new CommunicationClient(writer);
+                //writer.WriteLine("Started listening for connection to server for external commands...\n");
+                //new Thread(receiver.Start).Start();
 
                 writer.WriteLine("Enter command:");
                 //var command = reader.ReadLine();
 
-                new Thread((() =>
+                new Thread(() =>
                 {
                     while (true)
                     {
                         var command = reader.ReadLine();
                         CommandContainer.Instance.AddCommand(command, writer);
                     }
-                })).Start();
+                }).Start();
                 //while (command != "close encryptor")
                 //{
                 //    try

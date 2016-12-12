@@ -30,7 +30,7 @@ namespace Jarvis.Encryptor.ProcessCommunication
             //new Thread(() =>
             //{
 
-            while (_command != Constants.Exit || _command != "stop connection to server")
+            while (_command != EncryptorConstants.Exit || _command != "stop connection to server")
             {
                 this._command = ReadString();
                 CommandContainer.Instance.AddCommand(_command, _writer);

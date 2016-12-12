@@ -32,25 +32,25 @@ namespace Jarvis.Encryptor.Commands
             {
                 switch (command)
                 {
-                    case Constants.Help:
+                    case EncryptorConstants.Help:
                         this.DisplayCommands();
                         break;
-                    case Constants.EncryptString:
+                    case EncryptorConstants.EncryptString:
                         this.EncryptString();
                         break;
-                    case Constants.DecryptStryng:
+                    case EncryptorConstants.DecryptStryng:
                         this.DecryptString();
                         break;
-                    case Constants.EncryptTxtFile:
+                    case EncryptorConstants.EncryptTxtFile:
                         this.EncryptTxtFile();
                         break;
-                    case Constants.DecryptTxtFile:
+                    case EncryptorConstants.DecryptTxtFile:
                         this.DecryptTxtFile();
                         break;
-                    case Constants.ClearConsole:
+                    case EncryptorConstants.ClearConsole:
                         this.ClearConsole();
                         break;
-                    case Constants.Exit:
+                    case EncryptorConstants.Exit:
                         this.Exit();
                         break;
                     default:

@@ -105,7 +105,6 @@ namespace Jarvis.Logic.CommandControl
 
         public void StartModule(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
         {
-            //string hui = CommandConstants.ModuleNames["SecureDesktop"];
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
             {
@@ -118,19 +117,8 @@ namespace Jarvis.Logic.CommandControl
                 case ModuleName.Encryptor:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
-                    //var serverThread = new Thread((() =>
-                    //{
-                    //    CommunicationServer server = new CommunicationServer("EncryptorPipe", "Some password");
-                    //    server.Start();
-                    //}));
-                    //serverThread.Start();
-
-                    //CommunicationServer server = new CommunicationServer("EncryptorPipe", "Some password");
-                    //server.Start();
-
-                    //int i = ComunicationManager.Instance.AddServer("EncryptorPipe", "Some password");
-                    ComunicationManager.Instance.StartServer(
-                        ComunicationManager.Instance.AddServer("EncryptorPipe", "Some password"));
+                    //ComunicationManager.Instance.StartServer(
+                    //    ComunicationManager.Instance.AddServer("EncryptorPipe", "Some password"));
 
                     Process.Start(CommandConstants.EncryptorPath);
                     interactor.SendOutput("Encryptor strarted.");
@@ -167,22 +155,48 @@ namespace Jarvis.Logic.CommandControl
             {
                 case ModuleName.Encryptor:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    foreach (var process in Process.GetProcessesByName(CommandConstants.EncryptorFile))
+                    //ComunicationManager.Instance.StopServer(0);
+                    if (StopProcess(CommandConstants.EncryptorFile))
                     {
-                        ComunicationManager.Instance.StopServer(0);
-                        Thread.Sleep(1000);
-                        process.Kill();
+                        interactor.SendOutput("Encryptor closed.");
                     }
-                    interactor.SendOutput("Encryptor closed.");
+                    else
+                    {
+                        interactor.SendOutput("Encryptor process not found.");
+                    }
                     break;
+
                 case ModuleName.MovementDetection:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    foreach (var process in Process.GetProcessesByName(CommandConstants.MovementDetectionFile))
+
+                    if (StopProcess(CommandConstants.MovementDetectionFile))
                     {
-                        process.Kill();
+                        interactor.SendOutput("Movement detection closed.");
                     }
-                    interactor.SendOutput("Movement detection closed.");
+                    else
+                    {
+                        interactor.SendOutput("Movement detection process not found.");
+                    }
                     break;
+
+                case "gom":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    //foreach (var process in Process.GetProcesses())
+                    //{
+                    //    Console.WriteLine(process.ProcessName);
+                    //}
+
+                    if (StopProcess("GOM"))
+                    {
+                        interactor.SendOutput("GOM player closed.");
+                    }
+                    else
+                    {
+                        interactor.SendOutput("GOM player process not found.");
+                    }
+                    break;
+
                 case "tab":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                     SendKeys.SendWait("^w");
@@ -270,12 +284,28 @@ namespace Jarvis.Logic.CommandControl
                     break;
             }
         }
-
-        public void StartProcess(string path)
+        
+        public void Gom(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactorManager)
         {
-            Process secondProc = new Process();
-            secondProc.StartInfo.FileName = path;
-            secondProc.Start();
+            Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
+            switch (commandParts[1])
+            {
+                case "pause":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    KeySender.Instance.Send("gomplayer", new []{" "}, interactorManager);
+                    //interactorManager.SendOutput("Gom paused");
+                    break;
+                case "back":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    KeySender.Instance.Send("gomplayer", new[] { "{LEFT}" }, interactorManager);
+                    //interactorManager.SendOutput("Gom back");
+                    break;
+                case "next":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    KeySender.Instance.Send("gomplayer", new[] { "{RIGHT}" }, interactorManager);
+                    //interactorManager.SendOutput("Gom next");
+                    break;
+            }
         }
 
         public void Shutup(IInteractorManager interactorManager)
@@ -289,32 +319,28 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        public void Gom(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactorManager)
+        public void StartProcess(string path)
         {
-            Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
-            switch (commandParts[1])
+            Process secondProc = new Process();
+            secondProc.StartInfo.FileName = path;
+            secondProc.Start();
+        }
+
+        private bool StopProcess(string name)
+        {
+            bool result = false;
+            foreach (var process in Process.GetProcessesByName(name))
             {
-                case "pause":
-                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    SendKeys.SendWait(" ");
-                    //interactorManager.SendOutput("Gom paused");
-                    break;
-                case "back":
-                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    SendKeys.SendWait("{LEFT}");
-                    //interactorManager.SendOutput("Gom back");
-                    break;
-                case "next":
-                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    SendKeys.SendWait("{RIGHT}");
-                    //interactorManager.SendOutput("Gom next");
-                    break;
+                process.Kill();
+                result = true;
             }
+
+            return result;
         }
 
         public void Exit(IInteractorManager interactorManager)
         {
-            ComunicationManager.Instance.StopAllServers();
+            //ComunicationManager.Instance.StopAllServers();
             Shutup(interactorManager);
             interactorManager.SendOutput("See ya soon!", false);
             interactorManager.StopInteractors();

@@ -27,7 +27,9 @@
             "open youtube",
             "nexttab",
             "previoustab",
+
             "close tab",
+            "close gom",
 
             "tell joke",
             "shutup",

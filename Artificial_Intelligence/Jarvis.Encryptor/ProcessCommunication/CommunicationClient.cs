@@ -35,7 +35,7 @@ namespace Jarvis.Encryptor.ProcessCommunication
             {
                 try
                 {
-                    while (_command != Constants.Exit || _command != "stop connection to server")
+                    while (_command != EncryptorConstants.Exit || _command != "stop connection to server")
                     {
                         if (pipeClient.IsConnected)
                         {
