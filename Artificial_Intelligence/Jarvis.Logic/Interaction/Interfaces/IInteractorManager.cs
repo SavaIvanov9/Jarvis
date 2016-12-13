@@ -10,6 +10,8 @@ namespace Jarvis.Logic.Interaction.Interfaces
     {
         List<IInteractor> Interactors { get; }
 
+        void Initialize(IList<IInteractor> interactors);
+
         void StartInteractors();
 
         void StopInteractors();

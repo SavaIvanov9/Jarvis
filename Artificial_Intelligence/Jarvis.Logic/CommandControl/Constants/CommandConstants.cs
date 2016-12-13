@@ -28,7 +28,7 @@
             "nexttab",
             "previoustab",
 
-            "close tab",
+            "close webtab",
             "close gom",
 
             "tell joke",

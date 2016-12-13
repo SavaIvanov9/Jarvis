@@ -197,7 +197,7 @@ namespace Jarvis.Logic.CommandControl
                     }
                     break;
 
-                case "tab":
+                case "webtab":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                     SendKeys.SendWait("^w");
                     interactor.SendOutput("Tab closed.");

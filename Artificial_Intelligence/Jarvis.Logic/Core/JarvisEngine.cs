@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -15,19 +16,19 @@ namespace Jarvis.Logic.Core
     public class JarvisEngine
     {
         private readonly ManualResetEvent _quitEvent = new ManualResetEvent(false);
-        private readonly IInteractorManager _interactorManager;
+        private readonly IInteractorManager _interactorManager = new InteractorManager();
         private readonly ILogger _logger;
 
-        private JarvisEngine(IInteractorManager manager, ILogger logger)
+        private JarvisEngine(ILogger logger, IList<IInteractor> interactors)
         {
-            this._interactorManager = manager;
+            _interactorManager.Initialize(interactors);
             this._logger = logger;
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static JarvisEngine Instance(IInteractorManager manager, ILogger logger)
+        public static JarvisEngine Instance(ILogger logger, IList<IInteractor> interactors)
         {
-            if (manager.Interactors.Count == 0)
+            if (interactors.Count == 0)
             {
                 throw new InvalidEnumArgumentException($"Interactors cannot be 0!");
             }
@@ -37,7 +38,7 @@ namespace Jarvis.Logic.Core
                 throw new InvalidEnumArgumentException($"Logger cannot be 0!");
             }
 
-            return new JarvisEngine(manager, logger);
+            return new JarvisEngine(logger, interactors);
         }
 
         public void Start()

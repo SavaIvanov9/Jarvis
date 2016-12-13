@@ -10,6 +10,14 @@ namespace Jarvis.Logic.Interaction
         private readonly List<IInteractor> _interactors = new List<IInteractor>();
         private List<Thread> _activeInteractors = new List<Thread>();
 
+        public void Initialize(IList<IInteractor> interactors)
+        {
+            foreach (var interactor in interactors)
+            {
+                _interactors.Add(interactor);
+            }
+        }
+
         public void AddInteractor(IInteractor interactor)
         {
             _interactors.Add(interactor);
