@@ -27,7 +27,10 @@ namespace Jarvis.Logic.Interaction
         {
             foreach (var interactor in _interactors)
             {
-                interactor.SendOutput(message, isAsync);
+                if (interactor.IsActive)
+                {
+                    interactor.SendOutput(message, isAsync);
+                }
             }
         }
 
@@ -54,11 +57,11 @@ namespace Jarvis.Logic.Interaction
                 interactor.Stop();
             }
 
-            foreach (var thread in _activeInteractors)
-            {
-                thread.Abort();
+            //foreach (var thread in _activeInteractors)
+            //{
+            //    thread.Abort();
 
-            }
+            //}
         }
     }
 }

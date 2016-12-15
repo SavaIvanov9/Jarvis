@@ -14,12 +14,12 @@ namespace Jarvis.Logic.Interaction.Interactors
 {
     public class VoiceInteractor : IInteractor
     {
-        private readonly SpeechSynthesizer _speaker = new SpeechSynthesizer();
+        private SpeechSynthesizer _speaker = new SpeechSynthesizer();
         private readonly PromptBuilder _promptBuilder = new PromptBuilder();
-        private readonly SpeechRecognitionEngine _listener =
+        private SpeechRecognitionEngine _listener =
             new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
         private readonly ILogger _logger;
-
+        private bool _isActive = true;
         //private readonly ILogger _logger;
         //private readonly PromptBuilder _promptBuilder = new PromptBuilder();
         //private SpeechSynthesizer _speaker;
@@ -34,7 +34,13 @@ namespace Jarvis.Logic.Interaction.Interactors
 
             this._logger = logger;
         }
-        
+
+        public bool IsActive
+        {
+            get { return _isActive; }
+
+        }
+
         public void SendOutput(string output, bool isAsync)
         {
             //using (_speaker = new SpeechSynthesizer())
@@ -72,6 +78,7 @@ namespace Jarvis.Logic.Interaction.Interactors
 
         public void Stop()
         {
+            _isActive = false;
             _listener.RecognizeAsyncStop();
             _listener.UnloadAllGrammars();
             _listener.Dispose();
@@ -80,9 +87,13 @@ namespace Jarvis.Logic.Interaction.Interactors
 
         public void Start()
         {
+            _isActive = true;
+            _speaker = new SpeechSynthesizer();
+            _listener =
+            new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
             //using (_listener = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US")))
             //{
-                GrammarBuilder findServices = new GrammarBuilder("Jarvis");
+            GrammarBuilder findServices = new GrammarBuilder("Jarvis");
                 findServices.Append(new Choices(CommandConstants.AllCommands));
                 //findServices..Append(new Choices(EncryptorConstants.ValidChoises));
                 Grammar servicesGrammar = new Grammar(findServices);
@@ -95,9 +106,9 @@ namespace Jarvis.Logic.Interaction.Interactors
                     _listener.SetInputToDefaultAudioDevice();
                     _listener.RecognizeAsync(RecognizeMode.Multiple);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    return;
+                    _logger.Log(ex.ToString());
                 }
             //}
         }

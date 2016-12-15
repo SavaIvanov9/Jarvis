@@ -2,6 +2,8 @@
 {
     public interface IInteractor : IOutputSendable
     {
+        bool IsActive { get; }
+
         void Start();
 
         void Pause();

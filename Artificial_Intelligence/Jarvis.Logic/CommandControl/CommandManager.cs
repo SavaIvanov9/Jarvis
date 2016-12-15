@@ -93,6 +93,12 @@ namespace Jarvis.Logic.CommandControl
                         case CommandConstants.Shutup:
                             CommandProcessor.Instance.Shutup(_interactorManager);
                             break;
+                        case CommandConstants.Mute:
+                            CommandProcessor.Instance.Mute(_interactorManager);
+                            break;
+                        case CommandConstants.UnMute:
+                            CommandProcessor.Instance.UnMute(_interactorManager);
+                            break;
                         case CommandConstants.Exit:
                             CommandProcessor.Instance.Exit(_interactorManager);
                             break;

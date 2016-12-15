@@ -55,7 +55,7 @@ namespace Jarvis.Logic.Core
                 _quitEvent.Set();
                 eArgs.Cancel = true;
             };
-
+            
             _quitEvent.WaitOne();
 
             //Alternative effect

@@ -13,7 +13,9 @@
         public const string Show = "gotofront";
         public const string Hide = "gotobackground";
         public const string Exit = "exit";
-        public const string Gom = "gom";
+        public const string Gom = "media";
+        public const string Mute = "mute";
+        public const string UnMute = "unmute";
 
         public static readonly string[] AllCommands =
         {
@@ -29,19 +31,21 @@
             "previoustab",
 
             "close webtab",
-            "close gom",
+            "close media",
 
             "tell joke",
             "shutup",
+            "mute",
+            "unmute",
 
             "gotobackground",
             "gotofront",
             "stop",
             "exit",
 
-            "gom pause",
-            "gom back",
-            "gom next"
+            "media pause",
+            "media back",
+            "media next"
         };
 
         public const string SecureDesktopPath =

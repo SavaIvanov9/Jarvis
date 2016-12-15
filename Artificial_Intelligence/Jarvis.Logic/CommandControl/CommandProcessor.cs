@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Jarvis.Commons.Utilities;
 using Jarvis.Data;
 using Jarvis.Logic.CommandControl.Constants;
+using Jarvis.Logic.Core;
 using Jarvis.Logic.Interaction;
 using Jarvis.Logic.Interaction.Interactors;
 using Jarvis.Logic.Interaction.Interfaces;
@@ -179,7 +180,7 @@ namespace Jarvis.Logic.CommandControl
                     }
                     break;
 
-                case "gom":
+                case "media":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
                     //foreach (var process in Process.GetProcesses())
@@ -189,11 +190,11 @@ namespace Jarvis.Logic.CommandControl
 
                     if (StopProcess("GOM"))
                     {
-                        interactor.SendOutput("GOM player closed.");
+                        interactor.SendOutput("media player closed.");
                     }
                     else
                     {
-                        interactor.SendOutput("GOM player process not found.");
+                        interactor.SendOutput("media player process not found.");
                     }
                     break;
 
@@ -307,7 +308,7 @@ namespace Jarvis.Logic.CommandControl
                     break;
             }
         }
-
+        
         public void Shutup(IInteractorManager interactorManager)
         {
             foreach (var interactor in interactorManager.Interactors)
@@ -316,6 +317,22 @@ namespace Jarvis.Logic.CommandControl
                 {
                     interactor.Pause();
                 }
+            }
+        }
+
+        public void Mute(IInteractorManager manager)
+        {
+            manager.Interactors.Find(x => x.GetType() == typeof(VoiceInteractor)).Stop();
+            manager.SendOutput("Voice interaction paused.");
+        }
+
+        public void UnMute(IInteractorManager manager)
+        {
+            var voiceInteractor = manager.Interactors.Find(x => x.GetType() == typeof(VoiceInteractor));
+            if (!voiceInteractor.IsActive)
+            {
+                voiceInteractor.Start();
+                manager.SendOutput("Voice interaction unpaused.");
             }
         }
 
@@ -344,6 +361,7 @@ namespace Jarvis.Logic.CommandControl
             Shutup(interactorManager);
             interactorManager.SendOutput("See ya soon!", false);
             interactorManager.StopInteractors();
+           
             Environment.Exit(0);
         }
     }

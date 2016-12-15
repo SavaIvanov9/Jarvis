@@ -12,6 +12,7 @@ namespace Jarvis.Logic.Interaction.Interactors
     {
         private readonly ILogger _logger;
         private bool _isAlive = true;
+        private bool _isActive = true;
 
         public ConsoleInteractor(ILogger logger)
         {
@@ -22,9 +23,13 @@ namespace Jarvis.Logic.Interaction.Interactors
 
             this._logger = logger;
 
-            Console.Title = "Jarvis";
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.BackgroundColor = ConsoleColor.Black;
+            Initialize();
+        }
+
+        public bool IsActive
+        {
+            get { return _isActive; }
+
         }
 
         public void SendOutput(string output, bool isAsync)
@@ -34,6 +39,7 @@ namespace Jarvis.Logic.Interaction.Interactors
 
         public void Start()
         {
+            _isActive = true;
             while (_isAlive)
             {
                 var command = Console.ReadLine();
@@ -48,7 +54,15 @@ namespace Jarvis.Logic.Interaction.Interactors
 
         public void Stop()
         {
+            _isActive = false;
             _isAlive = false;
+        }
+
+        private void Initialize()
+        {
+            Console.Title = "Jarvis";
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.BackgroundColor = ConsoleColor.Black;
         }
     }
 }
