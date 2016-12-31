@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Jarvis.Data
+﻿namespace Jarvis.Data
 {
+    using System;
+    using System.Collections.Generic;
+
     public sealed class FakeDb
     {
         private static readonly Lazy<FakeDb> Lazy =

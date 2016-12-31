@@ -107,10 +107,6 @@
       <Project>{48ba70ac-ec33-4f3f-a3c0-c2c40e4808f5}</Project>
       <Name>Jarvis.Commons</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Jarvis.Data\Jarvis.Data.csproj">
-      <Project>{4f85a6d8-4d2d-4693-999e-2d52e999979f}</Project>
-      <Name>Jarvis.Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Jarvis.Encryptor\Jarvis.Encryptor.csproj">
       <Project>{ffa12886-d62e-4e4e-b43b-23997302793d}</Project>
       <Name>Jarvis.Encryptor</Name>

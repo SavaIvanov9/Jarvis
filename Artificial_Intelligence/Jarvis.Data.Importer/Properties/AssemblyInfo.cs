@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Jarvis.Data")]
+[assembly: AssemblyTitle("Jarvis.Data.Importer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Jarvis.Data")]
+[assembly: AssemblyProduct("Jarvis.Data.Importer")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("5c882a8a-b70b-44da-9bae-5e85989332de")]
+[assembly: Guid("cd58031b-9b62-41a9-9217-c331f9b50ec7")]
 
 // Version information for an assembly consists of the following four values:
 //
