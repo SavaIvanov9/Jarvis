@@ -35,12 +35,8 @@ namespace Jarvis.Logic.CommandControl
 
         public static CommandManager Instance
         {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
-            {
-                return Lazy.Value;
-            }
-        } 
+            [MethodImpl(MethodImplOptions.Synchronized)] get { return Lazy.Value; }
+        }
 
         public void Start(IInteractorManager interactorManager, ILogger logger)
         {
@@ -67,10 +63,21 @@ namespace Jarvis.Logic.CommandControl
                     switch (commandParts[0])
                     {
                         case CommandConstants.Initialize:
-                            //_interactorManager.SendOutput("Hi, I am your virtual A.I. assistant." 
-                            //    + Environment.NewLine + "\t   My name is Jarvis."
-                            //    + Environment.NewLine + "\t   How can I help you?");
-                            _interactorManager.SendOutput("Hi, I am Jarvis, your virtual AI assistant.", false);
+                            _interactorManager.SendOutput("Jarvis core module started.", false);
+                            foreach (var interactor in _interactorManager.Interactors)
+                            {
+                                _interactorManager.SendOutput($"{interactor.GetType().Name} activated.", false);
+                            }
+                            try
+                            {
+                                var db = new JarvisData();
+                                db.Jokes.All().Count();
+                                _interactorManager.SendOutput($"Connection to database {db.GetType().Name} established.", false);
+                            }
+                            catch (Exception)
+                            {
+                                _interactorManager.SendOutput($"Failed to connect to database.", false);
+                            }
                             break;
                         case CommandConstants.AddToStartup:
                             CommandProcessor.Instance.AddToStartup(commandParts, commandParams, _interactorManager);
