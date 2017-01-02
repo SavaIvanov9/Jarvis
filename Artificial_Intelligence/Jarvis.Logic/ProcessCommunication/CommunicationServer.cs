@@ -2,6 +2,9 @@
 using System.IO;
 using System.IO.Pipes;
 using System.Threading;
+using System.Windows.Forms;
+using Jarvis.Commons.Logger;
+using Jarvis.Logic.Interaction.Interfaces;
 
 namespace Jarvis.Logic.ProcessCommunication
 {
@@ -9,83 +12,71 @@ namespace Jarvis.Logic.ProcessCommunication
     {
         private readonly string _serverName;
         private readonly string _connectionPassword;
+        private readonly ILogger _logger;
+        private readonly IInteractorManager _manager;
         private NamedPipeServerStream _pipeServer;
-        private StreamManager ss;
+        private StreamManager _stream;
+        private bool _isAlive = true;
 
-        public CommunicationServer(string serverName, string connectionPassword, OnExit onExit)
+        public CommunicationServer(string serverName, string connectionPassword,
+            ILogger logger, IInteractorManager manager)
         {
             this._serverName = serverName;
             this._connectionPassword = connectionPassword;
-            //onExit += ExitServer;
-            ComunicationManager.Instance.ExitServer += ExitServer;
+            this._logger = logger;
+            this._manager = manager;
+            CommunicationManager.Instance.ExitServer += ExitServer;
+            CommunicationContainer.Instance.OnNewMessage += SendMessage;
         }
 
         private void ExitServer()
         {
-            //ss.WriteString("stop connection to server");
-            Console.WriteLine($"{_serverName} server closed.");
-            
-            _pipeServer.Dispose();
+            CommunicationContainer.Instance.OnNewMessage -= SendMessage;
+            _isAlive = false;
+            _pipeServer.Close();
+            //_logger.Log($"{_serverName} server closed.");
         }
 
         public void Start()
         {
-            Console.WriteLine("Server started. Waiting for clients to connect...");
-
             _pipeServer = new NamedPipeServerStream(
-                _serverName, PipeDirection.InOut);
+                _serverName,
+                PipeDirection.InOut);
 
             int threadId = Thread.CurrentThread.ManagedThreadId;
 
+            _logger.Log($"[{_serverName}] server started. Waiting for clients to connect...");
             _pipeServer.WaitForConnection();
-            
             try
             {
                 // Read the request from the client. Once the client has
                 // written to the pipe its security token will be available.
-                ss = new StreamManager(_pipeServer);
+                _stream = new StreamManager(_pipeServer);
 
-                Console.WriteLine($"Client[{ss.ReadString()}] connected to server[{_serverName}] on thread[{threadId}].");
+                _logger.Log($"Client [{_stream.ReadString()}] connected to [{_serverName}] server on thread[{threadId}].");
 
                 // Verify our identity to the connected client using a
                 // string that the client anticipates.
-                ss.WriteString(_connectionPassword);
+                _stream.WriteString(_connectionPassword);
 
-                string message = Console.ReadLine();
-
-                while (message != "end")
+                while (_isAlive)
                 {
-                    ss.WriteString(message);
-                    message = Console.ReadLine();
+                    
                 }
-
-                ss.WriteString(message);
-
             }
             // Catch the IOException that is raised if the pipe is broken
             // or disconnected.
             catch (IOException e)
             {
-                Console.WriteLine("ERROR: {0}", e.Message);
+                _logger.Log($"ERROR: {e.Message}");
             }
-            Console.WriteLine("closing ur ass");
+            _logger.Log($"{_serverName} server closed.");
             _pipeServer.Close();
         }
 
-        private void OnAsyncMessage(IAsyncResult result)
+        public void SendMessage(string message)
         {
-            Int32 bytesRead = _pipeServer.EndRead(result);
-            if (bytesRead != 0)
-            {
-                // good times -- process the message
-            }
-            else
-            {
-                // pipe disconnected, right?!? NOPE!
-                _pipeServer.Close();
-                throw new Exception();
-            }
-
+            _stream.WriteString(message);
         }
     }
 }

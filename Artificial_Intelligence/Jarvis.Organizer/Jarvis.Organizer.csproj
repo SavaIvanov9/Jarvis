@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C4776AD1-C20E-4CE6-9D5B-4D93C8757BE1}</ProjectGuid>
+    <ProjectGuid>{1D62ED00-A987-4F16-B71C-9C413CF19BBA}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>test</RootNamespace>
-    <AssemblyName>test</AssemblyName>
+    <RootNamespace>Jarvis.Organizer</RootNamespace>
+    <AssemblyName>Jarvis.Organizer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,21 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProcessCommunication\CommunicationClient.cs" />
+    <Compile Include="ProcessCommunication\StreamManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Jarvis.Data.Models\Jarvis.Data.Models.csproj">
-      <Project>{073f2fa7-642b-4f53-bb1f-a835f64451c4}</Project>
-      <Name>Jarvis.Data.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Jarvis.Data\Jarvis.Data.csproj">
-      <Project>{5c882a8a-b70b-44da-9bae-5e85989332de}</Project>
-      <Name>Jarvis.Data</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

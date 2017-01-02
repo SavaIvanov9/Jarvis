@@ -4,7 +4,9 @@ using System.Text;
 
 namespace Jarvis.Logic.ProcessCommunication
 {
-    // Defines the data protocol for reading and writing strings on our stream
+    /// <summary>
+    /// Defines the data protocol for reading and writing strings on our stream in named pipes
+    /// </summary>
     public class StreamManager
     {
         private Stream ioStream;

@@ -27,7 +27,7 @@ namespace Jarvis.Logic.CommandControl
         public void AddCommand(ILogger logger, string command)
         {
             _commandList.Add(command);
-            logger.Log(command);
+            logger.LogCommand(command);
             OnAdd(command);
         }
     }

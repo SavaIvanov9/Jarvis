@@ -9,9 +9,14 @@ namespace Jarvis.Commons.Logger
 {
     public class ConsoleLogger : ILogger
     {
-        public void Log(string message)
+        public void LogCommand(string message)
         {
             Console.WriteLine("Command: " + message);
+        }
+
+        public void Log(string message)
+        {
+            Console.WriteLine("  >Jarvis: " + message);
         }
     }
 }

@@ -24,6 +24,9 @@
             "start securedpass",
             "start movementdetection",
             "close movementdetection",
+            "start organizer",
+            "start getredytime",
+            "close organizer",
 
             "open google",
             "open youtube",
@@ -40,7 +43,7 @@
 
             "gotobackground",
             "gotofront",
-            "stop",
+            //"stop",
             "exit",
 
             "media pause",
@@ -54,9 +57,12 @@
             "..\\..\\..\\Jarvis.Encryptor\\bin\\Debug\\Jarvis.Encryptor.exe";
         public const string MovementDetectionPath =
             "..\\..\\..\\Jarvis.MovementDetection\\bin\\Debug\\Jarvis.MovementDetection.exe";
+        public const string OrganizerPath =
+            "..\\..\\..\\Jarvis.Organizer\\bin\\Debug\\Jarvis.Organizer.exe";
 
         public const string SecureDesktopFile = "Jarvis.SecureDesktop";
         public const string EncryptorFile = "Jarvis.Encryptor";
         public const string MovementDetectionFile = "Jarvis.MovementDetection";
+        public const string OrganizerFile = "Jarvis.Organizer";
     }
 }

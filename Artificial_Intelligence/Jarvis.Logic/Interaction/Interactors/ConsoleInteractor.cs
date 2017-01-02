@@ -18,7 +18,7 @@ namespace Jarvis.Logic.Interaction.Interactors
         {
             if (logger == null)
             {
-                throw new InvalidEnumArgumentException($"Logger cannot be 0!");
+                throw new ArgumentException($"Logger cannot be 0!");
             }
 
             this._logger = logger;
@@ -60,7 +60,7 @@ namespace Jarvis.Logic.Interaction.Interactors
 
         private void Initialize()
         {
-            Console.Title = "Jarvis";
+            Console.Title = "J.A.R.V.I.S.";
             Console.ForegroundColor = ConsoleColor.Green;
             Console.BackgroundColor = ConsoleColor.Black;
         }

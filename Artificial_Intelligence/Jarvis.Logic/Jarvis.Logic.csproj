@@ -90,7 +90,7 @@
     <Compile Include="CommandControl\CommandManager.cs" />
     <Compile Include="CommandControl\CommandContainer.cs" />
     <Compile Include="CommandControl\CommandProcessor.cs" />
-    <Compile Include="CommandControl\Constants\ModuleName.cs" />
+    <Compile Include="CommandControl\Constants\ModuleConstants.cs" />
     <Compile Include="Core\DecisionControl\Interfaces\IDecidable.cs" />
     <Compile Include="Core\DecisionControl\Interfaces\IDecisionTaker.cs" />
     <Compile Include="Core\JarvisEngine.cs" />
@@ -102,8 +102,9 @@
     <Compile Include="Interaction\Interactors\VoiceInteractor.cs" />
     <Compile Include="Interaction\Interfaces\IOutputSendable.cs" />
     <Compile Include="Launcher.cs" />
+    <Compile Include="ProcessCommunication\ComunicationContainer.cs" />
     <Compile Include="ProcessCommunication\CommunicationServer.cs" />
-    <Compile Include="ProcessCommunication\ComunicationManager.cs" />
+    <Compile Include="ProcessCommunication\CommunicationManager.cs" />
     <Compile Include="ProcessCommunication\KeySender.cs" />
     <Compile Include="ProcessCommunication\StreamManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

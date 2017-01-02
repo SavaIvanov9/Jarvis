@@ -29,7 +29,7 @@ namespace Jarvis.Logic.Interaction.Interactors
         {
             if (logger == null)
             {
-                throw new InvalidEnumArgumentException($"Logger cannot be 0!");
+                throw new ArgumentException($"Logger cannot be 0!");
             }
 
             this._logger = logger;
@@ -47,12 +47,12 @@ namespace Jarvis.Logic.Interaction.Interactors
             //{
                 try
                 {
-                    //_speaker.SelectVoice("Microsoft David Desktop");
-                    //_logger.Log("Voice set to Microsoft David Desktop");
+                    _speaker.SelectVoice("Microsoft David Desktop");
+                    //_logger.LogCommand("Voice set to Microsoft David Desktop");
                 }
                 catch
                 {
-                    _logger.Log("Voice set to default.");
+                    _logger.LogCommand("Voice set to default.");
                 }
 
                 if (isAsync)
@@ -108,7 +108,7 @@ namespace Jarvis.Logic.Interaction.Interactors
                 }
                 catch (Exception ex)
                 {
-                    _logger.Log(ex.ToString());
+                    _logger.LogCommand(ex.ToString());
                 }
             //}
         }

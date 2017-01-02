@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Speech.Synthesis.TtsEngine;
@@ -8,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Jarvis.Commons.Logger;
 using Jarvis.Commons.Utilities;
 using Jarvis.Data;
 using Jarvis.Logic.CommandControl.Constants;
@@ -32,10 +35,26 @@ namespace Jarvis.Logic.CommandControl
 
         public static CommandProcessor Instance
         {
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            get
+            [MethodImpl(MethodImplOptions.Synchronized)] get { return Lazy.Value; }
+        }
+
+        public void Initialize(IInteractorManager interactorManager)
+        {
+            interactorManager.SendOutput("Jarvis core system started.", false);
+            foreach (var interactor in interactorManager.Interactors)
             {
-                return Lazy.Value;
+                interactorManager.SendOutput($"{interactor.GetType().Name} activated.", false);
+            }
+
+            try
+            {
+                var db = new JarvisData();
+                db.Jokes.All().Count();
+                interactorManager.SendOutput($"Connection to database {db.GetType().Name} established.", false);
+            }
+            catch (Exception)
+            {
+                interactorManager.SendOutput($"Failed to connect to database.", false);
             }
         }
 
@@ -55,7 +74,7 @@ namespace Jarvis.Logic.CommandControl
                     else
                     {
                         Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                        WebManager.Instance.OpenSite(new List<string>() { "google.com" });
+                        WebManager.Instance.OpenSite(new List<string>() {"google.com"});
                         interactor.SendOutput($@"Searching in web.");
                     }
                     break;
@@ -104,18 +123,19 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        public void StartModule(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
+        public void StartModule(IList<string> commandParts, IList<string> commandParams,
+            IInteractorManager interactor, ILogger logger)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
             {
-                case ModuleName.SecureDesktop:
+                case ModuleConstants.SecureDesktop:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
                     Process.Start(CommandConstants.SecureDesktopPath);
                     interactor.SendOutput("Securing password started.");
                     break;
-                case ModuleName.Encryptor:
+                case ModuleConstants.Encryptor:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
                     //ComunicationManager.Instance.StartServer(
@@ -124,12 +144,34 @@ namespace Jarvis.Logic.CommandControl
                     Process.Start(CommandConstants.EncryptorPath);
                     interactor.SendOutput("Encryptor strarted.");
                     break;
-                case ModuleName.MovementDetection:
+                case ModuleConstants.MovementDetection:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
                     Process.Start(CommandConstants.MovementDetectionPath);
                     interactor.SendOutput("Movement detection strarted.");
                     break;
+
+                case ModuleConstants.Organizer:
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    //CommunicationManager.Instance.StartServer(
+                    int index = CommunicationManager.Instance.AddServer("Jarvis.Core.Organizer", "Some password",
+                        logger, interactor);
+                    //);
+                    
+                    CommunicationManager.Instance.StartServer(index);
+                    Process.Start(CommandConstants.OrganizerPath);
+                    interactor.SendOutput("Organizer strarted.");
+                    break;
+
+                case ModuleConstants.GetRedyTimeTracker:
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    CommunicationContainer.Instance.AddMessage("start getreadytime");
+
+                    interactor.SendOutput("getreadytime started.");
+                    break;
+
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
                     break;
@@ -154,7 +196,7 @@ namespace Jarvis.Logic.CommandControl
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
             {
-                case ModuleName.Encryptor:
+                case ModuleConstants.Encryptor:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                     //ComunicationManager.Instance.StopServer(0);
                     if (StopProcess(CommandConstants.EncryptorFile))
@@ -167,7 +209,7 @@ namespace Jarvis.Logic.CommandControl
                     }
                     break;
 
-                case ModuleName.MovementDetection:
+                case ModuleConstants.MovementDetection:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
                     if (StopProcess(CommandConstants.MovementDetectionFile))
@@ -178,6 +220,23 @@ namespace Jarvis.Logic.CommandControl
                     {
                         interactor.SendOutput("Movement detection process not found.");
                     }
+                    break;
+
+                case ModuleConstants.Organizer:
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    
+                    try
+                    {
+                        CommunicationContainer.Instance.AddMessage("exit");
+                        CommunicationManager.Instance.StopServer(0);
+                        interactor.SendOutput("Organizer closed.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                        interactor.SendOutput("Organizer process not found.");
+                    }
+                    
                     break;
 
                 case "media":
@@ -285,7 +344,7 @@ namespace Jarvis.Logic.CommandControl
                     break;
             }
         }
-        
+
         public void Gom(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactorManager)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
@@ -293,7 +352,7 @@ namespace Jarvis.Logic.CommandControl
             {
                 case "pause":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
-                    KeySender.Instance.Send("gomplayer", new []{" "}, interactorManager);
+                    KeySender.Instance.Send("gomplayer", new[] { " " }, interactorManager);
                     //interactorManager.SendOutput("Gom paused");
                     break;
                 case "back":
@@ -308,7 +367,7 @@ namespace Jarvis.Logic.CommandControl
                     break;
             }
         }
-        
+
         public void Shutup(IInteractorManager interactorManager)
         {
             foreach (var interactor in interactorManager.Interactors)
@@ -361,7 +420,7 @@ namespace Jarvis.Logic.CommandControl
             Shutup(interactorManager);
             interactorManager.SendOutput("See ya soon!", false);
             interactorManager.StopInteractors();
-           
+
             Environment.Exit(0);
         }
     }

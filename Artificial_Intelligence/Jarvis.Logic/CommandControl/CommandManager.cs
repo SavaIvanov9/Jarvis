@@ -35,7 +35,8 @@ namespace Jarvis.Logic.CommandControl
 
         public static CommandManager Instance
         {
-            [MethodImpl(MethodImplOptions.Synchronized)] get { return Lazy.Value; }
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            get { return Lazy.Value; }
         }
 
         public void Start(IInteractorManager interactorManager, ILogger logger)
@@ -63,21 +64,7 @@ namespace Jarvis.Logic.CommandControl
                     switch (commandParts[0])
                     {
                         case CommandConstants.Initialize:
-                            _interactorManager.SendOutput("Jarvis core module started.", false);
-                            foreach (var interactor in _interactorManager.Interactors)
-                            {
-                                _interactorManager.SendOutput($"{interactor.GetType().Name} activated.", false);
-                            }
-                            try
-                            {
-                                var db = new JarvisData();
-                                db.Jokes.All().Count();
-                                _interactorManager.SendOutput($"Connection to database {db.GetType().Name} established.", false);
-                            }
-                            catch (Exception)
-                            {
-                                _interactorManager.SendOutput($"Failed to connect to database.", false);
-                            }
+                            CommandProcessor.Instance.Initialize(_interactorManager);
                             break;
                         case CommandConstants.AddToStartup:
                             CommandProcessor.Instance.AddToStartup(commandParts, commandParams, _interactorManager);
@@ -86,7 +73,8 @@ namespace Jarvis.Logic.CommandControl
                             CommandProcessor.Instance.TellMe(commandParts, commandParams, _interactorManager);
                             break;
                         case CommandConstants.StartModule:
-                            CommandProcessor.Instance.StartModule(commandParts, commandParams, _interactorManager);
+                            CommandProcessor.Instance.StartModule(
+                                commandParts, commandParams, _interactorManager, _logger);
                             break;
                         case CommandConstants.Close:
                             CommandProcessor.Instance.Close(commandParts, commandParams, _interactorManager);
@@ -145,7 +133,7 @@ namespace Jarvis.Logic.CommandControl
             }
             catch (Exception ex)
             {
-                _logger.Log(ex.ToString());
+                _logger.LogCommand(ex.ToString());
             }
         }
 
