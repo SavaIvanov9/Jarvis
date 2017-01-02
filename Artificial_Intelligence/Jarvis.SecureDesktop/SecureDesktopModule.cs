@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace Jarvis.SecureDesktop
+﻿namespace Jarvis.SecureDesktop
 {
+    using System;
     using System.Windows.Forms;
-
     using Interfaces;
     using Providers;
     using Providers.ClipBoardProvider;

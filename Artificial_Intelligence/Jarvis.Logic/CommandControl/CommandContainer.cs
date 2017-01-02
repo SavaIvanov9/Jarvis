@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Jarvis.Commons.Logger;
-
-namespace Jarvis.Logic.CommandControl
+﻿namespace Jarvis.Logic.CommandControl
 {
+    using System;
+    using System.Collections.Generic;
+    using Commons.Logger;
+
     public delegate void OnNewCommandHandler(string selectedValue);
 
     public class CommandContainer

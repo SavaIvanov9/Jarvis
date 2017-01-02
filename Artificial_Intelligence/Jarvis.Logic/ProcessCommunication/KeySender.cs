@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Jarvis.Logic.Interaction.Interfaces;
-
-namespace Jarvis.Logic.ProcessCommunication
+﻿namespace Jarvis.Logic.ProcessCommunication
 {
+    using System;
+    using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
+    using Interaction.Interfaces;
+
     public sealed class KeySender
     {
         [DllImport("user32.dll", EntryPoint = "FindWindow")]

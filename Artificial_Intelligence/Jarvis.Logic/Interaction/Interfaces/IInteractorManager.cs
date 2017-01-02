@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Jarvis.Logic.Interaction.Interfaces
+﻿namespace Jarvis.Logic.Interaction.Interfaces
 {
+    using System.Collections.Generic;
+
     public interface IInteractorManager : IOutputSendable
     {
         List<IInteractor> Interactors { get; }

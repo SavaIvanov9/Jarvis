@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-
-namespace Jarvis.Web
+﻿namespace Jarvis.Web
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+
     public sealed class WebManager
     {
         private static readonly Lazy<WebManager> Lazy =
@@ -47,7 +47,6 @@ namespace Jarvis.Web
                 }
             };
             browser.Start();
-            
         }
 
         public void ConnectToLocalServer(IList<string> commandParams)

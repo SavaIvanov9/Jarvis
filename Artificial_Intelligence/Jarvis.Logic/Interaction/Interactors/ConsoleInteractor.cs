@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using Jarvis.Commons.Logger;
-using Jarvis.Logic.CommandControl;
-using Jarvis.Logic.Interaction.Interfaces;
-
-namespace Jarvis.Logic.Interaction.Interactors
+﻿namespace Jarvis.Logic.Interaction.Interactors
 {
+    using System;
+    using Commons.Logger;
+    using CommandControl;
+    using Interfaces;
+
     public class ConsoleInteractor : IInteractor
     {
         private readonly ILogger _logger;

@@ -1,30 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Speech.Synthesis.TtsEngine;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Jarvis.Commons.Logger;
-using Jarvis.Commons.Utilities;
-using Jarvis.Data;
-using Jarvis.Logic.CommandControl.Constants;
-using Jarvis.Logic.Core;
-using Jarvis.Logic.Interaction;
-using Jarvis.Logic.Interaction.Interactors;
-using Jarvis.Logic.Interaction.Interfaces;
-using Jarvis.Logic.ProcessCommunication;
-using Jarvis.RegistryEditor;
-using Jarvis.SecureDesktop;
-using Jarvis.Web;
-
-namespace Jarvis.Logic.CommandControl
+﻿namespace Jarvis.Logic.CommandControl
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Windows.Forms;
+    using Commons.Logger;
+    using Commons.Utilities;
+    using Data;
+    using Commons.Exceptions;
+    using Constants;
+    using Interaction.Interactors;
+    using Interaction.Interfaces;
+    using ProcessCommunication;
+    using RegistryEditor;
+    using Web;
+
     public sealed class CommandProcessor
     {
         private static readonly Lazy<CommandProcessor> Lazy =
@@ -154,14 +146,19 @@ namespace Jarvis.Logic.CommandControl
                 case ModuleConstants.Organizer:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
-                    //CommunicationManager.Instance.StartServer(
-                    int index = CommunicationManager.Instance.AddServer("Jarvis.Core.Organizer", "Some password",
+                    try
+                    {
+                        int index = CommunicationManager.Instance.AddServer("Jarvis.Core.Organizer", "Some password",
                         logger, interactor);
-                    //);
-                    
-                    CommunicationManager.Instance.StartServer(index);
-                    Process.Start(CommandConstants.OrganizerPath);
-                    interactor.SendOutput("Organizer strarted.");
+
+                        CommunicationManager.Instance.StartServer(index);
+                        Process.Start(CommandConstants.OrganizerPath);
+                        interactor.SendOutput("Organizer strarted.");
+                    }
+                    catch (DuplicateInstanceException ex)
+                    {
+                        interactor.SendOutput(ex.Message);
+                    }
                     break;
 
                 case ModuleConstants.GetRedyTimeTracker:
@@ -228,7 +225,7 @@ namespace Jarvis.Logic.CommandControl
                     try
                     {
                         CommunicationContainer.Instance.AddMessage("exit");
-                        CommunicationManager.Instance.StopServer(0);
+                        CommunicationManager.Instance.StopServer("Jarvis.Core.Organizer");
                         interactor.SendOutput("Organizer closed.");
                     }
                     catch (Exception ex)

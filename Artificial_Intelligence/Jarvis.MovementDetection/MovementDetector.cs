@@ -1,10 +1,10 @@
-﻿using System.Drawing;
-using AForge.Video;
-using AForge.Vision.Motion;
-using AForge.Video.DirectShow;
-
-namespace Jarvis.MovementDetection
+﻿namespace Jarvis.MovementDetection
 {
+    using System.Drawing;
+    using AForge.Video;
+    using AForge.Vision.Motion;
+    using AForge.Video.DirectShow;
+
     public class MovementDetector
     {
         private FilterInfoCollection _videoDevices;

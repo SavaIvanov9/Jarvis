@@ -1,8 +1,7 @@
-﻿using System.Windows.Forms;
-
-namespace Jarvis.SecureDesktop.Providers.ClipBoardProvider
+﻿namespace Jarvis.SecureDesktop.Providers.ClipBoardProvider
 {
     using Interfaces;
+    using System.Windows.Forms;
 
     public class ClipboardProvider : StaHelper, IClipboardProvider
     {

@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Windows.Forms;
-using Jarvis.Commons.Logger;
-using Jarvis.Commons.Utilities;
-using Jarvis.Logic.CommandControl;
-using Jarvis.Logic.Interaction;
-using Jarvis.Logic.Interaction.Interfaces;
-
-namespace Jarvis.Logic.Core
+﻿namespace Jarvis.Logic.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
+    using System.Threading;
+    using Commons.Logger;
+    using CommandControl;
+    using Interaction;
+    using Interaction.Interfaces;
+
     public class JarvisEngine
     {
         private readonly ManualResetEvent _quitEvent = new ManualResetEvent(false);

@@ -1,6 +1,6 @@
 ﻿namespace Jarvis.SecureDesktop
 {
-    class Launcher
+    public class Launcher
     {
         static void Main()
         {

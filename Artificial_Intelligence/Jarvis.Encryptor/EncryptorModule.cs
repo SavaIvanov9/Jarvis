@@ -1,14 +1,10 @@
-﻿using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Windows.Forms;
-using Jarvis.Encryptor.ProcessCommunication;
-
-namespace Jarvis.Encryptor
+﻿namespace Jarvis.Encryptor
 {
     using System;
     using System.IO;
     using Commands;
-
+    using System.Threading;
+    using System.Windows.Forms;
     public sealed class EncryptorModule
     {
         private static Lazy<EncryptorModule> Lazy =

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Jarvis.Encryptor
+﻿namespace Jarvis.Encryptor
 {
+    using System;
+
     class Launcher
     {
         static void Main()

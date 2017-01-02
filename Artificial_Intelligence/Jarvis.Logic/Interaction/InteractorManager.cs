@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using Jarvis.Logic.Interaction.Interfaces;
-
-namespace Jarvis.Logic.Interaction
+﻿namespace Jarvis.Logic.Interaction
 {
+    using System.Collections.Generic;
+    using System.Threading;
+    using Interfaces;
+
     public class InteractorManager : IInteractorManager
     {
         private readonly List<IInteractor> _interactors = new List<IInteractor>();

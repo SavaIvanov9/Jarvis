@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Jarvis.Commons.Utilities
+﻿namespace Jarvis.Commons.Utilities
 {
+    using System;
+
     public sealed class Validator
     {
         private static readonly Lazy<Validator> Lazy =

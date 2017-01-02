@@ -1,13 +1,11 @@
-﻿using System;
-using System.IO;
-using System.IO.Pipes;
-using System.Threading;
-using System.Windows.Forms;
-using Jarvis.Commons.Logger;
-using Jarvis.Logic.Interaction.Interfaces;
-
-namespace Jarvis.Logic.ProcessCommunication
+﻿namespace Jarvis.Logic.ProcessCommunication
 {
+    using System.IO;
+    using System.IO.Pipes;
+    using System.Threading;
+    using Commons.Logger;
+    using Interaction.Interfaces;
+
     public class CommunicationServer
     {
         private readonly string _serverName;

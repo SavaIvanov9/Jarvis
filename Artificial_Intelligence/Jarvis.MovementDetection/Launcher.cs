@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading;
-
-namespace Jarvis.MovementDetection
+﻿namespace Jarvis.MovementDetection
 {
-    class Launcher
+    using System;
+    using System.Threading;
+
+    public class Launcher
     {
         static void Main()
         {

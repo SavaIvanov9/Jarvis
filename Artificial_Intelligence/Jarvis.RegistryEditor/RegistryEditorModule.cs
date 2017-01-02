@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32;
-
-namespace Jarvis.RegistryEditor
+﻿namespace Jarvis.RegistryEditor
 {
+    using System;
+    using System.IO;
+    using System.Reflection;
+    using Microsoft.Win32;
+
     public sealed class RegistryEditorModule 
     {
         private static readonly Lazy<RegistryEditorModule> Lazy =

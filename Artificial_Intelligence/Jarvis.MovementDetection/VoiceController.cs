@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Speech.Synthesis;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Jarvis.MovementDetection
+﻿namespace Jarvis.MovementDetection
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Speech.Synthesis;
+
     public class VoiceController
     {
         private SpeechSynthesizer _speaker = new SpeechSynthesizer();

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Speech.Recognition;
-using System.Speech.Synthesis;
-using Jarvis.Commons.Logger;
-using Jarvis.Encryptor.Commands;
-using Jarvis.Logic.CommandControl.Constants;
-using Jarvis.Logic.Interaction.Interfaces;
-using CommandContainer = Jarvis.Logic.CommandControl.CommandContainer;
-
-namespace Jarvis.Logic.Interaction.Interactors
+﻿namespace Jarvis.Logic.Interaction.Interactors
 {
+    using System;
+    using System.Speech.Recognition;
+    using System.Speech.Synthesis;
+    using Commons.Logger;
+    using CommandControl.Constants;
+    using Interfaces;
+    using CommandControl;
+
     public class VoiceInteractor : IInteractor
     {
         private SpeechSynthesizer _speaker = new SpeechSynthesizer();

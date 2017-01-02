@@ -1,8 +1,8 @@
-﻿using System;
-using Jarvis.Logic.Core.DecisionControl.Interfaces;
-
-namespace Jarvis.Logic.Core.Providers.Decisions
+﻿namespace Jarvis.Logic.Core.DecisionControl
 {
+    using System;
+    using Interfaces;
+
     public class DecisionTaker : IDecisionTaker
     {
         public string TakeDecision()

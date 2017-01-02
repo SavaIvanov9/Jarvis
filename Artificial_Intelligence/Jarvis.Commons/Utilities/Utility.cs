@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Forms;
-
-namespace Jarvis.Commons.Utilities
+﻿namespace Jarvis.Commons.Utilities
 {
+    using System;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
+    using System.Text;
+    using System.Windows.Forms;
+
     public sealed class Utility
     {
         private readonly char[] _alphabet;
@@ -23,10 +23,8 @@ namespace Jarvis.Commons.Utilities
                 Enumerable.Range('a', 26).Select(c => (char)c).Concat(
                 Enumerable.Range('0', 10).Select(c => (char)c)))
                 .ToArray();
-
         }
-
-
+        
         public static Utility Instance
         {
             [MethodImpl(MethodImplOptions.Synchronized)]

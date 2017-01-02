@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Jarvis.Commons.Logger;
-
-namespace Jarvis.Logic.ProcessCommunication
+﻿namespace Jarvis.Logic.ProcessCommunication
 {
+    using System;
+    using System.Collections.Generic;
+
     public delegate void OnNewMessageHandler(string selectedValue);
 
     public class CommunicationContainer

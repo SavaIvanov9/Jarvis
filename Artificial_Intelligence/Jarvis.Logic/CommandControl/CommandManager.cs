@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Windows.Forms;
-using Jarvis.Commons.Logger;
-using Jarvis.Commons.Utilities;
-using Jarvis.Data;
-using Jarvis.Logic.CommandControl.Constants;
-using Jarvis.Logic.Interaction;
-using Jarvis.Logic.Interaction.Interfaces;
-using Jarvis.Logic.ProcessCommunication;
-using Jarvis.RegistryEditor;
-using Jarvis.SecureDesktop;
-using Jarvis.Web;
-
-namespace Jarvis.Logic.CommandControl
+﻿namespace Jarvis.Logic.CommandControl
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Windows.Forms;
+    using Commons.Logger;
+    using Commons.Utilities;
+    using Constants;
+    using Interaction.Interfaces;
+
     public sealed class CommandManager
     {
         private static readonly Lazy<CommandManager> Lazy =
@@ -66,41 +58,53 @@ namespace Jarvis.Logic.CommandControl
                         case CommandConstants.Initialize:
                             CommandProcessor.Instance.Initialize(_interactorManager);
                             break;
+
                         case CommandConstants.AddToStartup:
                             CommandProcessor.Instance.AddToStartup(commandParts, commandParams, _interactorManager);
                             break;
+
                         case CommandConstants.Tell:
                             CommandProcessor.Instance.TellMe(commandParts, commandParams, _interactorManager);
                             break;
+
                         case CommandConstants.StartModule:
                             CommandProcessor.Instance.StartModule(
                                 commandParts, commandParams, _interactorManager, _logger);
                             break;
+
                         case CommandConstants.Close:
                             CommandProcessor.Instance.Close(commandParts, commandParams, _interactorManager);
                             break;
+
                         case CommandConstants.Open:
                             CommandProcessor.Instance.Open(commandParts, commandParams, _interactorManager);
                             break;
+
                         case CommandConstants.Search:
                             CommandProcessor.Instance.Search(commandParts, commandParams, _interactorManager);
                             break;
+
                         case CommandConstants.Shutup:
                             CommandProcessor.Instance.Shutup(_interactorManager);
                             break;
+
                         case CommandConstants.Mute:
                             CommandProcessor.Instance.Mute(_interactorManager);
                             break;
+
                         case CommandConstants.UnMute:
                             CommandProcessor.Instance.UnMute(_interactorManager);
                             break;
+
                         case CommandConstants.Exit:
                             CommandProcessor.Instance.Exit(_interactorManager);
                             break;
+
                         case CommandConstants.Show:
                             Utility.Instance.Show();
                             _interactorManager.SendOutput("Command window moved to front.");
                             break;
+
                         case CommandConstants.Hide:
                             Utility.Instance.Hide();
                             _interactorManager.SendOutput("Command window moved to background");
@@ -114,12 +118,11 @@ namespace Jarvis.Logic.CommandControl
                             SendKeys.SendWait("^{TAB}");
                             _interactorManager.SendOutput("Moved to next tab.");
                             break;
+
                         case "previoustab":
                             SendKeys.SendWait("^+{TAB}");
                             _interactorManager.SendOutput("Moved to previous tab.");
                             break;
-
-                        //case 
 
                         default:
                             _interactorManager.SendOutput(CommandNotFoundMsg);

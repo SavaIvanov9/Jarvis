@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-
-namespace Jarvis.Encryptor
+﻿namespace Jarvis.Encryptor
 {
+    using System;
+    using System.Runtime.CompilerServices;
+
     public sealed class Logger
     {
         private static readonly Lazy<Logger> Lazy =

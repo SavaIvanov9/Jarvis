@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\DuplicateInstanceException.cs" />
     <Compile Include="Logger\ConsoleLogger.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

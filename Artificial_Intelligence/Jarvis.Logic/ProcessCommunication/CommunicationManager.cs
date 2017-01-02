@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Jarvis.Commons.Logger;
-using Jarvis.Logic.Interaction.Interfaces;
-
-namespace Jarvis.Logic.ProcessCommunication
+﻿namespace Jarvis.Logic.ProcessCommunication
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Threading;
+    using Commons.Exceptions;
+    using Commons.Logger;
+    using Interaction.Interfaces;
+
     public delegate void OnExit();
 
     public class CommunicationManager
@@ -18,11 +17,11 @@ namespace Jarvis.Logic.ProcessCommunication
             new Lazy<CommunicationManager>(() => new CommunicationManager());
 
         public event OnExit ExitServer;
-        private List<Thread> _servers;
+        private readonly HashSet<Thread> _servers;
 
         private CommunicationManager()
         {
-            this._servers = new List<Thread>();
+            this._servers = new HashSet<Thread>();
         }
 
         public static CommunicationManager Instance
@@ -41,29 +40,35 @@ namespace Jarvis.Logic.ProcessCommunication
 
         public int AddServer(string servername, string connectionPass, ILogger logger, IInteractorManager manager)
         {
-            _servers.Add(
-                new Thread(() =>
-                {
-                    var server = new CommunicationServer(servername, connectionPass, logger, manager);
-                    server.Start();
-                })
-            );
+            if (_servers.Where(x => x.Name == servername).ToList().Count > 0)
+            {
+                throw new DuplicateInstanceException($"{servername} has alredy started");
+            }
+
+            var thread = new Thread(() =>
+            {
+                var server = new CommunicationServer(servername, connectionPass, logger, manager);
+                server.Start();
+            });
+            thread.Name = servername;
+
+            _servers.Add(thread);
             
             return _servers.Count - 1;
         }
 
         public void StartServer(int index)
         {
-            _servers[index].Start();
+            _servers.ElementAt(index).Start();
         }
 
-        public bool StopServer(int index)
+        public bool StopServer(string servername)
         {
             try
             {
                 OnExit();
-                _servers[index].Join();
-                _servers.RemoveAt(index);
+                //_servers.ElementAt(index).Join();
+                _servers.RemoveWhere(x => x.Name == servername);
                 return true;
             }
             catch

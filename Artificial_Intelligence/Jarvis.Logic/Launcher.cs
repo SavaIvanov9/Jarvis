@@ -6,7 +6,7 @@
     using Interaction.Interactors;
     using Interaction.Interfaces;
 
-    class Launcher
+    public class Launcher
     {
         static void Main()
         {
