@@ -56,15 +56,17 @@
                     switch (commandParts[0])
                     {
                         case CommandConstants.Initialize:
-                            CommandProcessor.Instance.Initialize(_interactorManager);
+                            CommandProcessor.Instance.Initialize(_interactorManager, _logger);
                             break;
 
                         case CommandConstants.AddToStartup:
-                            CommandProcessor.Instance.AddToStartup(commandParts, commandParams, _interactorManager);
+                            CommandProcessor.Instance.AddToStartup(commandParts, commandParams,
+                                _interactorManager);
                             break;
 
                         case CommandConstants.Tell:
-                            CommandProcessor.Instance.TellMe(commandParts, commandParams, _interactorManager);
+                            CommandProcessor.Instance.TellMe(commandParts, commandParams,
+                                _interactorManager, _logger);
                             break;
 
                         case CommandConstants.StartModule:
@@ -73,15 +75,23 @@
                             break;
 
                         case CommandConstants.Close:
-                            CommandProcessor.Instance.Close(commandParts, commandParams, _interactorManager);
+                            CommandProcessor.Instance.Close(commandParts, commandParams,
+                                _interactorManager);
+                            break;
+
+                        case CommandConstants.Stop:
+                            CommandProcessor.Instance.Stop(commandParts, commandParams,
+                                _interactorManager, _logger);
                             break;
 
                         case CommandConstants.Open:
-                            CommandProcessor.Instance.Open(commandParts, commandParams, _interactorManager);
+                            CommandProcessor.Instance.Open(commandParts, commandParams,
+                                _interactorManager);
                             break;
 
                         case CommandConstants.Search:
-                            CommandProcessor.Instance.Search(commandParts, commandParams, _interactorManager);
+                            CommandProcessor.Instance.Search(commandParts, commandParams,
+                                _interactorManager);
                             break;
 
                         case CommandConstants.Shutup:
@@ -111,7 +121,8 @@
                             break;
 
                         case CommandConstants.Gom:
-                            CommandProcessor.Instance.Gom(commandParts, commandParams, _interactorManager);
+                            CommandProcessor.Instance.Gom(commandParts, commandParams,
+                                _interactorManager);
                             break;
 
                         case "nexttab":

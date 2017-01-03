@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Threading;
     using Commons.Logger;
@@ -27,12 +26,12 @@
         {
             if (interactors.Count == 0)
             {
-                throw new InvalidEnumArgumentException($"Interactors cannot be 0!");
+                throw new ArgumentException($"Interactors cannot be 0!");
             }
 
             if (logger == null)
             {
-                throw new InvalidEnumArgumentException($"Logger cannot be 0!");
+                throw new ArgumentException($"Logger cannot be 0!");
             }
 
             return new JarvisEngine(logger, interactors);

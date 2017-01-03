@@ -1,20 +1,17 @@
-﻿using System;
-using System.IO;
-using System.Text;
-//using Jarvis.Encryptor.Commands;
-
-namespace Jarvis.Organizer.ProcessCommunication
+﻿namespace Jarvis.Organizer.ProcessCommunication
 {
+    using System;
+    using System.IO;
+    using System.Text;
+
     public class StreamManager
     {
         private string _command = "";
-        private TextWriter _writer;
-        private Stream _ioStream;
-        private UnicodeEncoding _streamEncoding;
+        private readonly Stream _ioStream;
+        private readonly UnicodeEncoding _streamEncoding;
 
-        public StreamManager(Stream ioStream, TextWriter writer)
+        public StreamManager(Stream ioStream)
         {
-            this._writer = writer;
             this._ioStream = ioStream;
             _streamEncoding = new UnicodeEncoding();
         }
@@ -27,16 +24,10 @@ namespace Jarvis.Organizer.ProcessCommunication
 
         public void StartListeningForNewCommand()
         {
-            //new Thread(() =>
-            //{
-
             while (_command != "exit" || _command != "stop connection to server")
             {
                 this._command = ReadString();
-                //CommandContainer.Instance.AddCommand(_command, _writer);
-                //_writer.WriteLine(_command);
             }
-            //}).Start();
         }
 
         public string ReadString()

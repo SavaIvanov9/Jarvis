@@ -7,5 +7,8 @@
         public const string MovementDetection = "movementdetection";
         public const string Organizer = "organizer";
         public const string GetRedyTimeTracker = "getredytime";
+        public const string StartSleepRecording = "start sleep recording";
+        public const string StoptSleepRecording = "stop sleep recording";
+        public const string GetSleepStatistic = "get sleep data";
     }
 }

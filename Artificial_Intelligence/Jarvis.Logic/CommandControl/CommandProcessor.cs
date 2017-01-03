@@ -30,23 +30,23 @@
             [MethodImpl(MethodImplOptions.Synchronized)] get { return Lazy.Value; }
         }
 
-        public void Initialize(IInteractorManager interactorManager)
+        public void Initialize(IInteractorManager interactorManager, ILogger logger)
         {
             interactorManager.SendOutput("Jarvis core system started.", false);
             foreach (var interactor in interactorManager.Interactors)
             {
-                interactorManager.SendOutput($"{interactor.GetType().Name} activated.", false);
+                logger.Log($"{interactor.GetType().Name} activated.");
             }
 
             try
             {
                 var db = new JarvisData();
-                db.Jokes.All().Count();
-                interactorManager.SendOutput($"Connection to database {db.GetType().Name} established.", false);
+                db.Jokes.All().ToList().Count();
+                logger.Log($"Connection to database {db.GetType().Name} established.");
             }
             catch (Exception)
             {
-                interactorManager.SendOutput($"Failed to connect to database.", false);
+                logger.Log($"Failed to connect to database.");
             }
         }
 
@@ -161,10 +161,18 @@
                     }
                     break;
 
+                case "sleeprecording":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    CommunicationContainer.Instance.AddMessage(ModuleConstants.StartSleepRecording);
+
+                    logger.Log("Sleep secording started.");
+                    break;
+
                 case ModuleConstants.GetRedyTimeTracker:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
-                    CommunicationContainer.Instance.AddMessage("start getreadytime");
+                    CommunicationContainer.Instance.AddMessage("getreadytime");
 
                     interactor.SendOutput("getreadytime started.");
                     break;
@@ -259,16 +267,42 @@
                     SendKeys.SendWait("^w");
                     interactor.SendOutput("Tab closed.");
                     break;
-
             }
         }
 
-        public void TellMe(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
+        public void Stop(IList<string> commandParts, IList<string> commandParams,
+            IInteractorManager interactor, ILogger logger)
+        {
+            switch (commandParts[1])
+            {
+                case "sleeprecording":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    CommunicationContainer.Instance.AddMessage(ModuleConstants.StoptSleepRecording);
+
+                    logger.Log("Sleep secording stopped.");
+                    break;
+                default:
+                    interactor.SendOutput(CommandNotFoundMsg);
+                    break;
+            }
+        }
+
+        public void TellMe(IList<string> commandParts, IList<string> commandParams,
+            IInteractorManager interactor, ILogger logger)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(
                 commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
             {
+                case "sleepdata":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    CommunicationContainer.Instance.AddMessage(ModuleConstants.GetSleepStatistic);
+
+                    logger.Log("Sleep statistic started.");
+                    //interactor.SendOutput("Sleep statistic started.");
+                    break;
                 case "random":
                     Validator.Instance.ValidateIsAboveOqEqualMinimum(
                         commandParts.Count, 3, CommandNotFoundMsg);
@@ -417,7 +451,6 @@
             Shutup(interactorManager);
             interactorManager.SendOutput("See ya soon!", false);
             interactorManager.StopInteractors();
-
             Environment.Exit(0);
         }
     }

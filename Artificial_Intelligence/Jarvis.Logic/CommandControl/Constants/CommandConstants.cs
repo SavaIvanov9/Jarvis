@@ -4,11 +4,12 @@
     {
         public const string Initialize = "init";
         public const string AddToStartup = "addtostartup";
-        public const string Tell = "tell";
+        public const string Tell = "tellme";
         public const string StartModule = "start";
         public const string Open = "open";
         public const string Search = "search";
         public const string Close = "close";
+        public const string Stop = "stop";
         public const string Shutup = "shutup";
         public const string Show = "gotofront";
         public const string Hide = "gotobackground";
@@ -24,7 +25,11 @@
             "start securedpass",
             "start movementdetection",
             "close movementdetection",
+
             "start organizer",
+            "start sleeprecording",
+            "stop sleeprecording",
+            "tellme sleepdata",
             "start getredytime",
             "close organizer",
 
@@ -36,7 +41,7 @@
             "close webtab",
             "close media",
 
-            "tell joke",
+            "tellme joke",
             "shutup",
             "mute",
             "unmute",

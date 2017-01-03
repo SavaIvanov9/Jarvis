@@ -33,8 +33,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,13 +53,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandControl\CommandConstants.cs" />
+    <Compile Include="CommandControl\CommandContainer.cs" />
+    <Compile Include="CommandControl\CommandManager.cs" />
+    <Compile Include="CommandControl\CommandProcessor.cs" />
+    <Compile Include="CommandReceiving\IReceiverManager.cs" />
+    <Compile Include="CommandReceiving\ReceiverManager.cs" />
+    <Compile Include="CommandReceiving\Receivers\ConsoleReceiver.cs" />
+    <Compile Include="CommandReceiving\Receivers\IReceiver.cs" />
+    <Compile Include="CommandReceiving\Receivers\JarvisCoreReceiver.cs" />
+    <Compile Include="OrganizerEngine.cs" />
+    <Compile Include="Output\IOutputManager.cs" />
+    <Compile Include="Output\OutputManager.cs" />
     <Compile Include="ProcessCommunication\CommunicationClient.cs" />
     <Compile Include="ProcessCommunication\StreamManager.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Launcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Jarvis.Commons\Jarvis.Commons.csproj">
+      <Project>{48BA70AC-EC33-4F3F-A3C0-C2C40E4808F5}</Project>
+      <Name>Jarvis.Commons</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jarvis.Data.Models\Jarvis.Data.Models.csproj">
+      <Project>{073f2fa7-642b-4f53-bb1f-a835f64451c4}</Project>
+      <Name>Jarvis.Data.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jarvis.Data\Jarvis.Data.csproj">
+      <Project>{5c882a8a-b70b-44da-9bae-5e85989332de}</Project>
+      <Name>Jarvis.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

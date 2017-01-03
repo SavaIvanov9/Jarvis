@@ -14,6 +14,8 @@
         public string StartTime { get; set; }
 
         [Required]
-        public long DurationInMinutes { get; set; }
+        public bool IsEnded { get; set; }
+
+        public string Duration { get; set; }
     }
 }

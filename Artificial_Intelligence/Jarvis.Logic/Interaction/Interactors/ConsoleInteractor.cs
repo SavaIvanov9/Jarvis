@@ -57,7 +57,7 @@
 
         private void Initialize()
         {
-            Console.Title = "J.A.R.V.I.S.";
+            Console.Title = "Jarvis.Core";
             Console.ForegroundColor = ConsoleColor.Green;
             Console.BackgroundColor = ConsoleColor.Black;
         }

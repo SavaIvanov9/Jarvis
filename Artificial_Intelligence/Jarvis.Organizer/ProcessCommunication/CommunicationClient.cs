@@ -29,7 +29,7 @@ namespace Jarvis.Organizer.ProcessCommunication
             pipeClient.Connect();
             _writer.WriteLine("Connected to server");
 
-            StreamManager streamManager = new StreamManager(pipeClient, _writer);
+            StreamManager streamManager = new StreamManager(pipeClient);
             streamManager.WriteString("Jarvis.Organizer");
 
             if (streamManager.ReadString() == "Some password")

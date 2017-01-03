@@ -1,0 +1,123 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using System.Text;
+using System.Threading.Tasks;
+using Jarvis.Commons.Logger;
+using Jarvis.Data;
+using Jarvis.Data.Models;
+using Jarvis.Organizer.CommandReceiving;
+using Jarvis.Organizer.Output;
+
+namespace Jarvis.Organizer.CommandControl
+{
+    public sealed class CommandProcessor
+    {
+        private static readonly Lazy<CommandProcessor> Lazy =
+            new Lazy<CommandProcessor>(() => new CommandProcessor());
+        private IJarvisData _jarvisData = new JarvisData();
+
+        private const string CommandNotFoundMsg = "Command not found.";
+        private const string InvalidParametersMsg = "Invalid Parameters.";
+
+        public static CommandProcessor Instance
+        {
+            [MethodImpl(MethodImplOptions.Synchronized)] get { return Lazy.Value; }
+        }
+
+        public void StartSleepRecording(IOutputManager outputManager, ILogger logger)
+        {
+            var newSleepTime = new SleepTime
+            {
+                Date = DateTime.Now.ToShortDateString(),
+                StartTime = DateTime.Now.ToString("t"),
+                IsEnded = false
+            };
+
+            _jarvisData.SleepTimes.Add(newSleepTime);
+            _jarvisData.SaveChanges();
+
+            outputManager.SendOutput("New sleeptime added to database.");
+            logger.Log($"Start date: {newSleepTime.Date}");
+            logger.Log($"Start time: {newSleepTime.StartTime}");
+            logger.Log($"IsEnded: {newSleepTime.IsEnded}");
+        }
+
+        public void StoptSleepRecording(IOutputManager outputManager, ILogger logger)
+        {
+            var sleepTime = _jarvisData
+                .SleepTimes
+                .All()
+                .ToList()[_jarvisData.SleepTimes.All().Count() - 1];
+
+            if (sleepTime.IsEnded)
+            {
+                outputManager.SendOutput("There is no new data.");
+            }
+            else
+            {
+                var startDateParts = sleepTime.Date.Split(
+                    new[] {"."}, StringSplitOptions.None);
+                //Console.WriteLine(startDateParts[0]);
+                //Console.WriteLine(startDateParts[1]);
+                //Console.WriteLine(startDateParts[2].Substring(0, 4));
+
+                var startTimeParts = sleepTime.StartTime.Split(
+                    new[] {":"}, StringSplitOptions.None);
+                //Console.WriteLine(startTimeParts[0]);
+                //Console.WriteLine(startTimeParts[1]);
+
+                var duration = DateTime.Now.Subtract(
+                    new DateTime(
+                        int.Parse(startDateParts[2].Substring(0, 4)),
+                        int.Parse(startDateParts[1]),
+                        int.Parse(startDateParts[0]),
+                        int.Parse(startTimeParts[0]),
+                        int.Parse(startTimeParts[1]),
+                        0));
+
+                //Console.WriteLine(duration.ToString().Substring(0, duration.ToString().Length-8));
+
+                sleepTime.IsEnded = true;
+                sleepTime.Duration = duration.ToString().Substring(0, duration.ToString().Length - 8);
+
+                outputManager.SendOutput($"Last sleep duration is {sleepTime.Duration}");
+                _jarvisData.SleepTimes.All().ToList()[_jarvisData.SleepTimes.All().Count() - 1] = sleepTime;
+                _jarvisData.SaveChanges();
+            }
+        }
+
+        public void GetSleepStatistic(IOutputManager outputManager, ILogger logger)
+        {
+            var dateParts = DateTime.Now.ToShortDateString()
+                .Split(new[] { "." }, StringSplitOptions.None);
+
+            var data = _jarvisData
+                .SleepTimes
+                .All().ToList()
+                .Where(x => x.IsEnded 
+                && x.Date.Split(new[] {"."}, StringSplitOptions.None)[2] == dateParts[2] 
+                && x.Date.Split(new[] { "." }, StringSplitOptions.None)[1] == dateParts[1]
+                && int.Parse(x.Date.Split(new[] {"."}, StringSplitOptions.None)[0]) >= int.Parse(dateParts[0]) - 7)
+                ;
+
+            //var totalDuration = data.Sum(x => long.Parse(x.Duration));
+            TimeSpan totalDuration = new TimeSpan();
+            foreach (var sleepTime in data)
+            {
+                totalDuration += (TimeSpan.Parse(sleepTime.Duration));
+            }
+            //totalDuration
+            outputManager.SendOutput($"Total sleep for last 7 days is {totalDuration}");
+        }
+
+        public void Exit(IReceiverManager receiverManager)
+        {
+            receiverManager.StopReceivers();
+            Environment.Exit(0);
+        }
+    }
+}
