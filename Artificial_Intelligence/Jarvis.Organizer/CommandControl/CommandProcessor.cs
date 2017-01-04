@@ -18,7 +18,7 @@ namespace Jarvis.Organizer.CommandControl
     {
         private static readonly Lazy<CommandProcessor> Lazy =
             new Lazy<CommandProcessor>(() => new CommandProcessor());
-        private IJarvisData _jarvisData = new JarvisData();
+        private readonly IJarvisData _jarvisData = new JarvisData();
 
         private const string CommandNotFoundMsg = "Command not found.";
         private const string InvalidParametersMsg = "Invalid Parameters.";

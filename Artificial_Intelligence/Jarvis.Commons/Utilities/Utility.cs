@@ -53,7 +53,11 @@
             return result.ToString();
         }
 
-        public DateTime RandomDateTime(DateTime after, DateTime before)
+        public DateTime RandomDateTime()
+        {
+            return RandomDateTime(new DateTime(0, 0, 0), new DateTime(int.MaxValue, int.MaxValue, int.MaxValue));
+        }
+        public DateTime RandomDateTime(DateTime after, DateTime before )
         {
             int range = (before - after).Days;
             return after.AddDays(_random.Next(range));

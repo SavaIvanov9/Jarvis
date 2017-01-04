@@ -100,10 +100,12 @@
 
                         case CommandConstants.Mute:
                             CommandProcessor.Instance.Mute(_interactorManager);
+                            _interactorManager.SendOutput("Voice interaction paused.", false);
                             break;
 
                         case CommandConstants.UnMute:
                             CommandProcessor.Instance.UnMute(_interactorManager);
+                            _interactorManager.SendOutput("Voice interaction unpaused.", false);
                             break;
 
                         case CommandConstants.Exit:
@@ -112,12 +114,12 @@
 
                         case CommandConstants.Show:
                             Utility.Instance.Show();
-                            _interactorManager.SendOutput("Command window moved to front.");
+                            _interactorManager.SendOutput("Command window moved to front.", false);
                             break;
 
                         case CommandConstants.Hide:
                             Utility.Instance.Hide();
-                            _interactorManager.SendOutput("Command window moved to background");
+                            _interactorManager.SendOutput("Command window moved to background", false);
                             break;
 
                         case CommandConstants.Gom:
@@ -127,12 +129,12 @@
 
                         case "nexttab":
                             SendKeys.SendWait("^{TAB}");
-                            _interactorManager.SendOutput("Moved to next tab.");
+                            _interactorManager.SendOutput("Moved to next tab.", false);
                             break;
 
                         case "previoustab":
                             SendKeys.SendWait("^+{TAB}");
-                            _interactorManager.SendOutput("Moved to previous tab.");
+                            _interactorManager.SendOutput("Moved to previous tab.", false);
                             break;
 
                         default:
@@ -142,7 +144,7 @@
                 }
                 else
                 {
-                    _interactorManager.SendOutput("Command cannot be empty!");
+                    _interactorManager.SendOutput("Command cannot be empty!", false);
                 }
             }
             catch (Exception ex)

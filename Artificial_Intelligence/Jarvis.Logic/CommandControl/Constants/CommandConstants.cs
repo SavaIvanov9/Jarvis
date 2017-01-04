@@ -33,19 +33,30 @@
             "start getredytime",
             "close organizer",
 
+            "open mail",
+            "open visualstudio",
+            "open sqlserver",
+            "open git",
             "open google",
             "open youtube",
+            "open projects",
+            "open documents",
             "nexttab",
             "previoustab",
 
-            "close webtab",
+            "close tab",
             "close media",
 
             "tellme joke",
+            "tellme random number",
+            "tellme random string",
+            "tellme random number",
+
             "shutup",
             "mute",
             "unmute",
 
+            "addtostartup yourself",
             "gotobackground",
             "gotofront",
             //"stop",
@@ -64,7 +75,7 @@
             "..\\..\\..\\Jarvis.MovementDetection\\bin\\Debug\\Jarvis.MovementDetection.exe";
         public const string OrganizerPath =
             "..\\..\\..\\Jarvis.Organizer\\bin\\Debug\\Jarvis.Organizer.exe";
-
+        
         public const string SecureDesktopFile = "Jarvis.SecureDesktop";
         public const string EncryptorFile = "Jarvis.Encryptor";
         public const string MovementDetectionFile = "Jarvis.MovementDetection";
