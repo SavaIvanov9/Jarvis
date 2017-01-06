@@ -1,15 +1,17 @@
-﻿namespace Jarvis.Logic.CommandControl
+﻿
+namespace Jarvis.Logic.CommandControl
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Windows.Forms;
+    using Commons.CrashReporter;
     using Commons.Logger;
     using Commons.Utilities;
     using Constants;
     using Interaction.Interfaces;
-
+    
     public sealed class CommandManager
     {
         private static readonly Lazy<CommandManager> Lazy =
@@ -17,6 +19,7 @@
 
         private ILogger _logger;
         private IInteractorManager _interactorManager;
+        private IReporter _reporter;
         private const string CommandNotFoundMsg = "Command not found.";
         private const string InvalidParametersMsg = "Invalid Parameters.";
 
@@ -31,10 +34,11 @@
             get { return Lazy.Value; }
         }
 
-        public void Start(IInteractorManager interactorManager, ILogger logger)
+        public void Start(IInteractorManager interactorManager, ILogger logger, IReporter reporter)
         {
             this._interactorManager = interactorManager;
             this._logger = logger;
+            this._reporter = reporter;
             ManageCommand(CommandConstants.Initialize);
         }
 
@@ -127,6 +131,11 @@
                                 _interactorManager);
                             break;
 
+                        case CommandConstants.Help:
+                            CommandProcessor.Instance.Help(commandParts, commandParams,
+                                _interactorManager, _logger);
+                            break;
+
                         case "nexttab":
                             SendKeys.SendWait("^{TAB}");
                             _interactorManager.SendOutput("Moved to next tab.", false);
@@ -149,7 +158,8 @@
             }
             catch (Exception ex)
             {
-                _logger.LogCommand(ex.ToString());
+                _logger.LogCommand(ex.Message 
+                    + Environment.NewLine + _reporter.CreateReport(ex));
             }
         }
 

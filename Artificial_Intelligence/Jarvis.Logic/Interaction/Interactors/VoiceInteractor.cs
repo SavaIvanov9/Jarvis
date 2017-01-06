@@ -1,4 +1,6 @@
-﻿namespace Jarvis.Logic.Interaction.Interactors
+﻿using System.Threading;
+
+namespace Jarvis.Logic.Interaction.Interactors
 {
     using System;
     using System.Speech.Recognition;
@@ -20,7 +22,7 @@
         //private readonly PromptBuilder _promptBuilder = new PromptBuilder();
         //private SpeechSynthesizer _speaker;
         //private SpeechRecognitionEngine _listener;
-        
+
         public VoiceInteractor(ILogger logger)
         {
             if (logger == null)
@@ -34,36 +36,41 @@
         public bool IsActive
         {
             get { return _isActive; }
-
         }
 
         public void SendOutput(string output, bool isAsync)
         {
             //using (_speaker = new SpeechSynthesizer())
             //{
-                try
-                {
-                    _speaker.SelectVoice("Microsoft David Desktop");
-                    //_logger.LogCommand("Voice set to Microsoft David Desktop");
-                }
-                catch
-                {
-                    _logger.LogCommand("Voice set to default.");
-                }
+            try
+            {
+                _speaker.SelectVoice("Microsoft David Desktop");
+                //_logger.LogCommand("Voice set to Microsoft David Desktop");
+            }
+            catch
+            {
+                _logger.LogCommand("Voice set to default.");
+            }
 
-                if (isAsync)
-                {
-                    _speaker.SpeakAsyncCancelAll();
-                    _promptBuilder.ClearContent();
-                    _promptBuilder.AppendText(output);
-                    _speaker.SpeakAsync(_promptBuilder);
-                }
-                else
-                {
-                    _promptBuilder.ClearContent();
-                    _promptBuilder.AppendText(output);
-                    _speaker.Speak(_promptBuilder);
-                }
+            if (isAsync)
+            {
+                _listener.RecognizeAsyncStop();
+                _speaker.SpeakAsyncCancelAll();
+                _promptBuilder.ClearContent();
+                _promptBuilder.AppendText(output);
+                _speaker.Speak(_promptBuilder);
+                //_listener.Recognize();
+                _listener.RecognizeAsync(RecognizeMode.Multiple);
+            }
+            else
+            {
+                _listener.RecognizeAsyncStop();
+                _promptBuilder.ClearContent();
+                _promptBuilder.AppendText(output);
+                _speaker.Speak(_promptBuilder);
+                //_listener.Recognize();
+                _listener.RecognizeAsync(RecognizeMode.Multiple);
+            }
             //}
         }
 
@@ -90,28 +97,29 @@
             //using (_listener = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US")))
             //{
             GrammarBuilder findServices = new GrammarBuilder("Jarvis");
-                findServices.Append(new Choices(CommandConstants.AllCommands));
-                //findServices..Append(new Choices(EncryptorConstants.ValidChoises));
-                Grammar servicesGrammar = new Grammar(findServices);
-
-                try
-                {
-                    _listener.RequestRecognizerUpdate();
-                    _listener.LoadGrammar(servicesGrammar);
-                    _listener.SpeechRecognized += SetCurrentInput;
-                    _listener.SetInputToDefaultAudioDevice();
-                    _listener.RecognizeAsync(RecognizeMode.Multiple);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogCommand(ex.ToString());
-                }
+            findServices.Append(new Choices(CommandConstants.AllCommands));
+            //findServices..Append(new Choices(EncryptorConstants.ValidChoises));
+            Grammar servicesGrammar = new Grammar(findServices);
+            try
+            {
+                //_listener.
+                _listener.RequestRecognizerUpdate();
+                _listener.LoadGrammar(servicesGrammar);
+                _listener.SpeechRecognized += SetCurrentInput;
+                _listener.SetInputToDefaultAudioDevice();
+                _listener.RecognizeAsync(RecognizeMode.Multiple);
+                //_listener.Recognize();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCommand(ex.ToString());
+            }
             //}
         }
-        
+
         private void SetCurrentInput(object sender, SpeechRecognizedEventArgs e)
         {
-            
+
             var input = e.Result.Text.Substring(7, e.Result.Text.Length - 7);
             //SendOutput("Command " + input);
 
@@ -129,7 +137,7 @@
             //_promptBuilder.AppendText("Command " + input + " identified");
             //_speechSynth.Speak(_promptBuilder);
             ////---------------------------------------------------------------
-            
+
 
             for (int c = 0; c < CommandConstants.AllCommands.Length; c++)
             {

@@ -1,4 +1,6 @@
-﻿namespace Jarvis.Logic.CommandControl
+﻿using Jarvis.Encryptor;
+
+namespace Jarvis.Logic.CommandControl
 {
     using System;
     using System.Collections.Generic;
@@ -33,7 +35,7 @@
 
         public void Initialize(IInteractorManager interactorManager, ILogger logger)
         {
-            interactorManager.SendOutput("Jarvis core system started.", false);
+            interactorManager.SendOutput("Jarvis core system started.");
             foreach (var interactor in interactorManager.Interactors)
             {
                 logger.Log($"{interactor.GetType().Name} activated.");
@@ -68,7 +70,7 @@
                     {
                         Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                         WebManager.Instance.OpenSite(new List<string>() { "google.com" });
-                        interactor.SendOutput($@"Searching in web.", false);
+                        interactor.SendOutput($@"Searching in web.");
                     }
                     break;
                 default:
@@ -86,8 +88,8 @@
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
                     Process.Start("firefox.exe", "http://mail.google.com/");
-                    
-                    interactor.SendOutput("Mail opened.", false);
+
+                    interactor.SendOutput("Mail opened.");
                     break;
 
                 case "git":
@@ -95,7 +97,7 @@
 
                     //Process.Start("C:\\Users\\savat\\AppData\\Local\\GitHub\\GitHub.appref-ms");
                     Process.Start("C:\\Users\\savat\\AppData\\Local\\Apps\\2.0\\E821A0P3.QBQ\\R8NDHZWJ.D1B\\gith..tion_317444273a93ac29_0003.0003_665ccbdbd3c2d8d4\\GitHub.exe");
-                    interactor.SendOutput("Git Hub opened.", false);
+                    interactor.SendOutput("Git Hub opened.");
                     break;
 
                 case "sqlserver":
@@ -103,27 +105,27 @@
 
                     Process.Start("ssms.exe");
 
-                    interactor.SendOutput("MS SQL Server Management Studio opened.", false);
+                    interactor.SendOutput("MS SQL Server Management Studio opened.");
                     break;
 
                 case "visualstudio":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                     Process.Start("devenv.exe");
-                    interactor.SendOutput("Visual Studio opened.", false);
+                    interactor.SendOutput("Visual Studio opened.");
                     break;
 
                 case "site":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                     Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParams.Count, 1, InvalidParametersMsg);
                     WebManager.Instance.OpenSite(commandParams);
-                    interactor.SendOutput($"{commandParams[0]} opened with Firefox.", false);
+                    interactor.SendOutput($"{commandParams[0]} opened with Firefox.");
                     break;
 
                 case "google":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
                     Process.Start("firefox.exe", "http://www.google.com");
-                    interactor.SendOutput("Google opened.", false);
+                    interactor.SendOutput("Google opened.");
                     //secondProc.StartInfo;
                     //secondProc.Start();
 
@@ -135,7 +137,7 @@
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
                     Process.Start("firefox.exe", "http://www.youtube.com");
-                    interactor.SendOutput("Youtube opened.", false);
+                    interactor.SendOutput("Youtube opened.");
                     //secondProc.StartInfo;
                     //secondProc.Start();
 
@@ -147,14 +149,14 @@
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
                     Process.Start("C:\\Users\\savat\\Documents\\Projects");
-                    interactor.SendOutput("Projects opened.", false);
+                    interactor.SendOutput("Projects opened.");
                     break;
 
                 case "documents":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
                     Process.Start("C:\\Users\\savat\\Documents");
-                    interactor.SendOutput("Documents opened.", false);
+                    interactor.SendOutput("Documents opened.");
                     break;
 
                 default:
@@ -254,11 +256,11 @@
                     //ComunicationManager.Instance.StopServer(0);
                     if (StopProcess(CommandConstants.EncryptorFile))
                     {
-                        interactor.SendOutput("Encryptor closed.", false);
+                        interactor.SendOutput("Encryptor closed.");
                     }
                     else
                     {
-                        interactor.SendOutput("Encryptor process not found.", false);
+                        interactor.SendOutput("Encryptor process not found.");
                     }
                     break;
 
@@ -267,11 +269,11 @@
 
                     if (StopProcess(CommandConstants.MovementDetectionFile))
                     {
-                        interactor.SendOutput("Movement detection closed.", false);
+                        interactor.SendOutput("Movement detection closed.");
                     }
                     else
                     {
-                        interactor.SendOutput("Movement detection process not found.", false);
+                        interactor.SendOutput("Movement detection process not found.");
                     }
                     break;
 
@@ -282,12 +284,12 @@
                     {
                         CommunicationContainer.Instance.AddMessage("exit");
                         CommunicationManager.Instance.StopServer("Jarvis.Core.Organizer");
-                        interactor.SendOutput("Organizer closed.", false);
+                        interactor.SendOutput("Organizer closed.");
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex);
-                        interactor.SendOutput("Organizer process not found.", false);
+                        interactor.SendOutput("Organizer process not found.");
                     }
 
                     break;
@@ -302,18 +304,18 @@
 
                     if (StopProcess("GOM"))
                     {
-                        interactor.SendOutput("media player closed.", false);
+                        interactor.SendOutput("media player closed.");
                     }
                     else
                     {
-                        interactor.SendOutput("media player process not found.", false);
+                        interactor.SendOutput("media player process not found.");
                     }
                     break;
 
                 case "tab":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                     SendKeys.SendWait("^w");
-                    interactor.SendOutput("Tab closed.", false);
+                    interactor.SendOutput("Tab closed.");
                     break;
             }
         }
@@ -366,18 +368,15 @@
                             {
                                 //Mute(interactor);
                                 interactor.SendOutput(
-                                Utility.Instance.RandomNumber()
-                                .ToString(), false);
+                                    Utility.Instance.RandomNumber().ToString());
                                 //UnMute(interactor);
                             }
                             else
                             {
                                 //Mute(interactor);
                                 interactor.SendOutput(
-                                Utility.Instance.RandomNumber(
-                                int.Parse(commandParams[0]),
-                                int.Parse(commandParams[1]))
-                                .ToString(), false);
+                                    Utility.Instance.RandomNumber(int.Parse(commandParams[0]),
+                                    int.Parse(commandParams[1])).ToString());
                                 //UnMute(interactor);
                             }
 
@@ -390,15 +389,13 @@
                             //    2, InvalidParametersMsg);
                             if (commandParams.Count == 0)
                             {
-                                interactor.SendOutput(
-                            Utility.Instance.RandomString(), false);
+                                interactor.SendOutput(Utility.Instance.RandomString());
                             }
                             else
                             {
                                 interactor.SendOutput(
-                            Utility.Instance.RandomString(
-                                int.Parse(commandParams[0]),
-                                int.Parse(commandParams[1])), false);
+                                    Utility.Instance.RandomString(int.Parse(commandParams[0]),
+                                    int.Parse(commandParams[1])));
                             }
 
                             break;
@@ -411,15 +408,14 @@
                             if (commandParams.Count == 0)
                             {
                                 interactor.SendOutput(
-                            Utility.Instance.RandomDateTime().ToString("d"), false);
+                                    Utility.Instance.RandomDateTime().ToString("d"));
                             }
                             else
                             {
-                                interactor.SendOutput(
-                            Utility.Instance.RandomDateTime(
-                                DateTime.Parse(commandParams[0]),
-                                DateTime.Parse(commandParams[1]))
-                                .ToString("d"), false);
+                                interactor.SendOutput(Utility.Instance.RandomDateTime(
+                                    DateTime.Parse(commandParams[0]),
+                                    DateTime.Parse(commandParams[1]))
+                                    .ToString("d"));
                             }
 
                             break;
@@ -435,7 +431,7 @@
                     interactor.SendOutput(
                         FakeDb.Instance.Jokes[
                             Utility.Instance.RandomNumber(
-                                0, FakeDb.Instance.Jokes.Count - 1)]);
+                                0, FakeDb.Instance.Jokes.Count - 1)], true);
                     break;
 
                 default:
@@ -453,12 +449,25 @@
                 case "yourself":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
                     RegistryEditorModule.Instance.AddProcessToStartup("Jarvis.Client.exe");
-                    interactor.SendOutput("Jarvis added to startup.", false);
+                    interactor.SendOutput("Jarvis added to startup.");
                     break;
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
                     break;
             }
+        }
+
+        public void Help(IList<string> commandParts, IList<string> commandParams,
+            IInteractorManager interactorManager, ILogger logger)
+        {
+
+            interactorManager.SendOutput("Available commands are:", true);
+
+            foreach (var command in CommandConstants.AllCommands)
+            {
+                logger.Log("  " + command);
+            }
+            //interactorManager.SendOutput(string.Join(Environment.NewLine, CommandConstants.AllCommands));
         }
 
         public void Gom(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactorManager)
@@ -491,6 +500,7 @@
                 if (interactor.GetType() == typeof(VoiceInteractor))
                 {
                     interactor.Pause();
+                    //interactor.SendOutput("", true);
                 }
             }
         }
@@ -534,7 +544,7 @@
         {
             //ComunicationManager.Instance.StopAllServers();
             Shutup(interactorManager);
-            interactorManager.SendOutput("See ya soon!", false);
+            interactorManager.SendOutput("See ya soon!");
             interactorManager.StopInteractors();
             Environment.Exit(0);
         }

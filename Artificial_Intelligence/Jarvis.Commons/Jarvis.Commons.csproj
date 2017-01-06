@@ -54,6 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CrashReporter\CrashReporter.cs" />
+    <Compile Include="CrashReporter\IReporter.cs" />
     <Compile Include="Exceptions\DuplicateInstanceException.cs" />
     <Compile Include="Logger\ConsoleLogger.cs" />
     <Compile Include="Logger\ILogger.cs" />

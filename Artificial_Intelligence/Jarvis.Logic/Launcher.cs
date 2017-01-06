@@ -2,13 +2,14 @@
 {
     using System.Collections.Generic;
     using Commons.Logger;
+    using Commons.CrashReporter;
     using Core;
     using Interaction.Interactors;
     using Interaction.Interfaces;
-
+    
     public class Launcher
     {
-        static void Main()
+        public static void Main()
         {
             var logger = new ConsoleLogger();
             var interactors = new List<IInteractor>()
@@ -16,8 +17,9 @@
                 new ConsoleInteractor(logger),
                 new VoiceInteractor(logger)
             };
-            
-            JarvisEngine.Instance(logger, interactors).Start();
+            var reporter = new CrashReporter();
+
+            JarvisEngine.Instance(logger, interactors, reporter).Start();
         }
     }
 }

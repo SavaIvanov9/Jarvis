@@ -1,4 +1,6 @@
-﻿namespace Jarvis.Logic.Core
+﻿using Jarvis.Commons.CrashReporter;
+
+namespace Jarvis.Logic.Core
 {
     using System;
     using System.Collections.Generic;
@@ -14,15 +16,18 @@
         private readonly ManualResetEvent _quitEvent = new ManualResetEvent(false);
         private readonly IInteractorManager _interactorManager = new InteractorManager();
         private readonly ILogger _logger;
+        private readonly IReporter _reporter;
 
-        private JarvisEngine(ILogger logger, IList<IInteractor> interactors)
+        private JarvisEngine(ILogger logger, IList<IInteractor> interactors, IReporter reporter)
         {
-            _interactorManager.Initialize(interactors);
+            this._interactorManager.Initialize(interactors);
             this._logger = logger;
+            this._reporter = reporter;
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static JarvisEngine Instance(ILogger logger, IList<IInteractor> interactors)
+        public static JarvisEngine Instance(
+            ILogger logger, IList<IInteractor> interactors, IReporter reporter)
         {
             if (interactors.Count == 0)
             {
@@ -34,14 +39,26 @@
                 throw new ArgumentException($"Logger cannot be 0!");
             }
 
-            return new JarvisEngine(logger, interactors);
+            if (reporter == null)
+            {
+                throw new ArgumentException($"Reporter cannot be 0!");
+            }
+
+            return new JarvisEngine(logger, interactors, reporter);
         }
 
         public void Start()
         {
-            CommandManager.Instance.Start(_interactorManager, _logger);
-            _interactorManager.StartInteractors();
-            StayAlive();
+            try
+            {
+                _interactorManager.StartInteractors();
+                CommandManager.Instance.Start(_interactorManager, _logger, _reporter);
+                StayAlive();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(_reporter.CreateReport(ex));
+            }
         }
 
         private void StayAlive()

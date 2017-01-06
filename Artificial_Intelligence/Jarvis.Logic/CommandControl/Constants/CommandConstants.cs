@@ -17,6 +17,7 @@
         public const string Gom = "media";
         public const string Mute = "mute";
         public const string UnMute = "unmute";
+        public const string Help = "help";
 
         public static readonly string[] AllCommands =
         {
@@ -52,6 +53,7 @@
             "tellme random string",
             "tellme random number",
 
+            "help",
             "shutup",
             "mute",
             "unmute",
