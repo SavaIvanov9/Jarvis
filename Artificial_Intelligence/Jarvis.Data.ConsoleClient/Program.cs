@@ -12,15 +12,16 @@ namespace Jarvis.Data.ConsoleClient
         static void Main()
         {
             var db = new JarvisData();
-            Console.WriteLine(db.GetReadyTimes.All().Where(a => a.Date != String.Empty).ToList().Count);
-            db.GetReadyTimes.Add(new GetReadyTime
-            {
-                Date = "dnes",
-                StartTime = "sega",
-                DurationInMinutes = 10
-            });
+            //Console.WriteLine(db.GetReadyTimes.All().Where(a => a.Date != String.Empty).ToList().Count);
+            //db.GetReadyTimes.Add(new GetReadyTime
+            //{
+            //    Date = "dnes",
+            //    StartTime = "sega",
+            //    DurationInMinutes = 10
+            //});
+            
             db.SaveChanges();
-            Console.WriteLine(db.GetReadyTimes.All().Where(a => a.Date != String.Empty).ToList().Count);
+            //Console.WriteLine(db.GetReadyTimes.All().Where(a => a.Date != String.Empty).ToList().Count);
         }
     }
 }

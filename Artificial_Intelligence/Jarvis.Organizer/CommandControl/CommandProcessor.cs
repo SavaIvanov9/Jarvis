@@ -25,7 +25,8 @@ namespace Jarvis.Organizer.CommandControl
 
         public static CommandProcessor Instance
         {
-            [MethodImpl(MethodImplOptions.Synchronized)] get { return Lazy.Value; }
+            [MethodImpl(MethodImplOptions.Synchronized)]
+            get { return Lazy.Value; }
         }
 
         public void StartSleepRecording(IOutputManager outputManager, ILogger logger)
@@ -60,13 +61,13 @@ namespace Jarvis.Organizer.CommandControl
             else
             {
                 var startDateParts = sleepTime.Date.Split(
-                    new[] {"."}, StringSplitOptions.None);
+                    new[] { "." }, StringSplitOptions.None);
                 //Console.WriteLine(startDateParts[0]);
                 //Console.WriteLine(startDateParts[1]);
                 //Console.WriteLine(startDateParts[2].Substring(0, 4));
 
                 var startTimeParts = sleepTime.StartTime.Split(
-                    new[] {":"}, StringSplitOptions.None);
+                    new[] { ":" }, StringSplitOptions.None);
                 //Console.WriteLine(startTimeParts[0]);
                 //Console.WriteLine(startTimeParts[1]);
 
@@ -97,12 +98,26 @@ namespace Jarvis.Organizer.CommandControl
 
             var data = _jarvisData
                 .SleepTimes
-                .All().ToList()
-                .Where(x => x.IsEnded 
-                && x.Date.Split(new[] {"."}, StringSplitOptions.None)[2] == dateParts[2] 
+                .All()
+                .ToList()
+                .Where(x => x.IsEnded
+                && x.Date.Split(new[] { "." }, StringSplitOptions.None)[2] == dateParts[2]
                 && x.Date.Split(new[] { "." }, StringSplitOptions.None)[1] == dateParts[1]
-                && int.Parse(x.Date.Split(new[] {"."}, StringSplitOptions.None)[0]) >= int.Parse(dateParts[0]) - 7)
-                ;
+                && int.Parse(x.Date.Split(new[] { "." }, StringSplitOptions.None)[0]) >= int.Parse(dateParts[0]) - 7);
+
+
+            var firstDate = data.ToList().OrderBy(x => x.Date).ToList()[0];
+            //foreach (var d in dateParts)
+            //{
+            //    Console.WriteLine(d);
+            //}
+            var days = (new DateTime(
+                int.Parse(dateParts[2].Substring(0, 4)),
+                int.Parse(dateParts[1]),
+                int.Parse(dateParts[0])) - new DateTime(
+                    int.Parse(firstDate.Date.Split(new[] { "." }, StringSplitOptions.None)[2].Substring(0, 4)),
+                    int.Parse(firstDate.Date.Split(new[] { "." }, StringSplitOptions.None)[1]),
+                    int.Parse(firstDate.Date.Split(new[] { "." }, StringSplitOptions.None)[0]))).TotalDays + 1;
 
             //var totalDuration = data.Sum(x => long.Parse(x.Duration));
             TimeSpan totalDuration = new TimeSpan();
@@ -110,8 +125,12 @@ namespace Jarvis.Organizer.CommandControl
             {
                 totalDuration += (TimeSpan.Parse(sleepTime.Duration));
             }
-            //totalDuration
-            outputManager.SendOutput($"Total sleep for last 7 days is {totalDuration}");
+
+            outputManager.SendOutput($"Total sleep for last {days} days is {totalDuration}");
+
+            var sleepPerDay = new TimeSpan((long)(totalDuration.Ticks / days));
+
+            outputManager.SendOutput($"Average sleep per day is {sleepPerDay.Hours} hours {sleepPerDay.Minutes} minutes");
         }
 
         public void Exit(IReceiverManager receiverManager)
