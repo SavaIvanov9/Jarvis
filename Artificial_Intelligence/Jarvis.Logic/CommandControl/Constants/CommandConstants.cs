@@ -40,8 +40,9 @@
             "start sleeprecording",
             "close sleeprecording",
 
+            "tellme eventstoday",
             "tellme sleepdata",
-            "start getredytime",
+            //"start getredytime",
 
             "start mail",
             "open mail",

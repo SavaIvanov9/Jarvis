@@ -72,6 +72,14 @@ namespace Jarvis.Organizer.CommandControl
                             CommandProcessor.Instance.GetSleepStatistic(_outputManager, _logger);
                             break;
 
+                        case CommandConstants.AddEvent:
+                            CommandProcessor.Instance.AddEvent(_outputManager, _logger);
+                            break;
+
+                        case CommandConstants.GetEventsData:
+                            CommandProcessor.Instance.GetEventsData(_outputManager, _logger);
+                            break;
+
                         case CommandConstants.Exit:
                             CommandProcessor.Instance.Exit(_receiverManager);
                             break;

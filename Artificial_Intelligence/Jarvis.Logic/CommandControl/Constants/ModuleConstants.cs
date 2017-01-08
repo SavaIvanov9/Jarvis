@@ -10,5 +10,6 @@
         public const string StartSleepRecording = "start sleep recording";
         public const string StoptSleepRecording = "stop sleep recording";
         public const string GetSleepStatistic = "get sleep data";
+        public const string GetEventsData = "get events data";
     }
 }

@@ -133,6 +133,46 @@ namespace Jarvis.Organizer.CommandControl
             outputManager.SendOutput($"Average sleep per day is {sleepPerDay.Hours} hours {sleepPerDay.Minutes} minutes");
         }
 
+        public void AddEvent(IOutputManager outputManager, ILogger logger)
+        {
+            logger.Log(@"Enter date in format ""dd.mm.yyyy"":");
+            var dateValues = Console.ReadLine().Trim().Split('.');
+            var date = new DateTime(
+                int.Parse(dateValues[2]),
+                int.Parse(dateValues[1]),
+                int.Parse(dateValues[0]))
+                .ToShortDateString();
+
+            logger.Log(@"Enter start time in format ""hh:mm"":");
+            var time = Console.ReadLine();
+
+            logger.Log("Enter title:");
+            var title = Console.ReadLine();
+
+            _jarvisData.Events.Add(new Event
+            {
+                Date = date,
+                StartTime = time,
+                Title = title
+            });
+
+            _jarvisData.SaveChanges();
+            logger.Log($@"Event ""{title}"" added to database.");
+        }
+
+        public void GetEventsData(IOutputManager outputManager, ILogger logger)
+        {
+            var dateToday = DateTime.Today.ToShortDateString();
+            var events = _jarvisData.Events.Find(e => e.Date == dateToday).ToList();
+
+            outputManager.SendOutput($"You have {events.Count} events for today.");
+            
+            foreach (var e in events)
+            {
+                outputManager.SendOutput($"{e.Title} starting at {e.StartTime}");
+            }
+        }
+
         public void Exit(IReceiverManager receiverManager)
         {
             receiverManager.StopReceivers();

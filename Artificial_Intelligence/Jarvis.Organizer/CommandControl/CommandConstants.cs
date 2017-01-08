@@ -12,6 +12,8 @@ namespace Jarvis.Organizer.CommandControl
         public const string StartSleepRecording = "start sleep recording";
         public const string StoptSleepRecording = "stop sleep recording";
         public const string GetSleepData = "get sleep data";
+        public const string AddEvent = "add event";
+        public const string GetEventsData = "get events data";
         public const string Exit = "exit";
     }
 }

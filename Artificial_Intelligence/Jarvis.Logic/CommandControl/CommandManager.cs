@@ -60,7 +60,7 @@ namespace Jarvis.Logic.CommandControl
                     switch (commandParts[0])
                     {
                         case CommandConstants.Initialize:
-                            CommandProcessor.Instance.Initialize(_interactorManager, _logger);
+                            CommandProcessor.Instance.Initialize(_interactorManager, _logger, _reporter);
                             break;
 
                         case CommandConstants.AddToStartup:

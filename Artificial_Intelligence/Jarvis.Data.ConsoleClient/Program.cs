@@ -16,8 +16,8 @@ namespace Jarvis.Data.ConsoleClient
         {
             var db = new JarvisData();
             var c = db.Events.All().ToList().Count();
-            SaveElements();
-            //RestoreElements();
+            //SaveElements();
+            RestoreElements();
 
             //Console.WriteLine(db.GetReadyTimes.All().Where(a => a.Date != String.Empty).ToList().Count);
             //db.GetReadyTimes.Add(new GetReadyTime

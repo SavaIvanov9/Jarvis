@@ -5,7 +5,9 @@
     using System.Diagnostics;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Threading;
     using System.Windows.Forms;
+    using Commons.CrashReporter;
     using Commons.Logger;
     using Commons.Utilities;
     using Data;
@@ -31,7 +33,7 @@
             get { return Lazy.Value; }
         }
 
-        public void Initialize(IInteractorManager interactorManager, ILogger logger)
+        public void Initialize(IInteractorManager interactorManager, ILogger logger, IReporter reporter)
         {
             interactorManager.SendOutput("Jarvis core system started.");
             foreach (var interactor in interactorManager.Interactors)
@@ -45,10 +47,21 @@
                 db.SleepTimes.All().ToList().Count();
                 logger.Log($"Connection to database {db.GetType().Name} established.");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 logger.Log($"Failed to connect to database.");
+                reporter.CreateReport(ex);
             }
+
+            Mute(interactorManager);
+            Start(new List<string>() { CommandConstants.Start, ModuleConstants.Organizer },
+                new List<string>(), interactorManager, logger, true);
+            Thread.Sleep(500);
+            TellMe(new List<string>() { CommandConstants.Tell, "eventstoday" },
+                new List<string>(), interactorManager, logger);
+            Close(new List<string>() { CommandConstants.Close, ModuleConstants.Organizer },
+                new List<string>(), interactorManager, logger, true);
+            UnMute(interactorManager);
         }
 
         public void Search(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
@@ -164,7 +177,7 @@
         }
 
         public void Start(IList<string> commandParts, IList<string> commandParams,
-            IInteractorManager interactor, ILogger logger)
+            IInteractorManager interactor, ILogger logger, bool isSilent = false)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -202,7 +215,11 @@
 
                         CommunicationManager.Instance.StartServer(index);
                         Process.Start(CommandConstants.OrganizerPath);
-                        interactor.SendOutput("Organizer strarted.");
+
+                        if (!isSilent)
+                        {
+                            interactor.SendOutput("Organizer strarted.");
+                        }
                     }
                     catch (DuplicateInstanceException ex)
                     {
@@ -321,7 +338,7 @@
         //}
 
         public void Close(IList<string> commandParts, IList<string> commandParams,
-            IInteractorManager interactor, ILogger logger)
+            IInteractorManager interactor, ILogger logger, bool isSilent = false)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -359,7 +376,10 @@
                     {
                         CommunicationContainer.Instance.AddMessage("exit");
                         CommunicationManager.Instance.StopServer("Jarvis.Core.Organizer");
-                        interactor.SendOutput("Organizer closed.");
+                        if (!isSilent)
+                        {
+                            interactor.SendOutput("Organizer closed.");
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -422,6 +442,16 @@
                     logger.Log("Sleep statistic started.");
                     //interactor.SendOutput("Sleep statistic started.");
                     break;
+
+                case "eventstoday":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    CommunicationContainer.Instance.AddMessage(ModuleConstants.GetEventsData);
+
+                    logger.Log("Events statistic started.");
+                    //interactor.SendOutput("Sleep statistic started.");
+                    break;
+
                 case "random":
                     Validator.Instance.ValidateIsAboveOqEqualMinimum(
                         commandParts.Count, 3, CommandNotFoundMsg);
