@@ -14,7 +14,7 @@
             Console.WriteLine(Environment.NewLine + "Creating new database...");
             var db = new JarvisDbContext();
             Database.SetInitializer(new DropCreateDatabaseAlways<JarvisDbContext>());
-            db.Jokes.Count();
+            db.Events.Count();
             Console.WriteLine("Database created.");
         }
     }

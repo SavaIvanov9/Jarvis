@@ -23,6 +23,14 @@
             this._repositories = new Dictionary<Type, object>();
         }
 
+        public EventsRepository Events
+        {
+            get
+            {
+                return (EventsRepository)this.GetRepository<Event>();
+            }
+        }
+
         public JokesRepository Jokes
         {
             get
@@ -71,6 +79,10 @@
                 else if (repositoryType.IsAssignableFrom(typeof(SleepTime)))
                 {
                     type = typeof(SleepTimesRepository);
+                }
+                else if (repositoryType.IsAssignableFrom(typeof(Event)))
+                {
+                    type = typeof(EventsRepository);
                 }
 
                 this._repositories.Add(repositoryType, Activator.CreateInstance(type, this._context));

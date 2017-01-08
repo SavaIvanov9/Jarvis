@@ -58,6 +58,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Abstraction\GenericRepository.cs" />
     <Compile Include="Repositories\Abstraction\IRepository.cs" />
+    <Compile Include="Repositories\EventsRepository.cs" />
     <Compile Include="Repositories\GetReadyTimesRepository.cs" />
     <Compile Include="Repositories\JokesRepository.cs" />
     <Compile Include="Repositories\SleepTimesRepository.cs" />

@@ -5,7 +5,7 @@
         public const string Initialize = "init";
         public const string AddToStartup = "addtostartup";
         public const string Tell = "tellme";
-        public const string StartModule = "start";
+        public const string Start = "start";
         public const string Open = "open";
         public const string Search = "search";
         public const string Close = "close";
@@ -14,34 +14,59 @@
         public const string Show = "gotofront";
         public const string Hide = "gotobackground";
         public const string Exit = "exit";
-        public const string Gom = "media";
-        public const string Mute = "mute";
-        public const string UnMute = "unmute";
-        public const string Help = "help";
+        public const string Player = "player";
+        public const string Mute = "silence";
+        public const string UnMute = "enablevoice";
+        public const string Help = "showcommands";
 
         public static readonly string[] AllCommands =
         {
+            "open encryptor",
             "start encryptor",
             "close encryptor",
+
+            "open securedpass",
             "start securedpass",
+
+            "open movementdetection",
             "start movementdetection",
             "close movementdetection",
 
+            "open organizer",
             "start organizer",
-            "start sleeprecording",
-            "stop sleeprecording",
-            "tellme sleepdata",
-            "start getredytime",
             "close organizer",
 
+            "open sleeprecording",
+            "start sleeprecording",
+            "close sleeprecording",
+
+            "tellme sleepdata",
+            "start getredytime",
+
+            "start mail",
             "open mail",
+
+            "start visualstudio",
             "open visualstudio",
+
+            "start sqlserver",
             "open sqlserver",
+
+            "start git",
             "open git",
+
+            "start google",
             "open google",
+
+            "start youtube",
             "open youtube",
-            "open projects",
-            "open documents",
+
+            "start projectsfolder",
+            "open projectsfolder",
+
+            "start documentsfolder",
+            "open documentsfolder",
+
             "nexttab",
             "previoustab",
 
@@ -51,22 +76,21 @@
             "tellme joke",
             "tellme random number",
             "tellme random string",
-            "tellme random number",
+            "tellme random date",
 
-            "help",
+            "showcommands",
             "shutup",
-            "mute",
-            "unmute",
+            "silence",
+            "enablevoice",
 
             "addtostartup yourself",
             "gotobackground",
             "gotofront",
-            //"stop",
             "exit",
 
-            "media pause",
-            "media back",
-            "media next"
+            "player pause",
+            "player back",
+            "player next"
         };
 
         public const string SecureDesktopPath =

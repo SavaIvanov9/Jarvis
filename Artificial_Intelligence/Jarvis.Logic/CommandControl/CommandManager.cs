@@ -73,24 +73,16 @@ namespace Jarvis.Logic.CommandControl
                                 _interactorManager, _logger);
                             break;
 
-                        case CommandConstants.StartModule:
-                            CommandProcessor.Instance.StartModule(
+                        case CommandConstants.Open:
+                        case CommandConstants.Start:
+                            CommandProcessor.Instance.Start(
                                 commandParts, commandParams, _interactorManager, _logger);
                             break;
 
+                        //case CommandConstants.Stop:
                         case CommandConstants.Close:
                             CommandProcessor.Instance.Close(commandParts, commandParams,
-                                _interactorManager);
-                            break;
-
-                        case CommandConstants.Stop:
-                            CommandProcessor.Instance.Stop(commandParts, commandParams,
                                 _interactorManager, _logger);
-                            break;
-
-                        case CommandConstants.Open:
-                            CommandProcessor.Instance.Open(commandParts, commandParams,
-                                _interactorManager);
                             break;
 
                         case CommandConstants.Search:
@@ -104,12 +96,12 @@ namespace Jarvis.Logic.CommandControl
 
                         case CommandConstants.Mute:
                             CommandProcessor.Instance.Mute(_interactorManager);
-                            _interactorManager.SendOutput("Voice interaction paused.", false);
+                            _interactorManager.SendOutput("Voice interaction paused.");
                             break;
 
                         case CommandConstants.UnMute:
                             CommandProcessor.Instance.UnMute(_interactorManager);
-                            _interactorManager.SendOutput("Voice interaction unpaused.", false);
+                            _interactorManager.SendOutput("Voice interaction unpaused.");
                             break;
 
                         case CommandConstants.Exit:
@@ -118,16 +110,16 @@ namespace Jarvis.Logic.CommandControl
 
                         case CommandConstants.Show:
                             Utility.Instance.Show();
-                            _interactorManager.SendOutput("Command window moved to front.", false);
+                            _interactorManager.SendOutput("Command window moved to front.");
                             break;
 
                         case CommandConstants.Hide:
                             Utility.Instance.Hide();
-                            _interactorManager.SendOutput("Command window moved to background", false);
+                            _interactorManager.SendOutput("Command window moved to background");
                             break;
 
-                        case CommandConstants.Gom:
-                            CommandProcessor.Instance.Gom(commandParts, commandParams,
+                        case CommandConstants.Player:
+                            CommandProcessor.Instance.Player(commandParts, commandParams,
                                 _interactorManager);
                             break;
 
@@ -138,12 +130,12 @@ namespace Jarvis.Logic.CommandControl
 
                         case "nexttab":
                             SendKeys.SendWait("^{TAB}");
-                            _interactorManager.SendOutput("Moved to next tab.", false);
+                            _interactorManager.SendOutput("Moved to next tab.");
                             break;
 
                         case "previoustab":
                             SendKeys.SendWait("^+{TAB}");
-                            _interactorManager.SendOutput("Moved to previous tab.", false);
+                            _interactorManager.SendOutput("Moved to previous tab.");
                             break;
 
                         default:
@@ -153,7 +145,7 @@ namespace Jarvis.Logic.CommandControl
                 }
                 else
                 {
-                    _interactorManager.SendOutput("Command cannot be empty!", false);
+                    _interactorManager.SendOutput("Command cannot be empty!");
                 }
             }
             catch (Exception ex)

@@ -14,6 +14,8 @@ namespace Jarvis.Data
             //Database.SetInitializer(new DropCreateDatabaseAlways<EmployeeArrivalTrackerDbContext>());
         }
 
+        public virtual IDbSet<Event> Events { get; set; }
+
         public virtual IDbSet<SleepTime> SleepTimes { get; set; }
 
         public virtual IDbSet<GetReadyTime> GetReadyTimes { get; set; }

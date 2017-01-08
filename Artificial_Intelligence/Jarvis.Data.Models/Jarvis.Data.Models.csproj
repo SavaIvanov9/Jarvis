@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Event.cs" />
     <Compile Include="GetReadyTime.cs" />
     <Compile Include="Joke.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

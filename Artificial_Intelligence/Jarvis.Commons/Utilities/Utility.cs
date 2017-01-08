@@ -41,7 +41,7 @@
             return _random.Next(min, max + 1);
         }
 
-        public string RandomString(int minLength = 0, int maxLength = int.MaxValue / 2)
+        public string RandomString(int minLength = 0, int maxLength = 50)
         {
             var length = RandomNumber(minLength, maxLength);
             var result = new StringBuilder(length);
@@ -55,8 +55,9 @@
 
         public DateTime RandomDateTime()
         {
-            return RandomDateTime(new DateTime(0, 0, 0), new DateTime(int.MaxValue, int.MaxValue, int.MaxValue));
+            return RandomDateTime(new DateTime(1, 1, 1), new DateTime(9000, 12, 31));
         }
+
         public DateTime RandomDateTime(DateTime after, DateTime before )
         {
             int range = (before - after).Days;

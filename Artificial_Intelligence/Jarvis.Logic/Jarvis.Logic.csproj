@@ -91,10 +91,7 @@
     <Compile Include="CommandControl\CommandContainer.cs" />
     <Compile Include="CommandControl\CommandProcessor.cs" />
     <Compile Include="CommandControl\Constants\ModuleConstants.cs" />
-    <Compile Include="Core\DecisionControl\Interfaces\IDecidable.cs" />
-    <Compile Include="Core\DecisionControl\Interfaces\IDecisionTaker.cs" />
     <Compile Include="Core\JarvisEngine.cs" />
-    <Compile Include="Core\DecisionControl\DecisionTaker.cs" />
     <Compile Include="Interaction\Interactors\ConsoleInteractor.cs" />
     <Compile Include="Interaction\InteractorManager.cs" />
     <Compile Include="Interaction\Interfaces\IInteractor.cs" />

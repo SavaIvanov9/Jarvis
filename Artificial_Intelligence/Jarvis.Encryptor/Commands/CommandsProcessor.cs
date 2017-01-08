@@ -324,7 +324,6 @@ namespace Jarvis.Encryptor.Commands
                                            "encrypt txt file - Encrypts whole txt file" + Environment.NewLine +
                                            "decrypt txt file - Decrypts whole txt file" + Environment.NewLine +
                                            "clear - Clears console" + Environment.NewLine +
-                                           "stop-encryptor" + Environment.NewLine +
                                            "------------------------------------------");
             _writer.Write(commandsDescription.ToString());
         }

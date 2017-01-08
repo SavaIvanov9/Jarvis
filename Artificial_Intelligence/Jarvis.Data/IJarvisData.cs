@@ -4,9 +4,10 @@
 
     public interface IJarvisData
     {
-        //IRepository<SleepTime> SleepTimes { get; }
-
-        //IRepository<GetRedyTime> GetRedyTimes { get; }
+        EventsRepository Events
+        {
+            get;
+        }
 
         JokesRepository Jokes
         {

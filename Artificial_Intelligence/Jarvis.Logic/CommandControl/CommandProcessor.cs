@@ -1,6 +1,4 @@
-﻿using Jarvis.Encryptor;
-
-namespace Jarvis.Logic.CommandControl
+﻿namespace Jarvis.Logic.CommandControl
 {
     using System;
     using System.Collections.Generic;
@@ -44,7 +42,7 @@ namespace Jarvis.Logic.CommandControl
             try
             {
                 var db = new JarvisData();
-                db.Jokes.All().ToList().Count();
+                db.SleepTimes.All().ToList().Count();
                 logger.Log($"Connection to database {db.GetType().Name} established.");
             }
             catch (Exception)
@@ -165,7 +163,7 @@ namespace Jarvis.Logic.CommandControl
             }
         }
 
-        public void StartModule(IList<string> commandParts, IList<string> commandParams,
+        public void Start(IList<string> commandParts, IList<string> commandParams,
             IInteractorManager interactor, ILogger logger)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
@@ -186,6 +184,7 @@ namespace Jarvis.Logic.CommandControl
                     Process.Start(CommandConstants.EncryptorPath);
                     interactor.SendOutput("Encryptor strarted.");
                     break;
+
                 case ModuleConstants.MovementDetection:
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
@@ -227,6 +226,81 @@ namespace Jarvis.Logic.CommandControl
                     interactor.SendOutput("getreadytime started.");
                     break;
 
+                case "mail":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    Process.Start("firefox.exe", "http://mail.google.com/");
+
+                    interactor.SendOutput("Mail opened.");
+                    break;
+
+                case "git":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    //Process.Start("C:\\Users\\savat\\AppData\\Local\\GitHub\\GitHub.appref-ms");
+                    Process.Start("C:\\Users\\savat\\AppData\\Local\\Apps\\2.0\\E821A0P3.QBQ\\R8NDHZWJ.D1B\\gith..tion_317444273a93ac29_0003.0003_665ccbdbd3c2d8d4\\GitHub.exe");
+                    interactor.SendOutput("Git Hub opened.");
+                    break;
+
+                case "sqlserver":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    Process.Start("ssms.exe");
+
+                    interactor.SendOutput("MS SQL Server Management Studio opened.");
+                    break;
+
+                case "visualstudio":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    Process.Start("devenv.exe");
+                    interactor.SendOutput("Visual Studio opened.");
+                    break;
+
+                case "site":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+                    Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParams.Count, 1, InvalidParametersMsg);
+                    WebManager.Instance.OpenSite(commandParams);
+                    interactor.SendOutput($"{commandParams[0]} opened with Firefox.");
+                    break;
+
+                case "google":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    Process.Start("firefox.exe", "http://www.google.com");
+                    interactor.SendOutput("Google opened.");
+                    //secondProc.StartInfo;
+                    //secondProc.Start();
+
+                    //WebManager.Instance.OpenSite(new List<string>() {"google.com"});
+                    //interactor.SendOutput($@"Google opened.");
+                    break;
+
+                case "youtube":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    Process.Start("firefox.exe", "http://www.youtube.com");
+                    interactor.SendOutput("Youtube opened.");
+                    //secondProc.StartInfo;
+                    //secondProc.Start();
+
+                    //WebManager.Instance.OpenSite(new List<string>() {"google.com"});
+                    //interactor.SendOutput($@"Google opened.");
+                    break;
+
+                case "projectsfolder":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    Process.Start("C:\\Users\\savat\\Documents\\Projects");
+                    interactor.SendOutput("Projects opened.");
+                    break;
+
+                case "documentsfolder":
+                    Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
+
+                    Process.Start("C:\\Users\\savat\\Documents");
+                    interactor.SendOutput("Documents opened.");
+                    break;
+
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
                     break;
@@ -246,7 +320,8 @@ namespace Jarvis.Logic.CommandControl
         //    //System.Windows.Forms.SendKeys("^w")
         //}
 
-        public void Close(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactor)
+        public void Close(IList<string> commandParts, IList<string> commandParams,
+            IInteractorManager interactor, ILogger logger)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
@@ -317,14 +392,7 @@ namespace Jarvis.Logic.CommandControl
                     SendKeys.SendWait("^w");
                     interactor.SendOutput("Tab closed.");
                     break;
-            }
-        }
 
-        public void Stop(IList<string> commandParts, IList<string> commandParams,
-            IInteractorManager interactor, ILogger logger)
-        {
-            switch (commandParts[1])
-            {
                 case "sleeprecording":
                     Validator.Instance.ValidateIsUnderOrEqualMax(commandParts.Count, 2, CommandNotFoundMsg);
 
@@ -332,6 +400,7 @@ namespace Jarvis.Logic.CommandControl
 
                     logger.Log("Sleep secording stopped.");
                     break;
+
                 default:
                     interactor.SendOutput(CommandNotFoundMsg);
                     break;
@@ -389,11 +458,11 @@ namespace Jarvis.Logic.CommandControl
                             //    2, InvalidParametersMsg);
                             if (commandParams.Count == 0)
                             {
-                                interactor.SendOutput(Utility.Instance.RandomString());
+                                logger.Log(Utility.Instance.RandomString());
                             }
                             else
                             {
-                                interactor.SendOutput(
+                                logger.Log(
                                     Utility.Instance.RandomString(int.Parse(commandParams[0]),
                                     int.Parse(commandParams[1])));
                             }
@@ -470,7 +539,7 @@ namespace Jarvis.Logic.CommandControl
             //interactorManager.SendOutput(string.Join(Environment.NewLine, CommandConstants.AllCommands));
         }
 
-        public void Gom(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactorManager)
+        public void Player(IList<string> commandParts, IList<string> commandParams, IInteractorManager interactorManager)
         {
             Validator.Instance.ValidateIsAboveOqEqualMinimum(commandParts.Count, 2, CommandNotFoundMsg);
             switch (commandParts[1])
