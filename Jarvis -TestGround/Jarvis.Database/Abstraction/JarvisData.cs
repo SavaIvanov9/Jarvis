@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Jarvis.Database.Abstraction.Repsitories;
-using Jarvis.Database.Abstraction.Repsitories.Base;
-
-namespace Jarvis.Database.Abstraction
+﻿namespace Jarvis.Database.Abstraction
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using Jarvis.Database.Abstraction.Repsitories;
+    using Jarvis.Database.Abstraction.Repsitories.Base;
+
     public class JarvisData : IJarvisData
     {
         private readonly DbContext _context;

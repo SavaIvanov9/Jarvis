@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Jarvis.Database.Abstraction.Repsitories.Base;
-
-namespace Jarvis.Database.Abstraction.Repsitories
+﻿namespace Jarvis.Database.Abstraction.Repsitories
 {
+    using System.Data.Entity;
+    using Jarvis.Database.Abstraction.Repsitories.Base;
+
     public class EventsRepository : GenericRepository<Event>, IRepository<Event>
     {
         public EventsRepository(DbContext context)
